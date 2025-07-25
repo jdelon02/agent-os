@@ -63,57 +63,128 @@ echo "  CUSTOM_DIRS=$CUSTOM_DIRS"
 echo "  CUSTOM_FILES=$CUSTOM_FILES"
 echo "  PROJECT_TYPE=$PROJECT_TYPE"
 
-# Function to download files from a GitHub directory to a local directory
+# Function to recursively download files from a GitHub directory to a local directory
 download_files_from_github() {
     local source_dir="$1"
     local target_dir="$2"
     local overwrite_flag="$3"
+    local depth="${4:-0}"  # Track recursion depth, default to 0
     
-    echo "📥 Downloading files from ${source_dir} to ${target_dir}"
-    echo "DEBUG: source_dir=$source_dir, target_dir=$target_dir, overwrite_flag=$overwrite_flag"
-    mkdir -p "$target_dir"
-    
-    # Get list of files in the directory
-    local files
-    echo "DEBUG: Fetching file list from ${API_URL}/${source_dir}"
-    if ! files=$(curl -s "${API_URL}/${source_dir}" | jq -r '.[] | select(.type == "file") | .name | select(test("\\.(md|json|yaml|yml)$"))' 2>/dev/null); then
-        # Fallback if jq is not available
-        if ! files=$(curl -s "${API_URL}/${source_dir}" | grep -A1 '"type": "file"' | grep '"name":' | cut -d'"' -f4 | grep '\.\(md\|json\|yaml\|yml\)$'); then
-            echo "  ⚠️  Unable to list files in ${source_dir}"
-            echo "DEBUG: curl command failed or no files found"
-            return 1
-        fi
-    fi
-    
-    echo "DEBUG: Found files: $files"
-    
-    if [ -z "$files" ]; then
-        echo "  ⚠️  No files found in ${source_dir}"
+    # Safety check: prevent infinite recursion
+    if [ "$depth" -gt 10 ]; then
+        echo "  ⚠️  Maximum recursion depth reached for ${source_dir}"
         return 1
     fi
     
-    for file in $files; do
-        local target_file="${target_dir}/${file}"
-        echo "DEBUG: Processing file: $file -> $target_file"
-        if [ -f "$target_file" ] && [ "$overwrite_flag" = false ]; then
-            echo "  ⚠️  ${file} already exists - skipping"
-        else
-            echo "DEBUG: Downloading from ${BASE_URL}/${source_dir}/${file}"
-            if curl -s -o "$target_file" "${BASE_URL}/${source_dir}/${file}"; then
-                if [ -f "$target_file" ] && [ -s "$target_file" ]; then
-                    if [ "$overwrite_flag" = true ]; then
-                        echo "  ✓ ${file} (overwritten)"
-                    else
-                        echo "  ✓ ${file}"
-                    fi
+    echo "📥 Downloading files from ${source_dir} to ${target_dir} (depth: $depth)"
+    echo "DEBUG: source_dir=$source_dir, target_dir=$target_dir, overwrite_flag=$overwrite_flag, depth=$depth"
+    mkdir -p "$target_dir"
+    
+    # Get list of items (files and directories) in the directory
+    local api_response
+    local retry_count=0
+    local max_retries=3
+    
+    echo "DEBUG: Fetching content list from ${API_URL}/${source_dir}"
+    
+    # Retry loop for API calls
+    while [ $retry_count -lt $max_retries ]; do
+        if api_response=$(curl -s --max-time 30 "${API_URL}/${source_dir}"); then
+            # Check for API rate limit
+            if echo "$api_response" | grep -q '"message":.*"API rate limit exceeded"'; then
+                echo "  ⚠️  GitHub API rate limit exceeded (attempt $((retry_count + 1))/$max_retries)"
+                if [ $retry_count -lt $((max_retries - 1)) ]; then
+                    echo "  💤  Waiting 10 seconds before retry..."
+                    sleep 10
+                    retry_count=$((retry_count + 1))
+                    continue
                 else
-                    echo "  ⚠️  Downloaded ${file} but file is empty or missing"
-                    rm -f "$target_file"
+                    echo "  ❌  Maximum retries reached. Try again later or use authentication for higher limits"
+                    return 1
                 fi
             else
-                echo "  ⚠️  Failed to download ${file}"
-                rm -f "$target_file"
+                # Success - break out of retry loop
+                break
             fi
+        else
+            echo "  ⚠️  Unable to fetch content from ${source_dir} (timeout or error, attempt $((retry_count + 1))/$max_retries)"
+            if [ $retry_count -lt $((max_retries - 1)) ]; then
+                echo "  💤  Waiting 5 seconds before retry..."
+                sleep 5
+                retry_count=$((retry_count + 1))
+                continue
+            else
+                echo "DEBUG: curl command failed or timed out after $max_retries attempts"
+                return 1
+            fi
+        fi
+    done
+    
+    # Check if response is valid JSON and not an error
+    if echo "$api_response" | grep -q '"message":.*"Not Found"'; then
+        echo "  ⚠️  Directory ${source_dir} not found on GitHub"
+        return 1
+    fi
+    
+    echo "DEBUG: API response received, parsing..."
+    
+    # Process files first
+    local files
+    echo "DEBUG: Raw API response (first 200 chars): $(echo "$api_response" | head -c 200)"
+    
+    if ! files=$(echo "$api_response" | jq -r '.[] | select(.type == "file") | .name' 2>/dev/null | grep -E '\.(md|json|yaml|yml)$'); then
+        # Fallback if jq is not available
+        files=$(echo "$api_response" | grep -A1 '"type": "file"' | grep '"name":' | cut -d'"' -f4 | grep '\.\(md\|json\|yaml\|yml\)$')
+    fi
+    
+    echo "DEBUG: Found files: $files"
+    echo "DEBUG: File count: $(echo "$files" | wc -l)"
+    
+    # Download files
+    for file in $files; do
+        if [ -n "$file" ]; then
+            local target_file="${target_dir}/${file}"
+            echo "DEBUG: Processing file: $file -> $target_file"
+            if [ -f "$target_file" ] && [ "$overwrite_flag" = false ]; then
+                echo "  ⚠️  ${file} already exists - skipping"
+            else
+                echo "DEBUG: Downloading from ${BASE_URL}/${source_dir}/${file}"
+                if curl -s --max-time 30 -o "$target_file" "${BASE_URL}/${source_dir}/${file}"; then
+                    if [ -f "$target_file" ] && [ -s "$target_file" ]; then
+                        if [ "$overwrite_flag" = true ]; then
+                            echo "  ✓ ${file} (overwritten)"
+                        else
+                            echo "  ✓ ${file}"
+                        fi
+                    else
+                        echo "  ⚠️  Downloaded ${file} but file is empty or missing"
+                        rm -f "$target_file"
+                    fi
+                else
+                    echo "  ⚠️  Failed to download ${file} (timeout or error)"
+                    rm -f "$target_file"
+                fi
+            fi
+        fi
+    done
+    
+    # Now process subdirectories recursively
+    local subdirs
+    if ! subdirs=$(echo "$api_response" | jq -r '.[] | select(.type == "dir") | .name' 2>/dev/null); then
+        # Fallback if jq is not available
+        subdirs=$(echo "$api_response" | grep -A1 '"type": "dir"' | grep '"name":' | cut -d'"' -f4)
+    fi
+    
+    echo "DEBUG: Found subdirectories: $subdirs"
+    
+    # Recursively process subdirectories
+    for subdir in $subdirs; do
+        if [ -n "$subdir" ]; then
+            local sub_source_dir="${source_dir}/${subdir}"
+            local sub_target_dir="${target_dir}/${subdir}"
+            local next_depth=$((depth + 1))
+            echo "DEBUG: Recursively processing subdirectory: $subdir (depth will be $next_depth)"
+            download_files_from_github "$sub_source_dir" "$sub_target_dir" "$overwrite_flag" "$next_depth"
         fi
     done
 }
@@ -146,12 +217,21 @@ echo "🔄 Process 2: Creating custom directories..."
 
 if [ -n "$CUSTOM_DIRS" ]; then
     echo "DEBUG: Processing CUSTOM_DIRS: $CUSTOM_DIRS"
+    # Use IFS to split the comma-separated string into an array
     IFS=',' read -r -a dir_names <<< "$CUSTOM_DIRS"
     
+    echo "DEBUG: Array contains ${#dir_names[@]} directories: ${dir_names[*]}"
+    
     for dir in "${dir_names[@]}"; do
-        dir=$(echo $dir | xargs) # trim whitespace
+        # Trim whitespace from directory name
+        dir=$(echo "$dir" | xargs)
+        if [ -z "$dir" ]; then
+            echo "  ⚠️  Empty directory name found, skipping"
+            continue
+        fi
+        
         target_dir="$HOME/.agent-os/$dir"
-        echo "DEBUG: Processing custom directory: $dir -> $target_dir"
+        echo "DEBUG: Processing custom directory: '$dir' -> $target_dir"
         
         if [ -d "$target_dir" ]; then
             echo "  ⚠️  Directory '$dir' already exists. Skipping creation."
@@ -162,11 +242,15 @@ if [ -n "$CUSTOM_DIRS" ]; then
         
         # Copy files from /common into the custom directory
         echo "  📥 Copying common files to $dir..."
-        download_files_from_github "common" "$target_dir" "$OVERWRITE_STANDARDS"
+        if ! download_files_from_github "common" "$target_dir" "$OVERWRITE_STANDARDS"; then
+            echo "  ⚠️  Failed to copy common files to $dir (possibly due to rate limiting)"
+        fi
         
         # Copy files from /templates/standards into the custom directory
         echo "  📥 Copying standards files to $dir..."
-        download_files_from_github "templates/standards" "$target_dir" "$OVERWRITE_STANDARDS"
+        if ! download_files_from_github "templates/standards" "$target_dir" "$OVERWRITE_STANDARDS"; then
+            echo "  ⚠️  Failed to copy standards files to $dir (possibly due to rate limiting)"
+        fi
     done
     
     echo ""
