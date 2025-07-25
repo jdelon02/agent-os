@@ -54,13 +54,8 @@ echo ""
 
 # Base URL for raw GitHub content
 BASE_URL="https://raw.githubusercontent.com/jdelon02/agent-os/main"
-
-# Create template directory structure first
-create_template_structure
-BASE_URL="https://raw.githubusercontent.com/jdelon02/agent-os/main"
-
-# Create base directory structure from templates
-echo "📁 Creating directory structure from templates..."
+# GitHub API URL for directory listings
+API_URL="https://api.github.com/repos/jdelon02/agent-os/contents"
 
 # Function to create directory structure and copy template files
 create_template_structure() {
@@ -75,14 +70,24 @@ create_template_structure() {
     local project_dir="${base_dir}/${project_name}"
     echo "📁 Creating project structure for ${project_name}..."
 
+    # Dynamically get template directories from GitHub
+    local template_dirs
+    template_dirs=$(curl -s "${API_URL}/templates" | jq -r '.[] | select(.type == "dir") | .name' 2>/dev/null) || {
+        # Fallback if jq is not available
+        template_dirs=$(curl -s "${API_URL}/templates" | grep -A1 '"type": "dir"' | grep '"name":' | cut -d'"' -f4) || {
+            echo "  ❌ Error: Unable to fetch template directory list"
+            return 1
+        }
+    }
+
     # Create project directories based on template structure
-    for template_dir in standards instructions commands claude-code github_template vscode_template; do
-        if curl --output /dev/null --silent --head --fail "${BASE_URL}/templates/${template_dir}"; then
+    for template_dir in $template_dirs; do
+        if curl --output /dev/null --silent --head --fail "${API_URL}/templates/${template_dir}"; then
             mkdir -p "${project_dir}/${template_dir}"
             echo "  ✓ Created directory: ${project_name}/${template_dir}"
             
             # Copy template files for this directory
-            for template_file in $(curl -s "${BASE_URL}/templates/${template_dir}/" | grep -o '"[^"]*\.md"' | tr -d '"'); do
+            for template_file in $(curl -s "${API_URL}/templates/${template_dir}" | jq -r '.[] | select(.type == "file") | .name | select(test("\\.md$"))' 2>/dev/null || curl -s "${API_URL}/templates/${template_dir}" | grep -A1 '"type": "file"' | grep '"name":' | cut -d'"' -f4 | grep '\.md$'); do
                 local target_file="${project_dir}/${template_dir}/${template_file}"
                 if [ -f "$target_file" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
                     echo "    ⚠️  ${template_file} already exists - skipping"
@@ -102,18 +107,29 @@ create_project_directories() {
     local projects="$1"
     local files="$2"
     
+    echo "DEBUG: Function parameters:"
+    echo "  projects=$projects"
+    echo "  files=$files"
+    echo "  CUSTOM_DIRS=$CUSTOM_DIRS"
+    echo "  CUSTOM_FILES=$CUSTOM_FILES"
+    
     if [ -n "$projects" ]; then
+        echo "DEBUG: Processing projects parameter"
         IFS=',' read -r -a project_names <<< "$projects"
+        echo "DEBUG: Project names array: ${project_names[*]}"
         for project in "${project_names[@]}"; do
             project=$(echo $project | xargs)
             echo "Creating project structure for: $project"
             create_template_structure "$project"
         done
+    else
+        echo "DEBUG: No projects parameter provided"
     fi
 
     # Create directories and files if specified
-    if [ -n "$dirs" ]; then
-        IFS=',' read -r -A dir_names <<< "$dirs"
+    if [ -n "$CUSTOM_DIRS" ]; then
+        echo "DEBUG: Processing CUSTOM_DIRS"
+        IFS=',' read -r -a dir_names <<< "$CUSTOM_DIRS"
         for dir in "${dir_names[@]}"; do
             dir=$(echo $dir | xargs)
             target_dir="$HOME/.agent-os/$dir"
@@ -125,8 +141,8 @@ create_project_directories() {
                 echo "  ✓ Created directory: $target_dir"
             fi
 
-            if [ -n "$files" ]; then
-                IFS=',' read -r -A file_names <<< "$files"
+            if [ -n "$CUSTOM_FILES" ]; then
+                IFS=',' read -r -a file_names <<< "$CUSTOM_FILES"
                 for file in "${file_names[@]}"; do
                     file=$(echo $file | xargs)
                     file_path="$target_dir/$file"
@@ -142,7 +158,6 @@ create_project_directories() {
                         else
                             echo "    ⚠️  No template found for $file - skipping"
                         fi
-                        esac
                     fi
                 done
             fi
@@ -152,141 +167,115 @@ create_project_directories() {
     fi
 }
 
+# Debug values before function calls
+echo "DEBUG: Before function calls:"
+echo "  CUSTOM_DIRS=$CUSTOM_DIRS"
+echo "  CUSTOM_FILES=$CUSTOM_FILES"
+echo "  PROJECT_TYPE=$PROJECT_TYPE"
+
+# Create initial template structure
+if [ -z "$CUSTOM_DIRS" ]; then
+    echo "DEBUG: No CUSTOM_DIRS set, creating base template structure"
+    create_template_structure "base"
+else
+    echo "DEBUG: CUSTOM_DIRS is set, skipping base template structure"
+fi
+
 # Call the function with CLI arguments
+echo "DEBUG: Calling create_project_directories with arguments:"
+echo "  \$1=$CUSTOM_DIRS"
+echo "  \$2=$CUSTOM_FILES"
+echo "  \$3=$PROJECT_TYPE"
 create_project_directories "$CUSTOM_DIRS" "$CUSTOM_FILES" "$PROJECT_TYPE"
 
-# Option A: Interactive prompt for custom directories and files
-echo ""
-echo "Would you like to create custom default directories in ~/.agent-os? (y/n)"
-read create_dirs
-if [[ "$create_dirs" =~ ^[Yy]$ ]]; then
-  echo "Enter default directory names (comma-separated, e.g., projects,logs,configs):"
-  read dir_input
-  IFS=',' read -r -a dir_names <<< "$dir_input"
-  for dir in "${dir_names[@]}"; do
-    dir=$(echo $dir | xargs) # trim whitespace
-    target_dir="$HOME/.agent-os/$dir"
-    if [ -d "$target_dir" ]; then
-      echo "  ⚠️  Directory '$dir' already exists. Skipping creation."
-    else
-      mkdir -p "$target_dir"
-      echo "  ✓ Created directory: $target_dir"
+# Function to download template files for a directory
+download_template_files() {
+    local source_dir="$1"
+    local target_dir="$2"
+    local overwrite_flag="$3"
+    
+    echo "📥 Downloading files from ${source_dir} to ${target_dir}"
+    echo "DEBUG: source_dir=$source_dir, target_dir=$target_dir, overwrite_flag=$overwrite_flag"
+    mkdir -p "$target_dir"
+    
+    # Get list of files in the directory
+    local files
+    echo "DEBUG: Fetching file list from ${API_URL}/${source_dir}"
+    if ! files=$(curl -s "${API_URL}/${source_dir}" | jq -r '.[] | select(.type == "file") | .name | select(test("\\.(md|json|yaml|yml)$"))' 2>/dev/null); then
+        # Fallback if jq is not available
+        if ! files=$(curl -s "${API_URL}/${source_dir}" | grep -A1 '"type": "file"' | grep '"name":' | cut -d'"' -f4 | grep '\.\(md\|json\|yaml\|yml\)$'); then
+            echo "  ⚠️  Unable to list files in ${source_dir}"
+            echo "DEBUG: curl command failed or no files found"
+            return 1
+        fi
     fi
-    echo "    Enter default files for '$dir' (comma-separated, e.g., README.md,config.json,.gitkeep):"
-    read file_input
-    IFS=',' read -r -a file_names <<< "$file_input"
-    for file in "${file_names[@]}"; do
-      file=$(echo $file | xargs) # trim whitespace
-      file_path="$target_dir/$file"
-      if [ -e "$file_path" ]; then
-        echo "      ⚠️  File '$file' already exists in '$dir'. Skipping."
-      else
-        touch "$file_path"
-        echo "      ✓ Created file: $file_path"
-      fi
+    
+    echo "DEBUG: Found files: $files"
+    
+    if [ -z "$files" ]; then
+        echo "  ⚠️  No files found in ${source_dir}"
+        return 1
+    fi
+    
+    for file in $files; do
+        local target_file="${target_dir}/${file}"
+        echo "DEBUG: Processing file: $file -> $target_file"
+        if [ -f "$target_file" ] && [ "$overwrite_flag" = false ]; then
+            echo "  ⚠️  ${file} already exists - skipping"
+        else
+            echo "DEBUG: Downloading from ${BASE_URL}/${source_dir}/${file}"
+            if curl -s -o "$target_file" "${BASE_URL}/${source_dir}/${file}"; then
+                if [ -f "$target_file" ] && [ -s "$target_file" ]; then
+                    if [ "$overwrite_flag" = true ]; then
+                        echo "  ✓ ${file} (overwritten)"
+                    else
+                        echo "  ✓ ${file}"
+                    fi
+                else
+                    echo "  ⚠️  Downloaded ${file} but file is empty or missing"
+                    rm -f "$target_file"
+                fi
+            else
+                echo "  ⚠️  Failed to download ${file}"
+                rm -f "$target_file"
+            fi
+        fi
     done
-  done
-  echo ""
-  echo "✅ Custom directories and files created in ~/.agent-os."
-fi
+}
 
-# Download standards files
+# Download template files from GitHub
 echo ""
-echo "📥 Downloading standards files to ~/.agent-os/standards/"
+echo "🔄 Synchronizing template files from GitHub..."
 
-# tech-stack.md
-if [ -f "$HOME/.agent-os/standards/tech-stack.md" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
-    echo "  ⚠️  ~/.agent-os/standards/tech-stack.md already exists - skipping"
-else
-    curl -s -o "$HOME/.agent-os/standards/tech-stack.md" "${BASE_URL}/standards/tech-stack.md"
-    if [ -f "$HOME/.agent-os/standards/tech-stack.md" ] && [ "$OVERWRITE_STANDARDS" = true ]; then
-        echo "  ✓ ~/.agent-os/standards/tech-stack.md (overwritten)"
-    else
-        echo "  ✓ ~/.agent-os/standards/tech-stack.md"
-    fi
-fi
+# Get list of template directories
+template_dirs=$(curl -s "${API_URL}/templates" | jq -r '.[] | select(.type == "dir") | .name' 2>/dev/null) || {
+    # Fallback if jq is not available
+    template_dirs=$(curl -s "${API_URL}/templates" | grep -A1 '"type": "dir"' | grep '"name":' | cut -d'"' -f4) || {
+        echo "❌ Error: Unable to fetch template directory list"
+        exit 1
+    }
+}
 
-# code-style.md
-if [ -f "$HOME/.agent-os/standards/code-style.md" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
-    echo "  ⚠️  ~/.agent-os/standards/code-style.md already exists - skipping"
-else
-    curl -s -o "$HOME/.agent-os/standards/code-style.md" "${BASE_URL}/standards/code-style.md"
-    if [ -f "$HOME/.agent-os/standards/code-style.md" ] && [ "$OVERWRITE_STANDARDS" = true ]; then
-        echo "  ✓ ~/.agent-os/standards/code-style.md (overwritten)"
-    else
-        echo "  ✓ ~/.agent-os/standards/code-style.md"
-    fi
-fi
+echo "DEBUG: Found template directories: $template_dirs"
 
-# best-practices.md
-if [ -f "$HOME/.agent-os/standards/best-practices.md" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
-    echo "  ⚠️  ~/.agent-os/standards/best-practices.md already exists - skipping"
-else
-    curl -s -o "$HOME/.agent-os/standards/best-practices.md" "${BASE_URL}/standards/best-practices.md"
-    if [ -f "$HOME/.agent-os/standards/best-practices.md" ] && [ "$OVERWRITE_STANDARDS" = true ]; then
-        echo "  ✓ ~/.agent-os/standards/best-practices.md (overwritten)"
-    else
-        echo "  ✓ ~/.agent-os/standards/best-practices.md"
-    fi
-fi
+# Process each template directory
+for dir in $template_dirs; do
+    target_dir="$HOME/.agent-os/templates/${dir}"
+    echo "DEBUG: Processing directory: $dir -> $target_dir"
+    download_template_files "templates/${dir}" "$target_dir" "$OVERWRITE_STANDARDS"
+done
 
-# Download instruction files
+# Also create instruction files in the root instructions directory for backward compatibility
 echo ""
-echo "📥 Downloading instruction files to ~/.agent-os/instructions/"
-
-# plan-product.md
-if [ -f "$HOME/.agent-os/instructions/plan-product.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
-    echo "  ⚠️  ~/.agent-os/instructions/plan-product.md already exists - skipping"
-else
-    curl -s -o "$HOME/.agent-os/instructions/plan-product.md" "${BASE_URL}/instructions/plan-product.md"
-    if [ -f "$HOME/.agent-os/instructions/plan-product.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
-        echo "  ✓ ~/.agent-os/instructions/plan-product.md (overwritten)"
-    else
-        echo "  ✓ ~/.agent-os/instructions/plan-product.md"
-    fi
-fi
-
-# create-spec.md
-if [ -f "$HOME/.agent-os/instructions/create-spec.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
-  echo "  ⚠️  ~/.agent-os/instructions/create-spec.md already exists - skipping"
-else
-  curl -s -o "$HOME/.agent-os/instructions/create-spec.md" "${BASE_URL}/instructions/create-spec.md"
-  if [ -f "$HOME/.agent-os/instructions/create-spec.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
-    echo "  ✓ ~/.agent-os/instructions/create-spec.md (overwritten)"
-  else
-    echo "  ✓ ~/.agent-os/instructions/create-spec.md"
-  fi
-fi
-
-# execute-tasks.md
-if [ -f "$HOME/.agent-os/instructions/execute-tasks.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
-    echo "  ⚠️  ~/.agent-os/instructions/execute-tasks.md already exists - skipping"
-else
-    curl -s -o "$HOME/.agent-os/instructions/execute-tasks.md" "${BASE_URL}/instructions/execute-tasks.md"
-    if [ -f "$HOME/.agent-os/instructions/execute-tasks.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
-        echo "  ✓ ~/.agent-os/instructions/execute-tasks.md (overwritten)"
-    else
-        echo "  ✓ ~/.agent-os/instructions/execute-tasks.md"
-    fi
-fi
-
-# analyze-product.md
-if [ -f "$HOME/.agent-os/instructions/analyze-product.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
-    echo "  ⚠️  ~/.agent-os/instructions/analyze-product.md already exists - skipping"
-else
-    curl -s -o "$HOME/.agent-os/instructions/analyze-product.md" "${BASE_URL}/instructions/analyze-product.md"
-    if [ -f "$HOME/.agent-os/instructions/analyze-product.md" ] && [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
-        echo "  ✓ ~/.agent-os/instructions/analyze-product.md (overwritten)"
-    else
-        echo "  ✓ ~/.agent-os/instructions/analyze-product.md"
-    fi
-fi
+echo "📥 Creating instruction files in ~/.agent-os/instructions/"
+mkdir -p "$HOME/.agent-os/instructions"
+download_template_files "templates/instructions" "$HOME/.agent-os/instructions" "$OVERWRITE_INSTRUCTIONS"
 
 echo ""
 echo "✅ Agent OS base installation complete!"
 echo ""
 echo "📍 Files installed to:"
-echo "   ~/.agent-os/standards/     - Your development standards"
+echo "   ~/.agent-os/templates/standards/     - Your development standards"
 echo "   ~/.agent-os/instructions/  - Agent OS instructions"
 echo ""
 if [ "$OVERWRITE_INSTRUCTIONS" = false ] && [ "$OVERWRITE_STANDARDS" = false ]; then
@@ -304,7 +293,7 @@ fi
 echo ""
 echo "Next steps:"
 echo ""
-echo "1. Customize your coding standards in ~/.agent-os/standards/"
+echo "1. Customize your coding standards in ~/.agent-os/templates/standards/"
 echo ""
 echo "2. Install commands for your AI coding assistant(s):"
 echo ""
