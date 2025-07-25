@@ -57,139 +57,14 @@ BASE_URL="https://raw.githubusercontent.com/jdelon02/agent-os/main"
 # GitHub API URL for directory listings
 API_URL="https://api.github.com/repos/jdelon02/agent-os/contents"
 
-# Function to create directory structure and copy template files
-create_template_structure() {
-    local base_dir="$HOME/.agent-os"
-    local project_name="$1"
-    
-    if [ -z "$project_name" ]; then
-        echo "⚠️  No project name specified"
-        return 1
-    fi
-
-    local project_dir="${base_dir}/${project_name}"
-    echo "📁 Creating project structure for ${project_name}..."
-
-    # Dynamically get template directories from GitHub
-    local template_dirs
-    template_dirs=$(curl -s "${API_URL}/templates" | jq -r '.[] | select(.type == "dir") | .name' 2>/dev/null) || {
-        # Fallback if jq is not available
-        template_dirs=$(curl -s "${API_URL}/templates" | grep -A1 '"type": "dir"' | grep '"name":' | cut -d'"' -f4) || {
-            echo "  ❌ Error: Unable to fetch template directory list"
-            return 1
-        }
-    }
-
-    # Create project directories based on template structure
-    for template_dir in $template_dirs; do
-        if curl --output /dev/null --silent --head --fail "${API_URL}/templates/${template_dir}"; then
-            mkdir -p "${project_dir}/${template_dir}"
-            echo "  ✓ Created directory: ${project_name}/${template_dir}"
-            
-            # Copy template files for this directory
-            for template_file in $(curl -s "${API_URL}/templates/${template_dir}" | jq -r '.[] | select(.type == "file") | .name | select(test("\\.md$"))' 2>/dev/null || curl -s "${API_URL}/templates/${template_dir}" | grep -A1 '"type": "file"' | grep '"name":' | cut -d'"' -f4 | grep '\.md$'); do
-                local target_file="${project_dir}/${template_dir}/${template_file}"
-                if [ -f "$target_file" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
-                    echo "    ⚠️  ${template_file} already exists - skipping"
-                else
-                    curl -s -o "$target_file" "${BASE_URL}/templates/${template_dir}/${template_file}"
-                    if [ -f "$target_file" ]; then
-                        echo "    ✓ Created ${project_name}/${template_dir}/${template_file}"
-                    fi
-                fi
-            done
-        fi
-    done
-}
-
-# Option B: Configuration-based directory creation
-create_project_directories() {
-    local projects="$1"
-    local files="$2"
-    
-    echo "DEBUG: Function parameters:"
-    echo "  projects=$projects"
-    echo "  files=$files"
-    echo "  CUSTOM_DIRS=$CUSTOM_DIRS"
-    echo "  CUSTOM_FILES=$CUSTOM_FILES"
-    
-    if [ -n "$projects" ]; then
-        echo "DEBUG: Processing projects parameter"
-        IFS=',' read -r -a project_names <<< "$projects"
-        echo "DEBUG: Project names array: ${project_names[*]}"
-        for project in "${project_names[@]}"; do
-            project=$(echo $project | xargs)
-            echo "Creating project structure for: $project"
-            create_template_structure "$project"
-        done
-    else
-        echo "DEBUG: No projects parameter provided"
-    fi
-
-    # Create directories and files if specified
-    if [ -n "$CUSTOM_DIRS" ]; then
-        echo "DEBUG: Processing CUSTOM_DIRS"
-        IFS=',' read -r -a dir_names <<< "$CUSTOM_DIRS"
-        for dir in "${dir_names[@]}"; do
-            dir=$(echo $dir | xargs)
-            target_dir="$HOME/.agent-os/$dir"
-            
-            if [ -d "$target_dir" ]; then
-                echo "  ⚠️  Directory '$dir' already exists. Skipping creation."
-            else
-                mkdir -p "$target_dir"
-                echo "  ✓ Created directory: $target_dir"
-            fi
-
-            if [ -n "$CUSTOM_FILES" ]; then
-                IFS=',' read -r -a file_names <<< "$CUSTOM_FILES"
-                for file in "${file_names[@]}"; do
-                    file=$(echo $file | xargs)
-                    file_path="$target_dir/$file"
-                    
-                    if [ -e "$file_path" ]; then
-                        echo "    ⚠️  File '$file' already exists in '$dir'. Skipping."
-                    else
-                        # Check if file exists in templates folder
-                        template_path="${BASE_URL}/templates"
-                        if curl --output /dev/null --silent --head --fail "$template_path/$file"; then
-                            curl -s -o "$file_path" "$template_path/$file"
-                            echo "    ✓ Downloaded $file from templates"
-                        else
-                            echo "    ⚠️  No template found for $file - skipping"
-                        fi
-                    fi
-                done
-            fi
-        done
-        echo ""
-        echo "✅ Project directories and files created successfully!"
-    fi
-}
-
 # Debug values before function calls
 echo "DEBUG: Before function calls:"
 echo "  CUSTOM_DIRS=$CUSTOM_DIRS"
 echo "  CUSTOM_FILES=$CUSTOM_FILES"
 echo "  PROJECT_TYPE=$PROJECT_TYPE"
 
-# Create initial template structure
-if [ -z "$CUSTOM_DIRS" ]; then
-    echo "DEBUG: No CUSTOM_DIRS set, creating base template structure"
-    create_template_structure "base"
-else
-    echo "DEBUG: CUSTOM_DIRS is set, skipping base template structure"
-fi
-
-# Call the function with CLI arguments
-echo "DEBUG: Calling create_project_directories with arguments:"
-echo "  \$1=$CUSTOM_DIRS"
-echo "  \$2=$CUSTOM_FILES"
-echo "  \$3=$PROJECT_TYPE"
-create_project_directories "$CUSTOM_DIRS" "$CUSTOM_FILES" "$PROJECT_TYPE"
-
-# Function to download template files for a directory
-download_template_files() {
+# Function to download files from a GitHub directory to a local directory
+download_files_from_github() {
     local source_dir="$1"
     local target_dir="$2"
     local overwrite_flag="$3"
@@ -243,9 +118,9 @@ download_template_files() {
     done
 }
 
-# Download template files from GitHub
+# Process 1: Copy all /templates/* directories to ~/.agent-os/* (flattened)
 echo ""
-echo "🔄 Synchronizing template files from GitHub..."
+echo "🔄 Process 1: Copying template structure from GitHub..."
 
 # Get list of template directories
 template_dirs=$(curl -s "${API_URL}/templates" | jq -r '.[] | select(.type == "dir") | .name' 2>/dev/null) || {
@@ -258,18 +133,47 @@ template_dirs=$(curl -s "${API_URL}/templates" | jq -r '.[] | select(.type == "d
 
 echo "DEBUG: Found template directories: $template_dirs"
 
-# Process each template directory
+# Copy each template directory to ~/.agent-os/ (flattened)
 for dir in $template_dirs; do
-    target_dir="$HOME/.agent-os/templates/${dir}"
-    echo "DEBUG: Processing directory: $dir -> $target_dir"
-    download_template_files "templates/${dir}" "$target_dir" "$OVERWRITE_STANDARDS"
+    target_dir="$HOME/.agent-os/${dir}"
+    echo "DEBUG: Processing template directory: $dir -> $target_dir"
+    download_files_from_github "templates/${dir}" "$target_dir" "$OVERWRITE_STANDARDS"
 done
 
-# Also create instruction files in the root instructions directory for backward compatibility
+# Process 2: Create custom directories and populate them
 echo ""
-echo "📥 Creating instruction files in ~/.agent-os/instructions/"
-mkdir -p "$HOME/.agent-os/instructions"
-download_template_files "templates/instructions" "$HOME/.agent-os/instructions" "$OVERWRITE_INSTRUCTIONS"
+echo "🔄 Process 2: Creating custom directories..."
+
+if [ -n "$CUSTOM_DIRS" ]; then
+    echo "DEBUG: Processing CUSTOM_DIRS: $CUSTOM_DIRS"
+    IFS=',' read -r -a dir_names <<< "$CUSTOM_DIRS"
+    
+    for dir in "${dir_names[@]}"; do
+        dir=$(echo $dir | xargs) # trim whitespace
+        target_dir="$HOME/.agent-os/$dir"
+        echo "DEBUG: Processing custom directory: $dir -> $target_dir"
+        
+        if [ -d "$target_dir" ]; then
+            echo "  ⚠️  Directory '$dir' already exists. Skipping creation."
+        else
+            mkdir -p "$target_dir"
+            echo "  ✓ Created directory: $target_dir"
+        fi
+        
+        # Copy files from /common into the custom directory
+        echo "  📥 Copying common files to $dir..."
+        download_files_from_github "common" "$target_dir" "$OVERWRITE_STANDARDS"
+        
+        # Copy files from /templates/standards into the custom directory
+        echo "  📥 Copying standards files to $dir..."
+        download_files_from_github "templates/standards" "$target_dir" "$OVERWRITE_STANDARDS"
+    done
+    
+    echo ""
+    echo "✅ Custom directories created and populated successfully!"
+else
+    echo "DEBUG: No custom directories specified"
+fi
 
 echo ""
 echo "✅ Agent OS base installation complete!"
