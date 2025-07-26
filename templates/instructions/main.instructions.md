@@ -1,9 +1,20 @@
-# Copilot Instructions
+# Agent OS Global Instructions
 
-## Project Context
-See the following files for specific guidelines:
-- `~/.agent-os/instructions/analyze-product.md` - Analyze Current Product & Install Agent OS
-- `~/.agent-os/instructions/plan-product.md` - Product Planning Rules for Agent OS
-- `~/.agent-os/instructions/create-spec.md` - Spec Creation Rules for Agent OS
-- `~/.agent-os/instructions/execute-tasks.md` - Task Execution Rules for Agent OS
+## Core Agent OS Workflows
+Follow these core workflows and methodologies:
+
+@./analyze-product.md
+@./plan-product.md
+@./create-spec.md
+@./execute-tasks.md
+
+## Global Development Standards
+Adhere to these universal development standards:
+
+@../templates/standards/best-practices.md
+@../templates/standards/code-style.md
+@../templates/standards/tech-stack.md
+
+## Usage
+This file contains the core Agent OS instructions that apply to all projects. Project-specific directories may reference this file and add their own customizations.
 

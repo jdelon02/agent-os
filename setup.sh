@@ -271,6 +271,15 @@ for dir in $template_dirs; do
     download_files_from_github "templates/${dir}" "$target_dir" "$OVERWRITE_STANDARDS"
 done
 
+# Create global CLAUDE.md in instructions directory (separate from main.instructions.md)
+echo ""
+echo "📝 Creating global CLAUDE.md..."
+if curl -s --max-time 30 "${BASE_URL}/templates/instructions/global-CLAUDE.md" > "$HOME/.agent-os/instructions/CLAUDE.md"; then
+    echo "  ✓ ~/.agent-os/instructions/CLAUDE.md"
+else
+    echo "  ⚠️  Failed to create global CLAUDE.md"
+fi
+
 # Process 2: Create custom directories and populate them
 # This creates project-specific directories (Laravel, React, Python, etc.)
 # Each directory gets populated with common files and standards for that project type
@@ -312,11 +321,33 @@ if [ -n "$CUSTOM_DIRS" ]; then
             echo "  ⚠️  Failed to copy common files to $dir (possibly due to rate limiting)"
         fi
         
-        # Copy files from /templates/standards into the custom directory
+        # Generate customized standards files for this project type
         # Standards files define coding standards and best practices for this project type
-        echo "  📥 Copying standards files to $dir..."
-        if ! download_files_from_github "templates/standards" "$target_dir" "$OVERWRITE_STANDARDS"; then
-            echo "  ⚠️  Failed to copy standards files to $dir (possibly due to rate limiting)"
+        echo "  📝 Creating customized standards files for $dir..."
+        
+        # Download and customize each standards file
+        for standards_file in "best-practices.md" "code-style.md" "tech-stack.md"; do
+            if curl -s --max-time 30 "${BASE_URL}/templates/standards/${standards_file}" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_dir/${standards_file}"; then
+                echo "    ✓ ${standards_file} (customized for $dir)"
+            else
+                echo "    ⚠️  Failed to create ${standards_file}"
+            fi
+        done
+        
+        # Generate CLAUDE.md file for this custom directory (inherits from global)
+        echo "  📝 Creating CLAUDE.md for $dir..."
+        if curl -s --max-time 30 "${BASE_URL}/templates/instructions/CLAUDE.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_dir/CLAUDE.md"; then
+            echo "    ✓ CLAUDE.md (inherits from global)"
+        else
+            echo "    ⚠️  Failed to create CLAUDE.md"
+        fi
+        
+        # Generate main.instructions.md file for this custom directory (inherits from global)
+        echo "  📝 Creating main.instructions.md for $dir..."
+        if curl -s --max-time 30 "${BASE_URL}/templates/instructions/custom-main.instructions.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_dir/main.instructions.md"; then
+            echo "    ✓ main.instructions.md (inherits from global)"
+        else
+            echo "    ⚠️  Failed to create main.instructions.md"
         fi
     done
     

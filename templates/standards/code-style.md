@@ -1,11 +1,11 @@
-# Code Style Guide
+# {PROJECT_TYPE} Code Style Guide
 
 > Version: 1.0.0
 > Last Updated: 2025-04-24
 
 ## Context
 
-This file is part of the Agent OS standards system. These global code style rules are referenced by all product codebases and provide default formatting guidelines. Individual projects may extend or override these rules in their `.agent-os/product/code-style.md` file.
+This file contains {PROJECT_TYPE}-specific code style guidelines. These rules extend the global Agent OS code style standards with {PROJECT_TYPE}-specific formatting and conventions. This file is part of the Agent OS standards system and can be customized for your {PROJECT_TYPE} projects.
 
 ## General Formatting
 

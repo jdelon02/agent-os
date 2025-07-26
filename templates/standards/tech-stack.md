@@ -1,11 +1,11 @@
-# Tech Stack
+# {PROJECT_TYPE} Tech Stack
 
 > Version: 1.0.0
 > Last Updated: 2025-08-31
 
 ## Context
 
-This file is part of the Agent OS standards system. These global tech stack defaults are referenced by all product codebases when initializing new projects. Individual projects may override these choices in their `.agent-os/product/tech-stack.md` file.
+This file contains {PROJECT_TYPE}-specific technology stack recommendations. These choices extend the global Agent OS tech stack standards with {PROJECT_TYPE}-specific tools, frameworks, and libraries. This file is part of the Agent OS standards system and can be customized for your {PROJECT_TYPE} projects.
 
 ## Core Technologies
 

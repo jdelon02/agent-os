@@ -1,12 +1,12 @@
-# Development Best Practices
+# {PROJECT_TYPE} Development Best Practices
 
 > Version: 1.0.0
 > Last updated: 2025-03-02
-> Scope: Global development standards
+> Scope: {PROJECT_TYPE} development standards
 
 ## Context
 
-This file is part of the Agent OS standards system. These global best practices are referenced by all product codebases and provide default development guidelines. Individual projects may extend or override these practices in their `.agent-os/product/dev-best-practices.md` file.
+This file contains {PROJECT_TYPE}-specific development best practices. These practices extend the global Agent OS standards with {PROJECT_TYPE}-specific guidance. This file is part of the Agent OS standards system and can be customized for your {PROJECT_TYPE} projects.
 
 ## Core Principles
 
