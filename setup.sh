@@ -1,7 +1,35 @@
 #!/bin/bash
 
 # Agent OS Setup Script
-# This script installs Agent OS files to your system
+# This script installs the Agent OS foundation that all AI tools will reference
+#
+# USAGE:
+#   Basic installation:
+#     curl -sSL https://raw.githubusercontent.com/jdelon02/agent-os/main/setup.sh | bash
+#
+#   With custom project directories:
+#     curl -sSL https://raw.githubusercontent.com/jdelon02/agent-os/main/setup.sh | bash -s -- --dirs "Laravel,React,Python"
+#
+#   With overwrite options:
+#     curl -sSL https://raw.githubusercontent.com/jdelon02/agent-os/main/setup.sh | bash -s -- --overwrite-standards --dirs "NodeJS,Django"
+#
+# WHAT THIS SCRIPT DOES:
+#   1. Creates ~/.agent-os/ directory structure
+#   2. Downloads templates, standards, and instructions from GitHub
+#   3. Creates custom project directories with common files
+#   4. Sets up the foundation for AI tool integration
+#
+# AFTER INSTALLATION:
+#   Run an AI tool-specific setup script:
+#   - Claude Code: curl -sSL https://raw.githubusercontent.com/jdelon02/agent-os/main/ide_specific/claude-setup.sh | bash
+#   - Cursor IDE:  curl -sSL https://raw.githubusercontent.com/jdelon02/agent-os/main/ide_specific/cursor-setup.sh | bash
+#   - VS Code:     curl -sSL https://raw.githubusercontent.com/jdelon02/agent-os/main/ide_specific/vscode-setup.sh | bash
+#
+# BEST PRACTICES:
+#   - Run this script first before any AI tool setup
+#   - Use meaningful directory names (Laravel, React, Python, etc.)
+#   - Customize standards in ~/.agent-os/templates/standards/ after installation
+#   - Use --overwrite-standards to update with latest GitHub versions
 
 set -e  # Exit on error
 
@@ -29,14 +57,38 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         -h|--help)
+            echo "Agent OS Setup Script"
+            echo "====================="
+            echo ""
+            echo "Installs the Agent OS foundation that all AI tools will reference."
+            echo ""
             echo "Usage: $0 [OPTIONS]"
             echo ""
             echo "Options:"
             echo "  --overwrite-instructions    Overwrite existing instruction files"
             echo "  --overwrite-standards       Overwrite existing standards files"
-            echo "  --dirs                     Project names to create (comma-separated, e.g., 'Drupal10,Laravel9')"
+            echo "  --dirs                     Project names to create (comma-separated)"
+            echo "                             Examples: 'Laravel,React,Python' or 'NodeJS,Django,Vue'"
             echo "  --files                    Additional files to create in each project (comma-separated)"
             echo "  -h, --help                 Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  # Basic installation"
+            echo "  $0"
+            echo ""
+            echo "  # With custom project directories"
+            echo "  $0 --dirs 'Laravel,React,Python,API'"
+            echo ""
+            echo "  # Update existing standards"
+            echo "  $0 --overwrite-standards"
+            echo ""
+            echo "  # Full refresh with new directories"
+            echo "  $0 --overwrite-instructions --overwrite-standards --dirs 'NextJS,FastAPI'"
+            echo ""
+            echo "After installation, run an AI tool setup script:"
+            echo "  Claude Code: curl -sSL https://raw.githubusercontent.com/jdelon02/agent-os/main/ide_specific/claude-setup.sh | bash"
+            echo "  Cursor IDE:  curl -sSL https://raw.githubusercontent.com/jdelon02/agent-os/main/ide_specific/cursor-setup.sh | bash"
+            echo "  VS Code:     curl -sSL https://raw.githubusercontent.com/jdelon02/agent-os/main/ide_specific/vscode-setup.sh | bash"
             echo ""
             exit 0
             ;;
@@ -64,6 +116,12 @@ echo "  CUSTOM_FILES=$CUSTOM_FILES"
 echo "  PROJECT_TYPE=$PROJECT_TYPE"
 
 # Function to recursively download files from a GitHub directory to a local directory
+# This function handles the core file downloading logic with retry mechanisms and error handling
+# Parameters:
+#   $1 - source_dir: GitHub repository path (e.g., "templates/standards")
+#   $2 - target_dir: Local filesystem path (e.g., "$HOME/.agent-os/templates/standards")
+#   $3 - overwrite_flag: Boolean to determine if existing files should be overwritten
+#   $4 - depth: Recursion depth counter to prevent infinite loops
 download_files_from_github() {
     local source_dir="$1"
     local target_dir="$2"
@@ -190,6 +248,8 @@ download_files_from_github() {
 }
 
 # Process 1: Copy all /templates/* directories to ~/.agent-os/* (flattened)
+# This downloads the core Agent OS templates, standards, and instructions
+# All AI tools will reference these shared files
 echo ""
 echo "🔄 Process 1: Copying template structure from GitHub..."
 
@@ -212,6 +272,8 @@ for dir in $template_dirs; do
 done
 
 # Process 2: Create custom directories and populate them
+# This creates project-specific directories (Laravel, React, Python, etc.)
+# Each directory gets populated with common files and standards for that project type
 echo ""
 echo "🔄 Process 2: Creating custom directories..."
 
@@ -233,6 +295,9 @@ if [ -n "$CUSTOM_DIRS" ]; then
         target_dir="$HOME/.agent-os/$dir"
         echo "DEBUG: Processing custom directory: '$dir' -> $target_dir"
         
+        # Create the project-specific directory in ~/.agent-os/
+        # This will contain standards and files specific to this project type
+        
         if [ -d "$target_dir" ]; then
             echo "  ⚠️  Directory '$dir' already exists. Skipping creation."
         else
@@ -241,12 +306,14 @@ if [ -n "$CUSTOM_DIRS" ]; then
         fi
         
         # Copy files from /common into the custom directory
+        # Common files are shared across all project types
         echo "  📥 Copying common files to $dir..."
         if ! download_files_from_github "common" "$target_dir" "$OVERWRITE_STANDARDS"; then
             echo "  ⚠️  Failed to copy common files to $dir (possibly due to rate limiting)"
         fi
         
         # Copy files from /templates/standards into the custom directory
+        # Standards files define coding standards and best practices for this project type
         echo "  📥 Copying standards files to $dir..."
         if ! download_files_from_github "templates/standards" "$target_dir" "$OVERWRITE_STANDARDS"; then
             echo "  ⚠️  Failed to copy standards files to $dir (possibly due to rate limiting)"
