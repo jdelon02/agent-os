@@ -19,7 +19,8 @@ while [[ $# -gt 0 ]]; do
             echo "It requires Agent OS base installation (setup.sh) to be run first."
             echo ""
             echo "Options:"
-            echo "  --dirs                     Project names to create in ~/.agent-os/ (comma-separated, e.g., 'Drupal10,Laravel9')"
+            echo "  --dirs                     Project names to create in ~/.agent-os/ (comma-separated, directories created in lowercase)"
+            echo "                             Example: 'Drupal10,Laravel9' creates ~/.agent-os/drupal10/, ~/.agent-os/laravel9/"
             echo "  -h, --help                 Show this help message"
             echo ""
             exit 0
@@ -113,10 +114,14 @@ if [ -n "$CUSTOM_DIRS" ]; then
             continue
         fi
         
-        target_dir="$HOME/.agent-os/$dir"
+        # Convert directory name to lowercase for filesystem, keep original for display
+        dir_original="$dir"
+        dir_lowercase=$(echo "$dir" | tr '[:upper:]' '[:lower:]')
+        
+        target_dir="$HOME/.agent-os/$dir_lowercase"
         
         if [ -d "$target_dir" ]; then
-            echo "  ⚠️  Directory '$dir' already exists. Skipping creation."
+            echo "  ⚠️  Directory '$dir_original' already exists. Skipping creation."
         else
             mkdir -p "$target_dir"
             echo "  ✓ Created directory: $target_dir"

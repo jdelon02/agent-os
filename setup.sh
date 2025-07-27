@@ -67,8 +67,8 @@ while [[ $# -gt 0 ]]; do
             echo "Options:"
             echo "  --overwrite-instructions    Overwrite existing instruction files"
             echo "  --overwrite-standards       Overwrite existing standards files"
-            echo "  --dirs                     Project names to create (comma-separated)"
-            echo "                             Examples: 'Laravel,React,Python' or 'NodeJS,Django,Vue'"
+            echo "  --dirs                     Project names to create (comma-separated, directories created in lowercase)"
+            echo "                             Examples: 'Laravel,React,Python' creates ~/.agent-os/laravel/, ~/.agent-os/react/, ~/.agent-os/python/"
             echo "  --files                    Additional files to create in each project (comma-separated)"
             echo "  -h, --help                 Show this help message"
             echo ""
@@ -301,14 +301,18 @@ if [ -n "$CUSTOM_DIRS" ]; then
             continue
         fi
         
-        target_dir="$HOME/.agent-os/$dir"
-        echo "DEBUG: Processing custom directory: '$dir' -> $target_dir"
+        # Convert directory name to lowercase for filesystem, keep original for templates
+        dir_original="$dir"
+        dir_lowercase=$(echo "$dir" | tr '[:upper:]' '[:lower:]')
+        
+        target_dir="$HOME/.agent-os/$dir_lowercase"
+        echo "DEBUG: Processing custom directory: '$dir_original' -> $target_dir"
         
         # Create the project-specific directory in ~/.agent-os/
         # This will contain standards and files specific to this project type
         
         if [ -d "$target_dir" ]; then
-            echo "  ⚠️  Directory '$dir' already exists. Skipping creation."
+            echo "  ⚠️  Directory '$dir_original' already exists. Skipping creation."
         else
             mkdir -p "$target_dir"
             echo "  ✓ Created directory: $target_dir"
@@ -316,7 +320,7 @@ if [ -n "$CUSTOM_DIRS" ]; then
         
         # Generate customized standards files for this project type
         # Standards files define coding standards and best practices for this project type
-        echo "  📝 Creating customized standards files for $dir..."
+        echo "  📝 Creating customized standards files for $dir_original..."
         
         # Download and customize each standards file
         for standards_file in "best-practices.md" "code-style.md" "tech-stack.md"; do
@@ -324,11 +328,11 @@ if [ -n "$CUSTOM_DIRS" ]; then
             if [ -f "$target_file" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
                 echo "    ⚠️  ${standards_file} already exists - skipping"
             else
-                if curl -s --max-time 30 "${BASE_URL}/templates/standards/${standards_file}" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_file"; then
+                if curl -s --max-time 30 "${BASE_URL}/templates/standards/${standards_file}" | sed "s/{PROJECT_TYPE}/$dir_original/g" > "$target_file"; then
                     if [ "$OVERWRITE_STANDARDS" = true ]; then
-                        echo "    ✓ ${standards_file} (customized for $dir, overwritten)"
+                        echo "    ✓ ${standards_file} (customized for $dir_original, overwritten)"
                     else
-                        echo "    ✓ ${standards_file} (customized for $dir)"
+                        echo "    ✓ ${standards_file} (customized for $dir_original)"
                     fi
                 else
                     echo "    ⚠️  Failed to create ${standards_file}"
@@ -337,12 +341,12 @@ if [ -n "$CUSTOM_DIRS" ]; then
         done
         
         # Generate CLAUDE.md file for this custom directory (inherits from global)
-        echo "  📝 Creating CLAUDE.md for $dir..."
+        echo "  📝 Creating CLAUDE.md for $dir_original..."
         claude_file="$target_dir/CLAUDE.md"
         if [ -f "$claude_file" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
             echo "    ⚠️  CLAUDE.md already exists - skipping"
         else
-            if curl -s --max-time 30 "${BASE_URL}/ide_specific/templates/claude/CLAUDE.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$claude_file"; then
+            if curl -s --max-time 30 "${BASE_URL}/ide_specific/templates/claude/CLAUDE.md" | sed "s/{PROJECT_TYPE}/$dir_original/g" > "$claude_file"; then
                 if [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
                     echo "    ✓ CLAUDE.md (inherits from global, overwritten)"
                 else
@@ -354,12 +358,12 @@ if [ -n "$CUSTOM_DIRS" ]; then
         fi
         
         # Generate main.instructions.md file for this custom directory (inherits from global)
-        echo "  📝 Creating main.instructions.md for $dir..."
+        echo "  📝 Creating main.instructions.md for $dir_original..."
         instructions_file="$target_dir/main.instructions.md"
         if [ -f "$instructions_file" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
             echo "    ⚠️  main.instructions.md already exists - skipping"
         else
-            if curl -s --max-time 30 "${BASE_URL}/project-templates/custom-main.instructions.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$instructions_file"; then
+            if curl -s --max-time 30 "${BASE_URL}/project-templates/custom-main.instructions.md" | sed "s/{PROJECT_TYPE}/$dir_original/g" > "$instructions_file"; then
                 if [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
                     echo "    ✓ main.instructions.md (inherits from global, overwritten)"
                 else
