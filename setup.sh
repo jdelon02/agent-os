@@ -320,27 +320,54 @@ if [ -n "$CUSTOM_DIRS" ]; then
         
         # Download and customize each standards file
         for standards_file in "best-practices.md" "code-style.md" "tech-stack.md"; do
-            if curl -s --max-time 30 "${BASE_URL}/templates/standards/${standards_file}" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_dir/${standards_file}"; then
-                echo "    ✓ ${standards_file} (customized for $dir)"
+            target_file="$target_dir/${standards_file}"
+            if [ -f "$target_file" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
+                echo "    ⚠️  ${standards_file} already exists - skipping"
             else
-                echo "    ⚠️  Failed to create ${standards_file}"
+                if curl -s --max-time 30 "${BASE_URL}/templates/standards/${standards_file}" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_file"; then
+                    if [ "$OVERWRITE_STANDARDS" = true ]; then
+                        echo "    ✓ ${standards_file} (customized for $dir, overwritten)"
+                    else
+                        echo "    ✓ ${standards_file} (customized for $dir)"
+                    fi
+                else
+                    echo "    ⚠️  Failed to create ${standards_file}"
+                fi
             fi
         done
         
         # Generate CLAUDE.md file for this custom directory (inherits from global)
         echo "  📝 Creating CLAUDE.md for $dir..."
-        if curl -s --max-time 30 "${BASE_URL}/ide_specific/templates/claude/CLAUDE.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_dir/CLAUDE.md"; then
-            echo "    ✓ CLAUDE.md (inherits from global)"
+        claude_file="$target_dir/CLAUDE.md"
+        if [ -f "$claude_file" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
+            echo "    ⚠️  CLAUDE.md already exists - skipping"
         else
-            echo "    ⚠️  Failed to create CLAUDE.md"
+            if curl -s --max-time 30 "${BASE_URL}/ide_specific/templates/claude/CLAUDE.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$claude_file"; then
+                if [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
+                    echo "    ✓ CLAUDE.md (inherits from global, overwritten)"
+                else
+                    echo "    ✓ CLAUDE.md (inherits from global)"
+                fi
+            else
+                echo "    ⚠️  Failed to create CLAUDE.md"
+            fi
         fi
         
         # Generate main.instructions.md file for this custom directory (inherits from global)
         echo "  📝 Creating main.instructions.md for $dir..."
-        if curl -s --max-time 30 "${BASE_URL}/project-templates/custom-main.instructions.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_dir/main.instructions.md"; then
-            echo "    ✓ main.instructions.md (inherits from global)"
+        instructions_file="$target_dir/main.instructions.md"
+        if [ -f "$instructions_file" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
+            echo "    ⚠️  main.instructions.md already exists - skipping"
         else
-            echo "    ⚠️  Failed to create main.instructions.md"
+            if curl -s --max-time 30 "${BASE_URL}/project-templates/custom-main.instructions.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$instructions_file"; then
+                if [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
+                    echo "    ✓ main.instructions.md (inherits from global, overwritten)"
+                else
+                    echo "    ✓ main.instructions.md (inherits from global)"
+                fi
+            else
+                echo "    ⚠️  Failed to create main.instructions.md"
+            fi
         fi
     done
     
