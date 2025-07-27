@@ -11,9 +11,9 @@ See the following files for specific guidelines:
 
 ## Coding Standards
 Follow the coding standards and best practices defined in:
-- `~/.agent-os/templates/standards/best-practices.md`
-- `~/.agent-os/templates/standards/code-style.md`
-- `~/.agent-os/templates/standards/tech-stack.md`
+- `~/.agent-os/standards/best-practices.md`
+- `~/.agent-os/standards/code-style.md`
+- `~/.agent-os/standards/tech-stack.md`
 
 ## Project-Specific Instructions
 For project-specific customization, check if there are project-specific directories:
