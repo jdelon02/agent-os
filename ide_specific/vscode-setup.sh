@@ -164,12 +164,7 @@ if [ -n "$CUSTOM_DIRS" ]; then
             mkdir -p "$target_dir"
             echo "  ✓ Created directory: $target_dir"
             
-            # Copy common files and standards to the new directory
-            if [ -d "$HOME/.agent-os/common" ]; then
-                cp -r "$HOME/.agent-os/common"/* "$target_dir/" 2>/dev/null || true
-                echo "    ✓ Copied common files to $dir"
-            fi
-            
+            # Copy standards to the new directory
             if [ -d "$HOME/.agent-os/templates/standards" ]; then
                 cp -r "$HOME/.agent-os/templates/standards"/* "$target_dir/" 2>/dev/null || true
                 echo "    ✓ Copied standards files to $dir"

@@ -16,7 +16,7 @@
 # WHAT THIS SCRIPT DOES:
 #   1. Creates ~/.agent-os/ directory structure
 #   2. Downloads templates, standards, and instructions from GitHub
-#   3. Creates custom project directories with common files
+#   3. Creates custom project directories with standards files
 #   4. Sets up the foundation for AI tool integration
 #
 # AFTER INSTALLATION:
@@ -282,7 +282,7 @@ fi
 
 # Process 2: Create custom directories and populate them
 # This creates project-specific directories (Laravel, React, Python, etc.)
-# Each directory gets populated with common files and standards for that project type
+# Each directory gets populated with standards files for that project type
 echo ""
 echo "🔄 Process 2: Creating custom directories..."
 
@@ -312,13 +312,6 @@ if [ -n "$CUSTOM_DIRS" ]; then
         else
             mkdir -p "$target_dir"
             echo "  ✓ Created directory: $target_dir"
-        fi
-        
-        # Copy files from /common into the custom directory
-        # Common files are shared across all project types
-        echo "  📥 Copying common files to $dir..."
-        if ! download_files_from_github "common" "$target_dir" "$OVERWRITE_STANDARDS"; then
-            echo "  ⚠️  Failed to copy common files to $dir (possibly due to rate limiting)"
         fi
         
         # Generate customized standards files for this project type

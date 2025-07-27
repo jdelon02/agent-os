@@ -35,12 +35,14 @@
 - Copy template files instead of generating them inline
 - Have fallback inline generation if templates are missing
 - Provide better error handling and user feedback
+- **Removed references to non-existent `common` directory**
 
 ### 5. Updated Main Setup Script
 - Updated paths to reference new template locations:
   - `templates/instructions/global-CLAUDE.md` → `ide_specific/templates/claude/global-CLAUDE.md`
   - `templates/instructions/CLAUDE.md` → `ide_specific/templates/claude/CLAUDE.md`
   - `templates/instructions/custom-main.instructions.md` → `project-templates/custom-main.instructions.md`
+- **Removed references to non-existent `common` directory**
 
 ### 6. Cleaned Up Templates Directory
 **Remaining files in `templates/instructions/` (core system files only):**
