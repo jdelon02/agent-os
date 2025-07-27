@@ -71,9 +71,20 @@ mkdir -p "$HOME/.claude/commands"
 
 # Create CLAUDE.md that references Agent OS files
 echo ""
-echo "📝 Creating CLAUDE.md configuration..."
+echo "📝 Creating CLAUDE.md configuration from template..."
 
-cat > "$HOME/.claude/CLAUDE.md" << 'EOF'
+# Get the script directory to find templates
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATES_DIR="$SCRIPT_DIR/templates/claude"
+
+# Copy Claude configuration template
+if [ -f "$TEMPLATES_DIR/claude-config.md" ]; then
+    cp "$TEMPLATES_DIR/claude-config.md" "$HOME/.claude/CLAUDE.md"
+    echo "  ✓ ~/.claude/CLAUDE.md (from template)"
+else
+    echo "  ⚠️  Template not found, creating basic configuration..."
+    # Fallback to inline generation if template doesn't exist
+    cat > "$HOME/.claude/CLAUDE.md" << 'EOF'
 # Claude Code Configuration
 
 # Import Agent OS instructions and standards
@@ -82,8 +93,8 @@ cat > "$HOME/.claude/CLAUDE.md" << 'EOF'
 
 # Additional Claude Code specific configuration can be added here
 EOF
-
-echo "  ✓ ~/.claude/CLAUDE.md"
+    echo "  ✓ ~/.claude/CLAUDE.md"
+fi
 
 # Create custom directories if specified
 if [ -n "$CUSTOM_DIRS" ]; then

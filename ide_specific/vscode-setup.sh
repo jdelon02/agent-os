@@ -64,43 +64,42 @@ mkdir -p "$HOME/.vscode"
 
 # Create VS Code settings that reference Agent OS files
 echo ""
-echo "📝 Creating VS Code configuration..."
+echo "📝 Creating VS Code configuration from templates..."
 
-# Create a settings file for VS Code extensions that support custom instructions
-cat > "$HOME/.vscode/agent-os-settings.json" << 'EOF'
-{
-  "agentOS": {
-    "instructionsPath": "~/.agent-os/instructions/main.instructions.md",
-    "standardsPath": "~/.agent-os/templates/standards/",
-    "commandsPath": "~/.agent-os/commands/",
-    "description": "Agent OS integration for VS Code - reference these paths in your AI assistant extensions"
-  }
-}
-EOF
+# Get the script directory to find templates
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATES_DIR="$SCRIPT_DIR/templates/vscode"
 
-echo "  ✓ ~/.vscode/agent-os-settings.json"
-
-# Create a workspace settings template
-cat > "$HOME/.vscode/agent-os-workspace-template.json" << 'EOF'
+# Copy workspace settings template
+if [ -f "$TEMPLATES_DIR/workspace-settings.json" ]; then
+    cp "$TEMPLATES_DIR/workspace-settings.json" "$HOME/.vscode/agent-os-workspace-template.json"
+    echo "  ✓ ~/.vscode/agent-os-workspace-template.json (from template)"
+else
+    echo "  ⚠️  Template not found, creating basic settings..."
+    # Fallback to inline generation if template doesn't exist
+    cat > "$HOME/.vscode/agent-os-workspace-template.json" << 'EOF'
 {
   "files.associations": {
     "*.md": "markdown"
   },
   "markdown.preview.linkify": true,
-  "ai.instructions": [
-    "Follow the comprehensive instructions in ~/.agent-os/instructions/main.instructions.md",
-    "Adhere to coding standards in ~/.agent-os/templates/standards/",
-    "Reference available commands in ~/.agent-os/commands/",
-    "For project-specific standards, check ~/.agent-os/[project-name]/ if it exists"
-  ],
-  "ai.contextFiles": [
-    "~/.agent-os/instructions/main.instructions.md",
-    "~/.agent-os/templates/standards/"
-  ]
+  "agentOS": {
+    "instructionsPath": "~/.agent-os/instructions/main.instructions.md",
+    "standardsPath": "~/.agent-os/templates/standards/",
+    "commandsPath": "~/.agent-os/commands/",
+    "description": "Agent OS integration for VS Code"
+  }
 }
 EOF
+fi
 
 echo "  ✓ ~/.vscode/agent-os-workspace-template.json"
+
+# Copy Copilot instructions template
+if [ -f "$TEMPLATES_DIR/copilot-instructions.md" ]; then
+    cp "$TEMPLATES_DIR/copilot-instructions.md" "$HOME/.vscode/copilot-instructions.md"
+    echo "  ✓ ~/.vscode/copilot-instructions.md (from template)"
+fi
 
 # Create a README for VS Code integration
 cat > "$HOME/.vscode/AGENT-OS-README.md" << 'EOF'

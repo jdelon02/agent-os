@@ -60,9 +60,20 @@ fi
 
 # Create .cursorrules file that references Agent OS files
 echo ""
-echo "📝 Creating Cursor configuration..."
+echo "📝 Creating Cursor configuration from template..."
 
-cat > "$HOME/.cursorrules" << 'EOF'
+# Get the script directory to find templates
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATES_DIR="$SCRIPT_DIR/templates/cursor"
+
+# Copy Cursor configuration template
+if [ -f "$TEMPLATES_DIR/cursor-config.md" ]; then
+    cp "$TEMPLATES_DIR/cursor-config.md" "$HOME/.cursorrules"
+    echo "  ✓ ~/.cursorrules (from template)"
+else
+    echo "  ⚠️  Template not found, creating basic configuration..."
+    # Fallback to inline generation if template doesn't exist
+    cat > "$HOME/.cursorrules" << 'EOF'
 # Cursor IDE Rules - Agent OS Integration
 
 You are an expert software developer assistant integrated with Agent OS.
@@ -81,6 +92,8 @@ When working on specific projects, also reference any project-specific standards
 
 Always prioritize code quality, maintainability, and adherence to established patterns.
 EOF
+    echo "  ✓ ~/.cursorrules"
+fi
 
 echo "  ✓ ~/.cursorrules"
 

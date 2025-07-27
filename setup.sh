@@ -274,7 +274,7 @@ done
 # Create global CLAUDE.md in instructions directory (separate from main.instructions.md)
 echo ""
 echo "📝 Creating global CLAUDE.md..."
-if curl -s --max-time 30 "${BASE_URL}/templates/instructions/global-CLAUDE.md" > "$HOME/.agent-os/instructions/CLAUDE.md"; then
+if curl -s --max-time 30 "${BASE_URL}/ide_specific/templates/claude/global-CLAUDE.md" > "$HOME/.agent-os/instructions/CLAUDE.md"; then
     echo "  ✓ ~/.agent-os/instructions/CLAUDE.md"
 else
     echo "  ⚠️  Failed to create global CLAUDE.md"
@@ -336,7 +336,7 @@ if [ -n "$CUSTOM_DIRS" ]; then
         
         # Generate CLAUDE.md file for this custom directory (inherits from global)
         echo "  📝 Creating CLAUDE.md for $dir..."
-        if curl -s --max-time 30 "${BASE_URL}/templates/instructions/CLAUDE.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_dir/CLAUDE.md"; then
+        if curl -s --max-time 30 "${BASE_URL}/ide_specific/templates/claude/CLAUDE.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_dir/CLAUDE.md"; then
             echo "    ✓ CLAUDE.md (inherits from global)"
         else
             echo "    ⚠️  Failed to create CLAUDE.md"
@@ -344,7 +344,7 @@ if [ -n "$CUSTOM_DIRS" ]; then
         
         # Generate main.instructions.md file for this custom directory (inherits from global)
         echo "  📝 Creating main.instructions.md for $dir..."
-        if curl -s --max-time 30 "${BASE_URL}/templates/instructions/custom-main.instructions.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_dir/main.instructions.md"; then
+        if curl -s --max-time 30 "${BASE_URL}/project-templates/custom-main.instructions.md" | sed "s/{PROJECT_TYPE}/$dir/g" > "$target_dir/main.instructions.md"; then
             echo "    ✓ main.instructions.md (inherits from global)"
         else
             echo "    ⚠️  Failed to create main.instructions.md"

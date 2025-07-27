@@ -1,0 +1,29 @@
+{
+  "files.associations": {
+    "*.md": "markdown"
+  },
+  "markdown.preview.linkify": true,
+  "editor.wordWrap": "on",
+  "editor.formatOnSave": true,
+  
+  "agentOS": {
+    "instructionsPath": "~/.agent-os/instructions/main.instructions.md",
+    "standardsPath": "~/.agent-os/templates/standards/",
+    "commandsPath": "~/.agent-os/commands/",
+    "description": "Agent OS integration paths for Cursor AI"
+  },
+
+  "cursor.ai.instructions": [
+    "Follow the comprehensive instructions in ~/.agent-os/instructions/main.instructions.md",
+    "Adhere to coding standards in ~/.agent-os/templates/standards/",
+    "Reference available commands in ~/.agent-os/commands/",
+    "For project-specific standards, check ~/.agent-os/{PROJECT_TYPE}/ if it exists"
+  ],
+  
+  "cursor.ai.contextFiles": [
+    "~/.agent-os/instructions/main.instructions.md",
+    "~/.agent-os/templates/standards/best-practices.md",
+    "~/.agent-os/templates/standards/code-style.md",
+    "~/.agent-os/templates/standards/tech-stack.md"
+  ]
+}
