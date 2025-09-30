@@ -82,19 +82,11 @@ TEMPLATES_DIR="$SCRIPT_DIR/templates/claude"
 if [ -f "$TEMPLATES_DIR/claude-config.md" ]; then
     cp "$TEMPLATES_DIR/claude-config.md" "$HOME/.claude/CLAUDE.md"
     echo "  ✓ ~/.claude/CLAUDE.md (from template)"
+elif [ -f "$TEMPLATES_DIR/CLAUDE-fallback.md" ]; then
+    cp "$TEMPLATES_DIR/CLAUDE-fallback.md" "$HOME/.claude/CLAUDE.md"
+    echo "  ✓ ~/.claude/CLAUDE.md (from fallback template)"
 else
-    echo "  ⚠️  Template not found, creating basic configuration..."
-    # Fallback to inline generation if template doesn't exist
-    cat > "$HOME/.claude/CLAUDE.md" << 'EOF'
-# Claude Code Configuration
-
-# Import Agent OS instructions and standards
-@~/.agent-os/instructions/main.instructions.md
-@~/.agent-os/templates/standards/
-
-# Additional Claude Code specific configuration can be added here
-EOF
-    echo "  ✓ ~/.claude/CLAUDE.md"
+    echo "  ⚠️  No templates found at $TEMPLATES_DIR/"
 fi
 
 # Create custom directories if specified

@@ -76,70 +76,21 @@ if [ -f "$TEMPLATES_DIR/workspace-settings.json" ]; then
     cp "$TEMPLATES_DIR/workspace-settings.json" "$HOME/.vscode/agent-os-workspace-template.json"
     echo "  ✓ ~/.vscode/agent-os-workspace-template.json (from template)"
 else
-    echo "  ⚠️  Template not found, creating basic settings..."
-    # Fallback to inline generation if template doesn't exist
-    cat > "$HOME/.vscode/agent-os-workspace-template.json" << 'EOF'
-{
-  "files.associations": {
-    "*.md": "markdown"
-  },
-  "markdown.preview.linkify": true,
-  "agentOS": {
-    "instructionsPath": "~/.agent-os/instructions/main.instructions.md",
-    "standardsPath": "~/.agent-os/templates/standards/",
-    "commandsPath": "~/.agent-os/commands/",
-    "description": "Agent OS integration for VS Code"
-  }
-}
-EOF
+    echo "  ⚠️  Template not found at $TEMPLATES_DIR/workspace-settings.json"
 fi
 
-echo "  ✓ ~/.vscode/agent-os-workspace-template.json"
+# Note: Copilot instructions should be in individual project .github/ directories
+# The template is available for project-specific use but not copied globally
+echo "  ℹ️  Copilot instructions template available at $TEMPLATES_DIR/copilot-instructions.md"
+echo "     For individual projects, copy to .github/copilot-instructions.md in each repository"
 
-# Copy Copilot instructions template
-if [ -f "$TEMPLATES_DIR/copilot-instructions.md" ]; then
-    cp "$TEMPLATES_DIR/copilot-instructions.md" "$HOME/.vscode/copilot-instructions.md"
-    echo "  ✓ ~/.vscode/copilot-instructions.md (from template)"
+# Copy README template
+if [ -f "$TEMPLATES_DIR/AGENT-OS-README.md" ]; then
+    cp "$TEMPLATES_DIR/AGENT-OS-README.md" "$HOME/.vscode/AGENT-OS-README.md"
+    echo "  ✓ ~/.vscode/AGENT-OS-README.md (from template)"
+else
+    echo "  ⚠️  Template not found at $TEMPLATES_DIR/AGENT-OS-README.md"
 fi
-
-# Create a README for VS Code integration
-cat > "$HOME/.vscode/AGENT-OS-README.md" << 'EOF'
-# Agent OS VS Code Integration
-
-This directory contains Agent OS configuration files for VS Code.
-
-## Files
-
-- `agent-os-settings.json` - Global settings referencing Agent OS paths
-- `agent-os-workspace-template.json` - Template for project workspace settings
-
-## Usage
-
-### For AI Extensions
-Most AI extensions for VS Code support custom instructions. Reference these Agent OS paths:
-
-- **Instructions**: `~/.agent-os/instructions/main.instructions.md`
-- **Standards**: `~/.agent-os/templates/standards/`
-- **Commands**: `~/.agent-os/commands/`
-
-### For Project Workspaces
-Copy the workspace template to your project's `.vscode/settings.json`:
-
-```bash
-cp ~/.vscode/agent-os-workspace-template.json /path/to/your/project/.vscode/settings.json
-```
-
-### Popular AI Extensions
-- **GitHub Copilot**: Configure in VS Code settings
-- **Codeium**: Set custom instructions in extension settings
-- **TabNine**: Configure context in extension settings
-
-## Customization
-
-Edit the template files to match your specific AI extension's configuration format.
-EOF
-
-echo "  ✓ ~/.vscode/AGENT-OS-README.md"
 
 # Create custom directories if specified
 if [ -n "$CUSTOM_DIRS" ]; then
@@ -182,7 +133,6 @@ echo ""
 echo "✅ Agent OS VS Code setup complete!"
 echo ""
 echo "📍 Configuration created:"
-echo "   ~/.vscode/agent-os-settings.json           - Global Agent OS settings"
 echo "   ~/.vscode/agent-os-workspace-template.json - Template for project workspaces"
 echo "   ~/.vscode/AGENT-OS-README.md               - Integration guide"
 echo ""

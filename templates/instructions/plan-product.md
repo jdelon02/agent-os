@@ -1,8 +1,8 @@
 ---
-description: Product Planning Rules for Agent OS
+description: Product Planning Rules for Agent OS with Memory-Keeper Integration
 globs:
 alwaysApply: false
-version: 4.0
+version: 5.0
 encoding: UTF-8
 ---
 
@@ -10,10 +10,13 @@ encoding: UTF-8
 
 <ai_meta>
   <parsing_rules>
+    - Initialize memory systems before planning
     - Process XML blocks first for structured data
     - Execute instructions in sequential order
     - Use templates as exact patterns
     - Request missing data rather than assuming
+    - Store user inputs in memory systems vs context accumulation
+    - Use context reduction throughout workflow
   </parsing_rules>
   <file_conventions>
     - encoding: UTF-8
@@ -29,12 +32,14 @@ encoding: UTF-8
   - Generate comprehensive product documentation for new projects
   - Create structured files for AI agent consumption
   - Establish consistent project initialization
+  - Integrate memory-keeper for persistent knowledge management
 </purpose>
 
 <context>
   - Part of Agent OS framework
   - Triggered during project initialization
   - Output used by AI agents throughout development
+  - Enhanced with persistent knowledge base for cross-session continuity
 </context>
 
 <prerequisites>
@@ -42,13 +47,84 @@ encoding: UTF-8
   - Git initialized (recommended)
   - User has product requirements
   - Access to @~/.claude/CLAUDE.md and Cursor rules
+  - Memory-keeper MCP available (optional, graceful degradation)
 </prerequisites>
 
 <process_flow>
 
-<step number="1" name="gather_user_input">
+<step number="0" name="memory_and_precedence_initialization">
 
-### Step 1: Gather User Input
+### Step 0: Initialize Memory Systems and Resolve Precedence
+
+<precedence_resolution>
+  <!-- Include precedence rules -->
+  <include>@reference-docs/instructions/precedence-rules.md</include>
+  
+  # Assert Agent OS command precedence
+  AGENT_OS_COMMAND = "plan-product"
+  CURRENT_MODE = "AGENT_OS_COMMAND_ACTIVE"
+  LOG: "🔴 Agent OS plan-product active - absolute precedence"
+</precedence_resolution>
+
+<memory_initialization>
+  <!-- Include memory integration -->
+  <include>@reference-docs/instructions/memory-integration.md</include>
+  
+  # Access detected context from memory integration
+  PROJECT_NAME = DETECTION_CONTEXT["project_name"]
+  PRIMARY_TECH = DETECTION_CONTEXT["primary_tech"]
+  TECH_STACKS = DETECTION_CONTEXT["tech_stacks"]
+  CONFIDENCE_LEVEL = DETECTION_CONTEXT["confidence_level"]
+  AVAILABLE_ENTITIES = DETECTION_CONTEXT["entities"]
+  
+  LOG: "Memory-enhanced plan-product initialized for {PROJECT_NAME} ({PRIMARY_TECH})"
+</memory_initialization>
+
+### Legacy Knowledge Base Initialization (Deprecated)
+
+<step_metadata>
+  <action>initialize project knowledge base</action>
+  <purpose>setup memory-keeper for persistent project context</purpose>
+  <creates>project namespace in memory-keeper</creates>
+</step_metadata>
+
+<kb_namespace>
+  <project_name>derived from current directory name</project_name>
+  <namespace_format>kb_{sanitized_project_name}</namespace_format>
+  <session_description>Agent OS plan-product operation</session_description>
+</kb_namespace>
+
+<kb_initialization_process>
+  <availability_check>
+    1. CHECK if memory-keeper MCP is available
+    2. IF available: PROCEED with KB initialization
+    3. IF unavailable: LOG unavailability and SKIP to step 1
+  </availability_check>
+  <namespace_setup>
+    1. GENERATE project namespace from directory name
+    2. START new context session with project directory path
+    3. SET session description: "Agent OS plan-product operation"
+    4. LOG successful KB initialization
+  </namespace_setup>
+  <fallback_behavior>
+    1. IF memory-keeper unavailable: USE standard file-based context loading
+    2. DOCUMENT limitation in response
+    3. CONTINUE with existing workflow patterns
+  </fallback_behavior>
+</kb_initialization_process>
+
+<instructions>
+  ACTION: Initialize memory-keeper with project-specific namespace
+  VERIFY: Memory-keeper availability before proceeding
+  FALLBACK: Gracefully degrade to file-based context if unavailable
+  LOG: Initialization status for transparency
+</instructions>
+
+</step>
+
+<step number="1" name="gather_user_input_with_memory">
+
+### Step 1: Gather User Input (Memory-Enhanced)
 
 <step_metadata>
   <required_inputs>
@@ -78,11 +154,149 @@ encoding: UTF-8
   5. Has the new application been initialized yet and we're inside the project folder? (yes/no)
 </error_template>
 
+<memory_enhanced_input_gathering>
+  <!-- Check for previous analyze-product session context -->
+  CALL: mcp-memory-keeper-context_search
+  PARAMETERS:
+    - query: "{PROJECT_NAME} analyze-product analysis"
+    - categories: ["analysis", "decision"]
+  
+  IF previous_analysis_found:
+    analysis_context = summarize_previous_analysis(previous_analysis)
+    LOG: "Building on previous analysis: {analysis_context[:100]}..."
+    CONTEXT_NOTE: "Previous analysis available in memory"
+  
+  <!-- Collect user inputs with immediate memory storage -->
+  FOR_EACH: required_input
+    user_response = collect_input(required_input)
+    
+    # Store immediately in Memory-Keeper
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "plan-input-{input_type}"
+      - value: user_response
+      - category: "decision"
+      - priority: "high"
+    
+    # Extract strategic decisions for Memento
+    IF contains_strategic_decision(user_response):
+      decision_summary = extract_decision_summary(user_response)
+      CALL: memento-mcp-create_entities
+      PARAMETERS:
+        - entities: [{
+            "name": "{PROJECT_NAME}-planning-decision-{timestamp}",
+            "entityType": "product_decision",
+            "observations": [
+              "Decision: {decision_summary}",
+              "Context: Product Planning",
+              "Tech Stack: {PRIMARY_TECH}",
+              "Date: {current_date()}"
+            ]
+          }]
+      
+      # Link to project
+      CALL: memento-mcp-create_relations
+      PARAMETERS:
+        - relations: [{
+            "from": "{PROJECT_NAME}",
+            "to": "{PROJECT_NAME}-planning-decision-{timestamp}",
+            "relationType": "guided_by"
+          }]
+    
+    # Context reduction - store full response, keep summary
+    response_summary = create_summary(user_response, max_length=100)
+    CONTEXT_SUMMARY += "💬 {input_type}: {response_summary} (full response in memory)\n"
+  
+  # Create checkpoint after input gathering
+  CALL: mcp-memory-keeper-context_checkpoint
+  PARAMETERS:
+    - name: "user-inputs-complete-{PROJECT_NAME}"
+    - description: "All planning inputs gathered for {PROJECT_NAME}"
+</memory_enhanced_input_gathering>
+
 <instructions>
-  ACTION: Collect all required inputs from user
-  VALIDATION: Ensure all 4 inputs provided before proceeding
-  FALLBACK: Check configuration files for tech stack defaults
-  ERROR: Use error_template if inputs missing
+  ACTION: Collect inputs with memory integration and context reduction
+  STORE: Full responses in memory, summaries in context
+  LEVERAGE: Previous analyze-product results if available
+  VALIDATE: All inputs provided before proceeding
+</instructions>
+
+</step>
+
+<step number="1.5" name="kb_context_retrieval">
+
+### Step 1.5: Knowledge Base Context Retrieval
+
+<step_metadata>
+  <action>load relevant project context from KB</action>
+  <purpose>reduce context memory by leveraging persistent knowledge</purpose>
+  <queries>project history, decisions, specifications</queries>
+  <condition>only if memory-keeper available</condition>
+</step_metadata>
+
+<kb_query_categories>
+  <product_context>
+    - Mission and vision statements from previous sessions
+    - Target users and market position decisions
+    - Key differentiators and value propositions
+  </product_context>
+  <technical_architecture>
+    - Technology stack decisions and rationale
+    - Architectural patterns and constraints
+    - Performance and scalability considerations
+  </technical_architecture>
+  <project_history>
+    - Major pivots and directional changes
+    - Lessons learned from previous product planning
+    - Timeline of significant decisions
+  </project_history>
+</kb_query_categories>
+
+<kb_retrieval_process>
+  <semantic_search>
+    1. QUERY memory-keeper for product planning context
+    2. SEARCH for existing product decisions and specifications
+    3. RETRIEVE relevant entries from each category
+    4. SYNTHESIZE unified context summary for informed planning
+  </semantic_search>
+  <context_filtering>
+    1. FILTER retrieved context by product planning relevance
+    2. PRIORITIZE recent decisions and specifications
+    3. EXCLUDE outdated or superseded information
+    4. LIMIT total context to manageable size (2000 tokens max)
+  </context_filtering>
+  <fallback_behavior>
+    1. IF memory-keeper unavailable: SKIP this step
+    2. CONTINUE with standard file-based workflow
+    3. DOCUMENT KB unavailability in session notes
+  </fallback_behavior>
+</kb_retrieval_process>
+
+<context_synthesis_template>
+  ## Retrieved Project Context
+  
+  Based on project history and previous decisions:
+  
+  ### Product Context
+  - **Previous Mission**: [SYNTHESIZED_MISSION_FROM_KB]
+  - **Known Users**: [TARGET_USERS_FROM_KB]
+  - **Established Features**: [PRIORITY_FEATURES_FROM_KB]
+  
+  ### Technical Context
+  - **Architecture Decisions**: [CURRENT_ARCHITECTURE_FROM_KB]
+  - **Stack Rationale**: [TECHNOLOGY_DECISIONS_FROM_KB]
+  - **Patterns**: [CODE_PATTERNS_FROM_KB]
+  
+  ### Project Evolution
+  - [EVOLUTION_INSIGHT_1_FROM_KB]
+  - [EVOLUTION_INSIGHT_2_FROM_KB]
+</context_synthesis_template>
+
+<instructions>
+  ACTION: Query memory-keeper for product planning context (if available)
+  SYNTHESIZE: Combine KB results with user input for informed planning
+  FILTER: Limit context to product planning relevance
+  FALLBACK: Skip if memory-keeper unavailable
 </instructions>
 
 </step>
@@ -129,6 +343,7 @@ encoding: UTF-8
   <creates>
     - file: .agent-os/product/mission.md
   </creates>
+  <enhances>with KB context if available</enhances>
 </step_metadata>
 
 <file_template>
@@ -157,6 +372,10 @@ encoding: UTF-8
     - length: 1-2 sentences
     - style: elevator pitch
   </constraints>
+  <kb_enhancement>
+    - Use KB context to refine product positioning if available
+    - Build on previous mission statements for consistency
+  </kb_enhancement>
 </section>
 
 <section name="users">
@@ -184,6 +403,10 @@ encoding: UTF-8
     - pain_points: array[string]
     - goals: array[string]
   </schema>
+  <kb_enhancement>
+    - Incorporate user insights from KB if available
+    - Build on previous user research and personas
+  </kb_enhancement>
 </section>
 
 <section name="problem">
@@ -240,15 +463,95 @@ encoding: UTF-8
 
 <instructions>
   ACTION: Create mission.md using all section templates
-  FILL: Use data from Step 1 user inputs
+  FILL: Use data from Step 1 user inputs and KB context if available
   FORMAT: Maintain exact template structure
+  ENHANCE: Leverage KB context for consistency and refinement
 </instructions>
 
 </step>
 
-<step number="4" name="create_tech_stack_md">
+<step number="4" name="gather_tech_documentation">
 
-### Step 4: Create tech-stack.md
+### Step 4: Gather Technology Documentation
+
+<step_metadata>
+  <action>verify and research technology choices</action>
+  <purpose>ensure up-to-date documentation reference</purpose>
+</step_metadata>
+
+<context7_documentation>
+  <required>true</required>
+  <process>
+    1. FOR EACH technology in tech_stack:
+      a. GENERATE a Meilisearch-compatible key from the technology name
+         (e.g., "laravel_framework" for Laravel framework)
+      b. CHECK if documentation exists in Meilisearch cache using the key
+      c. IF cached documentation exists AND is not stale (< 30 days old):
+         i. RETRIEVE documentation from Meilisearch
+         ii. LOG cache hit for performance metrics
+      d. IF NO cached documentation OR cache is stale:
+         i. RESOLVE library ID using mcp__proxmoxmcp__context7-resolve-library-id
+         ii. FETCH documentation using mcp__proxmoxmcp__context7-get-library-docs
+         iii. STORE documentation in Meilisearch with the following schema:
+              - id: "[language]_[library_name]" (e.g., "laravel_framework")
+              - library_id: Context7 library ID (e.g., "/laravel/laravel")
+              - title: "Documentation for [library_name]"
+              - content: Full documentation content
+              - fetch_date: Current date (YYYY-MM-DD format)
+              - tokens: Number of tokens retrieved
+              - topic: Topic used for focused documentation (if any)
+              - version: Library version information (if available)
+         iv. LOG cache miss and update for metrics
+      e. EXTRACT key architectural patterns and best practices
+      f. VERIFY version compatibility with other components
+      g. RECORD documentation source (cache or API) for transparency
+    2. DOCUMENT sources and mappings used in tech-stack.md
+  </process>
+</context7_documentation>
+
+<documentation_template>
+  ## Documentation Sources
+
+  The following Context7 library references were used to verify technology choices:
+  
+  - **[TECH_NAME]**: `[CONTEXT7_LIBRARY_ID]`
+    - Key Insights: [KEY_INSIGHTS]
+    - Source: [CACHE_HIT ? "Meilisearch cache" : "Context7 API"]
+    - Cache Status: [CACHE_STATUS]
+    - Last Updated: [FETCH_DATE]
+    - Meilisearch Key: [MEILISEARCH_KEY]
+  
+  - **[TECH_NAME]**: `[CONTEXT7_LIBRARY_ID]`
+    - Key Insights: [KEY_INSIGHTS]
+    - Source: [CACHE_HIT ? "Meilisearch cache" : "Context7 API"]
+    - Cache Status: [CACHE_STATUS]
+    - Last Updated: [FETCH_DATE]
+    - Meilisearch Key: [MEILISEARCH_KEY]
+
+  ## Context7 Documentation Mappings
+
+  | Meilisearch Key | Context7 Library ID | Description | Version |
+  |-----------------|---------------------|-------------|--------|
+  | [MEILISEARCH_KEY_1] | [CONTEXT7_LIBRARY_ID_1] | [DESCRIPTION_1] | [VERSION_1] |
+  | [MEILISEARCH_KEY_2] | [CONTEXT7_LIBRARY_ID_2] | [DESCRIPTION_2] | [VERSION_2] |
+</documentation_template>
+
+<instructions>
+  ACTION: Check Meilisearch cache first, then use Context7 MCP tools if needed
+  VERIFY: Technology choices against latest documentation
+  DOCUMENT: Library IDs and key architectural patterns found
+  PRIORITIZE: Main application framework and database documentation
+  ESTABLISH: Create mapping between Meilisearch keys and Context7 library IDs
+  CACHE: Store documentation in Meilisearch for future use
+  REFRESH: Update stale cache entries (older than 30 days)
+  STRUCTURE: Follow the Meilisearch schema for consistent caching
+</instructions>
+
+</step>
+
+<step number="5" name="create_tech_stack_md">
+
+### Step 5: Create tech-stack.md
 
 <step_metadata>
   <creates>
@@ -308,9 +611,9 @@ encoding: UTF-8
 
 </step>
 
-<step number="5" name="create_roadmap_md">
+<step number="6" name="create_roadmap_md">
 
-### Step 5: Create roadmap.md
+### Step 6: Create roadmap.md
 
 <step_metadata>
   <creates>
@@ -325,6 +628,18 @@ encoding: UTF-8
     > Last Updated: [CURRENT_DATE]
     > Version: 1.0.0
     > Status: Planning
+
+    ## Effort Scale
+
+    Tasks are estimated using the following effort scale:
+
+    | Scale | Estimated Effort |
+    |-------|-----------------|
+    | XS    | 1 hour           |
+    | S     | 2 hours          |
+    | M     | 4 hours          |
+    | L     | 8 hours          |
+    | XL    | 12+ hours        |
   </header>
 </file_template>
 
@@ -360,11 +675,11 @@ encoding: UTF-8
 </phase_guidelines>
 
 <effort_scale>
-  - XS: 1 day
-  - S: 2-3 days
-  - M: 1 week
-  - L: 2 weeks
-  - XL: 3+ weeks
+  - XS: 1 hour
+  - S: 2 hours
+  - M: 4 hours
+  - L: 8 hours
+  - XL: 12+ hours
 </effort_scale>
 
 <instructions>
@@ -376,9 +691,9 @@ encoding: UTF-8
 
 </step>
 
-<step number="6" name="create_decisions_md">
+<step number="7" name="create_decisions_md">
 
-### Step 6: Create decisions.md
+### Step 7: Create decisions.md
 
 <step_metadata>
   <creates>
@@ -450,9 +765,100 @@ encoding: UTF-8
 
 </step>
 
-<step number="7" name="create_or_update_claude_md">
+<step number="7.5" name="kb_knowledge_persistence">
 
-### Step 7: Create or Update CLAUDE.md
+### Step 7.5: Knowledge Base Persistence
+
+<step_metadata>
+  <action>capture and store session insights</action>
+  <purpose>build persistent knowledge for future sessions</purpose>
+  <stores>planning decisions, specifications, architectural insights</stores>
+  <condition>only if memory-keeper available</condition>
+</step_metadata>
+
+<kb_persistence_categories>
+  <product_planning_decisions>
+    - Product mission and vision established
+    - Target users and market positioning
+    - Key features and roadmap priorities
+    - Technology stack rationale
+  </product_planning_decisions>
+  <architectural_decisions>
+    - Framework and technology choices
+    - Integration patterns selected
+    - Performance and scalability considerations
+    - Documentation and development standards
+  </architectural_decisions>
+  <project_context>
+    - Planning session outcomes
+    - User requirements and constraints
+    - Business context and market factors
+    - Success criteria and metrics
+  </project_context>
+</kb_persistence_categories>
+
+<kb_persistence_process>
+  <insight_extraction>
+    1. ANALYZE session content for key planning decisions and insights
+    2. EXTRACT product mission, features, and technical architecture
+    3. CATEGORIZE findings by persistence category
+    4. PRIORITIZE information by future project relevance
+  </insight_extraction>
+  <knowledge_storage>
+    1. SAVE product planning decisions to memory-keeper
+    2. STORE technical architecture rationale and constraints
+    3. TAG entries with relevant project context and keywords
+    4. LINK to created documentation files and decision records
+  </knowledge_storage>
+  <project_timeline>
+    1. ESTABLISH initial project timeline and milestones
+    2. DOCUMENT planning phase completion
+    3. PREPARE context for next development phases
+    4. SET expectations for future specification work
+  </project_timeline>
+  <fallback_behavior>
+    1. IF memory-keeper unavailable: SKIP KB persistence
+    2. DOCUMENT key planning insights in session summary
+    3. RECOMMEND manual knowledge capture in project documentation
+  </fallback_behavior>
+</kb_persistence_process>
+
+<persistence_template>
+  ## Planning Knowledge Captured
+  
+  The following insights have been stored in the project knowledge base:
+  
+  ### Product Decisions
+  - **Mission Statement**: [CAPTURED_MISSION]
+  - **Target Market**: [CAPTURED_USERS_AND_MARKET]
+  - **Core Features**: [CAPTURED_KEY_FEATURES]
+  - **Differentiation Strategy**: [CAPTURED_DIFFERENTIATORS]
+  
+  ### Technical Decisions
+  - **Architecture Approach**: [CAPTURED_TECH_STACK_RATIONALE]
+  - **Framework Choice**: [CAPTURED_FRAMEWORK_DECISION]
+  - **Integration Strategy**: [CAPTURED_INTEGRATION_APPROACH]
+  - **Development Standards**: [CAPTURED_STANDARDS_AND_PRACTICES]
+  
+  ### Project Context
+  - **Planning Phase**: Completed [CURRENT_DATE]
+  - **Documentation Created**: [LIST_OF_CREATED_FILES]
+  - **Next Phase**: Ready for feature specification
+  - **Success Criteria**: [CAPTURED_SUCCESS_METRICS]
+</persistence_template>
+
+<instructions>
+  ACTION: Extract and categorize planning session insights
+  STORE: Save structured knowledge to memory-keeper (if available)
+  ESTABLISH: Project context and timeline for future sessions
+  PREPARE: Foundation for next development phases
+</instructions>
+
+</step>
+
+<step number="8" name="create_or_update_claude_md">
+
+### Step 8: Create or Update CLAUDE.md
 
 <step_metadata>
   <creates>
@@ -487,6 +893,14 @@ encoding: UTF-8
 - **Spec Planning:** Use `@~/.agent-os/instructions/create-spec.md`
 - **Tasks Execution:** Use `@~/.agent-os/instructions/execute-tasks.md`
 
+### Knowledge Base Integration
+- **Project KB Namespace:** kb_[PROJECT_NAME]
+- **Persistent Context:** Leverages memory-keeper for cross-session continuity
+- **Context Layers:** 
+  - Layer 1: Persistent project knowledge (memory-keeper)
+  - Layer 2: Documentation cache (Meilisearch + Context7)
+  - Layer 3: Session memory (current context)
+
 ## Workflow Instructions
 
 When asked to work on this codebase:
@@ -502,6 +916,7 @@ When asked to work on this codebase:
 - Product-specific files in `.agent-os/product/` override any global standards
 - User's specific instructions override (or amend) instructions found in `.agent-os/specs/...`
 - Always adhere to established patterns, code style, and best practices documented above.
+- Memory-keeper integration provides persistent context across sessions for enhanced development continuity
 </content_template>
 
 <merge_behavior>
@@ -529,6 +944,7 @@ When asked to work on this codebase:
   APPEND: Add section to end if file exists but section doesn't
   CREATE: Create new file with template content if file doesn't exist
   PRESERVE: Keep all other existing content in the file
+  ENHANCE: Include KB integration information in documentation
 </instructions>
 
 </step>
@@ -539,19 +955,56 @@ When asked to work on this codebase:
 
 <final_checklist>
   <verify>
+    - [ ] Memory-keeper KB initialization attempted (if available)
+    - [ ] Project context retrieved from KB (if available)
     - [ ] All 4 files created in .agent-os/product/
     - [ ] User inputs incorporated throughout
     - [ ] Missing tech stack items requested
     - [ ] Initial decisions documented
+    - [ ] Planning insights stored in KB (if available)
     - [ ] CLAUDE.md created or updated with Agent OS documentation
+    - [ ] KB integration documented for future sessions
   </verify>
 </final_checklist>
 
 <execution_order>
-  1. Gather and validate all inputs
-  2. Create directory structure
-  3. Generate each file sequentially
-  4. Request any missing information
-  5. Create or update project CLAUDE.md file
-  6. Validate complete documentation set
+  1. Initialize knowledge base namespace (if memory-keeper available)
+  2. Gather and validate all user inputs
+  3. Retrieve relevant project context from KB (if available)
+  4. Create directory structure
+  5. Generate each documentation file sequentially
+  6. Request any missing information
+  7. Capture planning insights in KB (if available)
+  8. Create or update project CLAUDE.md file
+  9. Validate complete documentation set with KB integration
 </execution_order>
+
+## Error Handling
+
+<error_scenarios>
+  <scenario name="planning_error_occurs">
+    <condition>Any error occurs during product planning or documentation generation</condition>
+    <action>Execute memory-guided error resolution procedures</action>
+    <procedure>
+      1. IMMEDIATE: Store error details in Memory-Keeper for tracking
+      2. SEARCH: Query Memory-Keeper and Memento for similar planning errors
+      3. APPLY: Try memory-guided solutions in confidence order
+      4. DOCUMENT: Store successful resolution for future reference
+      5. REFERENCE: Follow detailed procedures in @error-resolution-via-memory.md
+    </procedure>
+    <enhancement>Build cross-project planning error solution database</enhancement>
+  </scenario>
+  <scenario name="strategic_decision_failure">
+    <condition>Unable to generate strategic documentation or make planning decisions</condition>
+    <action>Apply memory-guided troubleshooting for strategic planning issues</action>
+    <fallback>Continue with standard planning but document limitation</fallback>
+  </scenario>
+</error_scenarios>
+
+<kb_integration_benefits>
+  - Reduced context memory consumption through persistent storage
+  - Cross-session continuity for iterative product development
+  - Intelligent context loading based on project history
+  - Consistent decision tracking and architectural evolution
+  - Enhanced planning through historical insights and lessons learned
+</kb_integration_benefits>

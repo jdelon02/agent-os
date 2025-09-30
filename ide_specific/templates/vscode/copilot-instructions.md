@@ -20,9 +20,9 @@ For project-specific customization, check if there are project-specific director
 - `~/.agent-os/{PROJECT_TYPE}/` - Project-specific standards and guidelines
 
 ## Usage
-Copy this file to your project's `.vscode/` directory and customize as needed:
+Copy this file to your project's `.github/` directory and customize as needed:
 ```bash
-cp ~/.agent-os/ide_specific/templates/vscode/copilot-instructions.md /path/to/your/project/.vscode/copilot-instructions.md
+cp ~/.agent-os/ide_specific/templates/vscode/copilot-instructions.md /path/to/your/project/.github/copilot-instructions.md
 ```
 
-Then configure VS Code Copilot to use this file as custom instructions.
+GitHub Copilot will automatically detect and use this file for repository-specific instructions.

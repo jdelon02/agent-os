@@ -67,36 +67,13 @@ echo "📝 Creating Cursor configuration from template..."
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TEMPLATES_DIR="$SCRIPT_DIR/templates/cursor"
 
-# Copy Cursor configuration template
-if [ -f "$TEMPLATES_DIR/cursor-config.md" ]; then
-    cp "$TEMPLATES_DIR/cursor-config.md" "$HOME/.cursorrules"
+# Copy Cursor rules template
+if [ -f "$TEMPLATES_DIR/cursorrules" ]; then
+    cp "$TEMPLATES_DIR/cursorrules" "$HOME/.cursorrules"
     echo "  ✓ ~/.cursorrules (from template)"
 else
-    echo "  ⚠️  Template not found, creating basic configuration..."
-    # Fallback to inline generation if template doesn't exist
-    cat > "$HOME/.cursorrules" << 'EOF'
-# Cursor IDE Rules - Agent OS Integration
-
-You are an expert software developer assistant integrated with Agent OS.
-
-## Instructions
-Follow the comprehensive instructions in: ~/.agent-os/instructions/main.instructions.md
-
-## Development Standards  
-Adhere to the coding standards and best practices defined in: ~/.agent-os/templates/standards/
-
-## Available Commands
-Reference commands available in: ~/.agent-os/commands/
-
-## Project Context
-When working on specific projects, also reference any project-specific standards in ~/.agent-os/[project-name]/ if they exist.
-
-Always prioritize code quality, maintainability, and adherence to established patterns.
-EOF
-    echo "  ✓ ~/.cursorrules"
+    echo "  ⚠️  Template not found at $TEMPLATES_DIR/cursorrules"
 fi
-
-echo "  ✓ ~/.cursorrules"
 
 # Create custom directories if specified
 if [ -n "$CUSTOM_DIRS" ]; then

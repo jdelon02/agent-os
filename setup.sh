@@ -113,7 +113,6 @@ API_URL="https://api.github.com/repos/jdelon02/agent-os/contents"
 echo "DEBUG: Before function calls:"
 echo "  CUSTOM_DIRS=$CUSTOM_DIRS"
 echo "  CUSTOM_FILES=$CUSTOM_FILES"
-echo "  PROJECT_TYPE=$PROJECT_TYPE"
 
 # Function to recursively download files from a GitHub directory to a local directory
 # This function handles the core file downloading logic with retry mechanisms and error handling
@@ -328,7 +327,7 @@ if [ -n "$CUSTOM_DIRS" ]; then
             if [ -f "$target_file" ] && [ "$OVERWRITE_STANDARDS" = false ]; then
                 echo "    ⚠️  ${standards_file} already exists - skipping"
             else
-                if curl -s --max-time 30 "${BASE_URL}/templates/standards/${standards_file}" | sed "s/{PROJECT_TYPE}/$dir_original/g" > "$target_file"; then
+                if curl -s --max-time 30 "${BASE_URL}/templates/standards/${standards_file}" | sed "s/{TECHNOLOGY_TYPE}/$dir_original/g; s/{TECHNOLOGY_TYPE_LOWER}/$dir_lowercase/g; s/{PROJECT_TYPE}/$dir_original/g" > "$target_file"; then
                     if [ "$OVERWRITE_STANDARDS" = true ]; then
                         echo "    ✓ ${standards_file} (customized for $dir_original, overwritten)"
                     else
@@ -346,7 +345,7 @@ if [ -n "$CUSTOM_DIRS" ]; then
         if [ -f "$claude_file" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
             echo "    ⚠️  CLAUDE.md already exists - skipping"
         else
-            if curl -s --max-time 30 "${BASE_URL}/ide_specific/templates/claude/CLAUDE.md" | sed "s/{PROJECT_TYPE}/$dir_original/g" > "$claude_file"; then
+            if curl -s --max-time 30 "${BASE_URL}/ide_specific/templates/claude/CLAUDE.md" | sed "s/{PROJECT_TYPE}/$dir_original/g; s/{TECHNOLOGY_TYPE}/$dir_original/g; s/{TECHNOLOGY_TYPE_LOWER}/$dir_lowercase/g" > "$claude_file"; then
                 if [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
                     echo "    ✓ CLAUDE.md (inherits from global, overwritten)"
                 else
@@ -363,7 +362,7 @@ if [ -n "$CUSTOM_DIRS" ]; then
         if [ -f "$instructions_file" ] && [ "$OVERWRITE_INSTRUCTIONS" = false ]; then
             echo "    ⚠️  main.instructions.md already exists - skipping"
         else
-            if curl -s --max-time 30 "${BASE_URL}/project-templates/custom-main.instructions.md" | sed "s/{PROJECT_TYPE}/$dir_original/g" > "$instructions_file"; then
+            if curl -s --max-time 30 "${BASE_URL}/project-templates/custom-main.instructions.md" | sed "s/{PROJECT_TYPE}/$dir_original/g; s/{TECHNOLOGY_TYPE}/$dir_original/g; s/{TECHNOLOGY_TYPE_LOWER}/$dir_lowercase/g" > "$instructions_file"; then
                 if [ "$OVERWRITE_INSTRUCTIONS" = true ]; then
                     echo "    ✓ main.instructions.md (inherits from global, overwritten)"
                 else
