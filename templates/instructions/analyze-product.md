@@ -423,6 +423,7 @@ encoding: UTF-8
   ACTION: Execute plan-product.md with gathered information
   PROVIDE: All context as structured input including KB insights
   ALLOW: plan-product.md to create .agent-os/product/ structure
+  SETUP: Create .agent-os/specs/ directory structure for consolidated specifications
   ENHANCE: Incorporate historical context for better documentation
 </instructions>
 
@@ -505,9 +506,9 @@ encoding: UTF-8
 
 </step>
 
-<step number="4.5" name="kb_knowledge_persistence">
+<step number="4.5" name="integrated_memory_persistence">
 
-### Step 4.5: Knowledge Base Persistence
+### Step 4.5: Integrated Memory System Persistence
 
 <step_metadata>
   <action>capture and store session insights</action>
@@ -563,7 +564,7 @@ encoding: UTF-8
     4. PREPARE context for future analysis and development sessions
   </evolution_tracking>
   <fallback_behavior>
-    1. IF memory-keeper unavailable: SKIP KB persistence
+    1. IF memory-keeper unavailable: SKIP Integrated Memory System persistence
     2. DOCUMENT key analysis insights in session summary
     3. RECOMMEND manual knowledge capture in project documentation
   </fallback_behavior>
@@ -572,7 +573,7 @@ encoding: UTF-8
 <persistence_template>
   ## Analysis Knowledge Captured
   
-  The following insights have been stored in the project knowledge base:
+  The following insights have been stored in the Integrated Memory System:
   
   ### Architectural Analysis
   - **Architecture Pattern**: [CAPTURED_ARCHITECTURE_PATTERN]
@@ -624,9 +625,10 @@ encoding: UTF-8
 </step_metadata>
 
 <verification_checklist>
-  - [ ] Memory-keeper KB initialization attempted (if available)
-  - [ ] Project context retrieved and integrated from KB (if available)
+  - [ ] Memory-keeper Integrated Memory System initialization attempted (if available)
+  - [ ] Project context retrieved and integrated from Integrated Memory System (if available)
   - [ ] .agent-os/product/ directory created
+  - [ ] .agent-os/specs/ directory structure prepared for consolidated specifications
   - [ ] All product documentation reflects actual codebase
   - [ ] Roadmap shows completed and planned features accurately
   - [ ] Tech stack matches installed dependencies
@@ -636,7 +638,7 @@ encoding: UTF-8
   - [ ] Cache-first documentation retrieval pattern implemented
   - [ ] Meilisearch collection created for documentation storage
   - [ ] CLAUDE.md or .cursorrules configured (if applicable)
-  - [ ] Analysis insights stored in KB (if available)
+  - [ ] Analysis insights stored in Integrated Memory System (if available)
   - [ ] Project evolution baseline established
 </verification_checklist>
 
@@ -658,10 +660,11 @@ encoding: UTF-8
   ### What Was Created
 
   - ✓ Product documentation in `.agent-os/product/`
+  - ✓ Consolidated specification structure in `.agent-os/specs/`
   - ✓ Roadmap with completed work in Phase 0
   - ✓ Tech stack reflecting actual dependencies
   [IF KB_AVAILABLE]:
-  - ✓ Project analysis stored in knowledge base
+  - ✓ Project analysis stored in Integrated Memory System
   - ✓ Evolution baseline established for future sessions
 
   ### Next Steps
@@ -673,24 +676,29 @@ encoding: UTF-8
      ```
      ./create-spec.md
      ```
+     This will create/update your consolidated specification files:
+     - `.agent-os/specs/spec.md` - Master specification document
+     - `.agent-os/specs/tasks.md` - Consolidated task breakdown
+     - `.agent-os/specs/sub-specs/` - Technical implementation details
 
   [IF KB_AVAILABLE]:
-  ### Knowledge Base Benefits
+  ### Integrated Memory System Benefits
 
   Your project analysis has been stored for future sessions, enabling:
   - Informed architectural decisions based on project history
   - Consistent development patterns across team members
   - Evolutionary tracking of your codebase over time
   - Enhanced context for future Agent OS operations
+  - Consolidated specification workflow for streamlined feature development
 
-  Your codebase is now Agent OS-enabled with intelligent context management! 🚀
+  Your codebase is now Agent OS-enabled with intelligent context management and consolidated specifications! 🚀
 </summary_template>
 
 <instructions>
   ACTION: Verify all files created correctly
-  SUMMARIZE: What was found and created, including KB integration
+  SUMMARIZE: What was found and created, including Integrated Memory System
   PROVIDE: Clear next steps for user
-  HIGHLIGHT: KB integration benefits if available
+  HIGHLIGHT: Integrated Memory System benefits if available
 </instructions>
 
 </step>
@@ -747,11 +755,11 @@ encoding: UTF-8
   </verify>
 </final_checklist>
 
-<kb_integration_benefits>
+<memory_system_integration_benefits>
   - Enhanced analysis depth through historical context and patterns
   - Reduced context memory consumption through persistent architectural knowledge
   - Evolutionary tracking of codebase changes and decisions over time
   - Cross-session continuity for ongoing analysis and improvement
   - Informed decision-making based on project history and lessons learned
   - Accelerated onboarding for new team members through comprehensive project context
-</kb_integration_benefits>
+</memory_system_integration_benefits>

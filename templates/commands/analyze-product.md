@@ -33,6 +33,7 @@
 2. Compare current state with previous analysis findings
 3. Identify architectural evolution and technology progression
 4. Document changes in patterns, conventions, and technical approaches
+5. Prepare consolidated specification directory structure for future feature work
 ```
 
 ### 4. Evolutionary Assessment
@@ -94,6 +95,7 @@
 - **Migration Tracking**: Monitor technology upgrades and architectural transitions
 - **Team Workflow Analysis**: Understand development practices and their evolution
 - **Strategic Alignment**: Assess consistency with historical strategic decisions
+- **Spec Structure Preparation**: Set up consolidated specification workflow for future features
 
 ## Historical Insights Integration
 
@@ -104,7 +106,7 @@
 
 ---
 
-Analyze your product's codebase and install Agent OS with intelligent evolutionary tracking and context awareness.
+Analyze your product's codebase and install Agent OS with intelligent evolutionary tracking, context awareness, and consolidated specification structure.
 
 Follow the instructions located in @/reference-docs/instructions/analyze-product.md
 

@@ -29,10 +29,11 @@
 
 ### 3. Enhanced Specification Creation
 ```
-1. Create spec folder with date-based naming convention
-2. Generate spec.md with KB context for consistency validation
-3. Build technical specifications leveraging architectural patterns from KB
-4. Create test specifications incorporating established testing strategies
+1. Ensure .agent-os/specs/ directory structure exists
+2. Create or update consolidated spec.md with KB context for consistency validation
+3. Create or update technical specifications in sub-specs/ leveraging architectural patterns from KB
+4. Create or update consolidated tasks.md with feature-specific sections
+5. Append feature sections to existing files rather than creating new dated folders
 ```
 
 ### 4. Cross-Reference Management
@@ -48,8 +49,9 @@
 1. Store specification elements in Memory-Keeper with canonical project references
 2. Extract implementation patterns and store in Memento using PROJECT_ENTITY_NAME
 3. Create cross-project relationships with canonical entity linking
-4. Update existing specification entities instead of creating duplicates
-5. Compress context while preserving key technical decisions with namespace consolidation
+4. Update existing specification files instead of creating new dated folders
+5. Append feature sections to consolidated files while preserving existing content
+6. Compress context while preserving key technical decisions with namespace consolidation
 ```
 
 ### 6. Checkpoint Management
@@ -89,14 +91,16 @@
 
 ## Specification Enhancement Features
 
-- **Architectural Validation**: Check consistency with established patterns
-- **Integration Planning**: Identify shared components and dependencies  
-- **Testing Strategy Inheritance**: Build on established testing approaches
-- **Technical Debt Awareness**: Consider impact on existing technical debt
+- **File Consolidation**: Single source of truth eliminates dated folder proliferation
+- **Feature Tracking**: Easy visibility into all features and their completion status
+- **Architectural Validation**: Check consistency with established patterns across all features
+- **Integration Planning**: Identify shared components and dependencies within consolidated view
+- **Testing Strategy Inheritance**: Build on established testing approaches with cumulative coverage
+- **Technical Debt Awareness**: Consider impact on existing technical debt across all features
 
 ---
 
-Create a detailed spec for a new feature with intelligent context management and cross-specification continuity.
+Create or update detailed specifications for features using consolidated files with intelligent context management and cross-specification continuity.
 
 Follow the instructions located in @/reference-docs/instructions/create-spec.md
 

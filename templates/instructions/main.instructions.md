@@ -248,7 +248,7 @@ Proposed workflow adaptation: Using context_save instead of session_start for Me
 
 ## ⚠️ INTELLIGENT MCP WORKFLOW SYSTEM ⚠️
 
-This system leverages your existing Context7 → Meilisearch trust scoring architecture alongside Memento MCP and Memory-Keeper for intelligent workflow routing.
+This system leverages the existing Context7 → Meilisearch trust scoring architecture alongside Memento MCP and Memory-Keeper for intelligent workflow routing.
 
 ### Multi-Tier Memory Architecture
 1. **Context7 → Meilisearch**: Structured documentation cache with trust scoring (7-9 scale)
@@ -683,7 +683,7 @@ This accountability system ensures no agent can bypass the MCP workflow without 
 
 ## Usage & Customization
 
-This template integrates your existing Context7 → Meilisearch trust scoring system with Memento MCP knowledge graphs and Memory-Keeper session management. The confidence-based routing system learns from your documentation quality and past decision success to optimize workflow efficiency while maintaining thoroughness when uncertainty is high.
+This template integrates the existing Context7 → Meilisearch trust scoring system with Memento MCP knowledge graphs and Memory-Keeper session management. The confidence-based routing system learns from the documentation quality and past decision success to optimize workflow efficiency while maintaining thoroughness when uncertainty is high.
 
 Project-specific directories can customize:
 - Trust score thresholds for different technology stacks

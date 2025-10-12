@@ -813,8 +813,8 @@ encoding: UTF-8
   <project_timeline>
     1. ESTABLISH initial project timeline and milestones
     2. DOCUMENT planning phase completion
-    3. PREPARE context for next development phases
-    4. SET expectations for future specification work
+    3. PREPARE context for consolidated specification workflow
+    4. SET expectations for feature additions to master spec.md file
   </project_timeline>
   <fallback_behavior>
     1. IF memory-keeper unavailable: SKIP KB persistence
@@ -826,7 +826,7 @@ encoding: UTF-8
 <persistence_template>
   ## Planning Knowledge Captured
   
-  The following insights have been stored in the project knowledge base:
+  The following insights have been stored in the Integrated Memory System:
   
   ### Product Decisions
   - **Mission Statement**: [CAPTURED_MISSION]
@@ -843,7 +843,8 @@ encoding: UTF-8
   ### Project Context
   - **Planning Phase**: Completed [CURRENT_DATE]
   - **Documentation Created**: [LIST_OF_CREATED_FILES]
-  - **Next Phase**: Ready for feature specification
+  - **Next Phase**: Ready for consolidated feature specification in spec.md
+  - **Specification Approach**: Consolidated single-file approach for easy tracking
   - **Success Criteria**: [CAPTURED_SUCCESS_METRICS]
 </persistence_template>
 
@@ -889,14 +890,16 @@ encoding: UTF-8
 - **Best Practices:** @~/.agent-os/standards/best-practices.md
 
 ### Project Management
-- **Active Specs:** @.agent-os/specs/
+- **Master Specification:** @.agent-os/specs/spec.md
+- **Project Tasks:** @.agent-os/specs/tasks.md
+- **Technical Details:** @.agent-os/specs/sub-specs/
 - **Spec Planning:** Use `@~/.agent-os/instructions/create-spec.md`
 - **Tasks Execution:** Use `@~/.agent-os/instructions/execute-tasks.md`
 
-### Knowledge Base Integration
-- **Project KB Namespace:** kb_[PROJECT_NAME]
+### Integrated Memory System
+- **Project Namespace:** kb_[PROJECT_NAME]
 - **Persistent Context:** Leverages memory-keeper for cross-session continuity
-- **Context Layers:** 
+- **Memory Architecture:** 
   - Layer 1: Persistent project knowledge (memory-keeper)
   - Layer 2: Documentation cache (Meilisearch + Context7)
   - Layer 3: Session memory (current context)
@@ -914,8 +917,10 @@ When asked to work on this codebase:
 ## Important Notes
 
 - Product-specific files in `.agent-os/product/` override any global standards
-- User's specific instructions override (or amend) instructions found in `.agent-os/specs/...`
-- Always adhere to established patterns, code style, and best practices documented above.
+- User's specific instructions override (or amend) instructions found in `.agent-os/specs/`
+- All feature specifications are consolidated in single spec.md file for easy tracking
+- Task management uses consolidated tasks.md with feature-specific sections
+- Always adhere to established patterns, code style, and best practices documented above
 - Memory-keeper integration provides persistent context across sessions for enhanced development continuity
 </content_template>
 
@@ -944,7 +949,7 @@ When asked to work on this codebase:
   APPEND: Add section to end if file exists but section doesn't
   CREATE: Create new file with template content if file doesn't exist
   PRESERVE: Keep all other existing content in the file
-  ENHANCE: Include KB integration information in documentation
+  ENHANCE: Include Integrated Memory System information in documentation
 </instructions>
 
 </step>
@@ -955,28 +960,28 @@ When asked to work on this codebase:
 
 <final_checklist>
   <verify>
-    - [ ] Memory-keeper KB initialization attempted (if available)
-    - [ ] Project context retrieved from KB (if available)
+    - [ ] Memory-keeper initialization attempted (if available)
+    - [ ] Project context retrieved from Integrated Memory System (if available)
     - [ ] All 4 files created in .agent-os/product/
     - [ ] User inputs incorporated throughout
     - [ ] Missing tech stack items requested
     - [ ] Initial decisions documented
-    - [ ] Planning insights stored in KB (if available)
+    - [ ] Planning insights stored in Integrated Memory System (if available)
     - [ ] CLAUDE.md created or updated with Agent OS documentation
-    - [ ] KB integration documented for future sessions
+    - [ ] Integrated Memory System integration documented for future sessions
   </verify>
 </final_checklist>
 
 <execution_order>
-  1. Initialize knowledge base namespace (if memory-keeper available)
+  1. Initialize Integrated Memory System namespace (if memory-keeper available)
   2. Gather and validate all user inputs
-  3. Retrieve relevant project context from KB (if available)
+  3. Retrieve relevant project context from Integrated Memory System (if available)
   4. Create directory structure
   5. Generate each documentation file sequentially
   6. Request any missing information
-  7. Capture planning insights in KB (if available)
+  7. Capture planning insights in Integrated Memory System (if available)
   8. Create or update project CLAUDE.md file
-  9. Validate complete documentation set with KB integration
+  9. Validate complete documentation set with Integrated Memory System integration
 </execution_order>
 
 ## Error Handling
@@ -1001,10 +1006,10 @@ When asked to work on this codebase:
   </scenario>
 </error_scenarios>
 
-<kb_integration_benefits>
+<memory_system_integration_benefits>
   - Reduced context memory consumption through persistent storage
   - Cross-session continuity for iterative product development
   - Intelligent context loading based on project history
   - Consistent decision tracking and architectural evolution
   - Enhanced planning through historical insights and lessons learned
-</kb_integration_benefits>
+</memory_system_integration_benefits>

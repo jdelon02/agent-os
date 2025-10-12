@@ -58,6 +58,23 @@ encoding: UTF-8
 
 ### Step 0: Initialize Memory Systems and Resolve Precedence
 
+<consolidation_mode_detection>
+  # Check if running in consolidation mode (called by consolidate-specs)
+  IF parameters.mode == "consolidation":
+    CONSOLIDATION_MODE = true
+    SKIP_INTERACTIVE = parameters.skip_interactive || true
+    SOURCE_DATA = parameters.source_data
+    APPEND_MODE = parameters.append_to_existing || true
+    MEMORY_CONTEXT = parameters.memory_context || "consolidation"
+    PRESERVE_METADATA = parameters.preserve_original_metadata || true
+    
+    LOG: "🔄 Create-spec running in consolidation mode for {SOURCE_DATA.feature_name}"
+    LOG: "📁 Source: {SOURCE_DATA.original_folder} → Consolidated structure"
+  ELSE:
+    CONSOLIDATION_MODE = false
+    LOG: "🆕 Create-spec running in standard interactive mode"
+</consolidation_mode_detection>
+
 <precedence_resolution>
   <!-- Include precedence rules -->
   <include>@reference-docs/instructions/precedence-rules.md</include>
@@ -130,34 +147,57 @@ encoding: UTF-8
 
 <step_metadata>
   <trigger_options>
-    - option_a: user_asks_whats_next
-    - option_b: user_provides_specific_spec
+    - option_a: user_asks_whats_next (standard mode only)
+    - option_b: user_provides_specific_spec (standard mode only)
+    - option_c: consolidation_mode_data_provided (consolidation mode)
   </trigger_options>
 </step_metadata>
 
-<option_a_flow>
-  <trigger_phrases>
-    - "what's next?"
-    - "what should we work on next?"
-  </trigger_phrases>
-  <actions>
-    1. CHECK @.agent-os/product/roadmap.md
-    2. FIND next uncompleted item
-    3. SUGGEST item to user
-    4. WAIT for approval
-  </actions>
-</option_a_flow>
+<consolidation_mode_flow>
+  IF CONSOLIDATION_MODE:
+    # Use provided source data instead of user input
+    spec_name = SOURCE_DATA.feature_name
+    spec_priority = SOURCE_DATA.feature_priority
+    original_context = {
+      "folder": SOURCE_DATA.original_folder,
+      "date": SOURCE_DATA.original_date,
+      "consolidation_date": SOURCE_DATA.consolidation_date
+    }
+    
+    LOG: "📋 Using consolidation data: {spec_name} (Priority: {spec_priority})"
+    LOG: "📅 Original: {original_context.date}, Consolidating: {original_context.consolidation_date}"
+    
+    # Skip to context gathering with provided data
+    PROCEED_TO: step_2_context_gathering
+</consolidation_mode_flow>
 
-<option_b_flow>
-  <trigger>user describes specific spec idea</trigger>
-  <accept>any format, length, or detail level</accept>
-  <proceed>to context gathering</proceed>
-</option_b_flow>
+<standard_mode_flow>
+  IF NOT CONSOLIDATION_MODE:
+    <option_a_flow>
+      <trigger_phrases>
+        - "what's next?"
+        - "what should we work on next?"
+      </trigger_phrases>
+      <actions>
+        1. CHECK @.agent-os/product/roadmap.md
+        2. FIND next uncompleted item
+        3. SUGGEST item to user
+        4. WAIT for approval
+      </actions>
+    </option_a_flow>
+    
+    <option_b_flow>
+      <trigger>user describes specific spec idea</trigger>
+      <accept>any format, length, or detail level</accept>
+      <proceed>to context gathering</proceed>
+    </option_b_flow>
+</standard_mode_flow>
 
 <instructions>
-  ACTION: Identify spec initiation method
-  ROUTE: Follow appropriate flow based on trigger
-  WAIT: Ensure user agreement before proceeding
+  ACTION: Determine spec initiation method based on mode
+  CONSOLIDATION: Use provided source data automatically
+  STANDARD: Follow interactive user input flows
+  ROUTE: Skip interactive steps when in consolidation mode
 </instructions>
 
 </step>
@@ -471,122 +511,97 @@ encoding: UTF-8
 
 </step>
 
-<step number="5" name="date_determination">
+<step number="5" name="spec_directory_setup">
 
-### Step 5: Date Determination
+### Step 5: Spec Directory Setup
 
 <step_metadata>
-  <purpose>Ensure accurate date for folder naming</purpose>
-  <priority>high</priority>
-  <creates>temporary file for timestamp</creates>
+  <creates>
+    - directory: .agent-os/specs/ (if not exists)
+    - directory: .agent-os/specs/sub-specs/ (if not exists)
+  </creates>
 </step_metadata>
 
-<date_determination_process>
-  <primary_method>
-    <name>File System Timestamp</name>
-    <process>
-      1. CREATE directory if not exists: .agent-os/specs/
-      2. CREATE temporary file: .agent-os/specs/.date-check
-      3. READ file creation timestamp from filesystem
-      4. EXTRACT date in YYYY-MM-DD format
-      5. DELETE temporary file
-      6. STORE date in variable for folder naming
-    </process>
-  </primary_method>
-
-  <fallback_method>
-    <trigger>if file system method fails</trigger>
-    <name>User Confirmation</name>
-    <process>
-      1. STATE: "I need to confirm today's date for the spec folder"
-      2. ASK: "What is today's date? (YYYY-MM-DD format)"
-      3. WAIT for user response
-      4. VALIDATE format matches YYYY-MM-DD
-      5. STORE date for folder naming
-    </process>
-  </fallback_method>
-</date_determination_process>
-
-<validation>
-  <format_check>^\\d{4}-\\d{2}-\\d{2}$</format_check>
-  <reasonableness_check>
-    - year: 2024-2030
-    - month: 01-12
-    - day: 01-31
-  </reasonableness_check>
-</validation>
-
-<error_handling>
-  IF date_invalid:
-    USE fallback_method
-  IF both_methods_fail:
-    ERROR "Unable to determine current date"
-</error_handling>
+<directory_structure>
+  .agent-os/
+  └── specs/
+      ├── spec.md          # Master specification file
+      ├── tasks.md         # Consolidated tasks file
+      └── sub-specs/       # Detailed technical specifications
+          ├── technical-spec.md
+          ├── database-schema.md (conditional)
+          ├── api-spec.md (conditional)
+          └── tests.md
+</directory_structure>
 
 <instructions>
-  ACTION: Determine accurate date using file system
-  FALLBACK: Ask user if file system method fails
-  VALIDATE: Ensure YYYY-MM-DD format
-  STORE: Date for immediate use in next step
+  ACTION: Ensure .agent-os/specs/ directory structure exists
+  CREATE: Base directories if they don't exist
+  VERIFY: Directory structure created successfully
 </instructions>
 
 </step>
 
-<step number="6" name="spec_folder_creation">
+<step number="6" name="create_spec_md">
 
-### Step 6: Spec Folder Creation
-
-<step_metadata>
-  <creates>
-    - directory: .agent-os/specs/YYYY-MM-DD-spec-name/
-  </creates>
-  <uses>date from step 5</uses>
-</step_metadata>
-
-<folder_naming>
-  <format>YYYY-MM-DD-spec-name</format>
-  <date>use stored date from step 5</date>
-  <name_constraints>
-    - max_words: 5
-    - style: kebab-case
-    - descriptive: true
-  </name_constraints>
-</folder_naming>
-
-<example_names>
-  - 2025-03-15-password-reset-flow
-  - 2025-03-16-user-profile-dashboard
-  - 2025-03-17-api-rate-limiting
-</example_names>
-
-<instructions>
-  ACTION: Create spec folder using stored date
-  FORMAT: Use kebab-case for spec name
-  LIMIT: Maximum 5 words in name
-  VERIFY: Folder created successfully
-</instructions>
-
-</step>
-
-<step number="7" name="create_spec_md">
-
-### Step 7: Create spec.md
+### Step 6: Create or Update spec.md
 
 <step_metadata>
   <creates>
-    - file: .agent-os/specs/YYYY-MM-DD-spec-name/spec.md
+    - file: .agent-os/specs/spec.md (if not exists)
   </creates>
+  <updates>
+    - file: .agent-os/specs/spec.md (if exists, append new feature)
+  </updates>
   <enhances>with KB context if available</enhances>
+  <consolidation_mode>processes provided feature data for consistent formatting</consolidation_mode>
 </step_metadata>
+
+<consolidation_mode_handling>
+  IF CONSOLIDATION_MODE:
+    # Use provided feature data instead of gathering new input
+    feature_section = create_consolidation_feature_section(SOURCE_DATA)
+    
+    # Enhanced feature section with consolidation metadata
+    enhanced_section = add_consolidation_metadata(
+      feature_section,
+      original_folder = SOURCE_DATA.original_folder,
+      original_date = SOURCE_DATA.original_date,
+      consolidation_date = SOURCE_DATA.consolidation_date,
+      preserve_metadata = PRESERVE_METADATA
+    )
+    
+    # Handle append vs create based on APPEND_MODE
+    IF APPEND_MODE AND file_exists(".agent-os/specs/spec.md"):
+      append_feature_section_to_spec(enhanced_section)
+      LOG: "📝 Appended {SOURCE_DATA.feature_name} to existing spec.md"
+    ELSE:
+      create_spec_file_with_consolidation_header(enhanced_section)
+      LOG: "🆕 Created spec.md with consolidated feature {SOURCE_DATA.feature_name}"
+    
+    # Store consolidation progress in memory
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "consolidated-spec-{SOURCE_DATA.original_folder}"
+      - value: "Feature spec migrated via create-spec consolidation mode"
+      - category: "progress"
+      - priority: "normal"
+</consolidation_mode_handling>
 
 <file_template>
-  <header>
-    # Spec Requirements Document
+  <header_new_file>
+    # Project Specifications
 
-    > Spec: [SPEC_NAME]
-    > Created: [CURRENT_DATE]
+    > Last Updated: [CURRENT_DATE]
+    > Version: 1.0.0
+  </header_new_file>
+  <header_new_feature>
+    ## Feature: [SPEC_NAME]
+    
+    > Added: [CURRENT_DATE]
     > Status: Planning
-  </header>
+    > Priority: [HIGH/MEDIUM/LOW]
+  </header_new_feature>
   <required_sections>
     - Overview
     - User Stories
@@ -682,27 +697,69 @@ encoding: UTF-8
 
 </step>
 
-<step number="8" name="create_technical_spec">
+<step number="7" name="create_technical_spec">
 
-### Step 8: Create Technical Specification
+### Step 7: Create Technical Specification
 
 <step_metadata>
   <creates>
-    - directory: sub-specs/
-    - file: sub-specs/technical-spec.md
+    - file: .agent-os/specs/sub-specs/[FEATURE_FOLDER]/technical-spec.md (if not exists)
   </creates>
+  <updates>
+    - file: .agent-os/specs/sub-specs/[FEATURE_FOLDER]/technical-spec.md (if exists, append new feature section)
+  </updates>
   <enhances>with KB architectural patterns if available</enhances>
+  <consolidation_mode>creates feature-specific folder structure for organized sub-specs</consolidation_mode>
 </step_metadata>
 
+<consolidation_mode_sub_specs_handling>
+  IF CONSOLIDATION_MODE:
+    # Create feature-specific folder for sub-specs
+    feature_folder = derive_feature_folder_name(SOURCE_DATA.original_folder)
+    sub_specs_folder = ".agent-os/specs/sub-specs/{feature_folder}"
+    
+    # Create feature folder if not exists
+    create_directory_if_not_exists(sub_specs_folder)
+    
+    # Process each sub-spec type from source data
+    FOR_EACH: sub_spec_type IN ["technical_spec", "api_spec", "database_schema", "tests"]:
+      IF SOURCE_DATA.sub_specs_content[sub_spec_type] EXISTS:
+        sub_spec_file = "{sub_specs_folder}/{sub_spec_type.replace('_', '-')}.md"
+        
+        # Create consolidated sub-spec with metadata
+        consolidated_content = create_consolidation_sub_spec(
+          sub_spec_type,
+          SOURCE_DATA.sub_specs_content[sub_spec_type],
+          SOURCE_DATA
+        )
+        
+        write_file(sub_spec_file, consolidated_content)
+        
+        # Store consolidation progress
+        CALL: mcp-memory-keeper-context_save
+        PARAMETERS:
+          - key: "consolidated-{sub_spec_type}-{SOURCE_DATA.original_folder}"
+          - value: "Sub-spec {sub_spec_type} consolidated to {feature_folder} folder"
+          - category: "progress"
+          - priority: "normal"
+        
+        LOG: "📝 Created {sub_spec_file} from consolidation"
+</consolidation_mode_sub_specs_handling>
+
 <file_template>
-  <header>
+  <header_new_file>
     # Technical Specification
 
-    This is the technical specification for the spec detailed in @.agent-os/specs/YYYY-MM-DD-spec-name/spec.md
+    This is the technical specification for the features detailed in @.agent-os/specs/spec.md
 
-    > Created: [CURRENT_DATE]
+    > Last Updated: [CURRENT_DATE]
     > Version: 1.0.0
-  </header>
+  </header_new_file>
+  <header_new_feature>
+    ## Feature: [SPEC_NAME] Technical Requirements
+    
+    > Added: [CURRENT_DATE]
+  </header_new_feature>
 </file_template>
 
 <spec_sections>
@@ -765,33 +822,41 @@ encoding: UTF-8
 
 </step>
 
-<step number="9" name="create_database_schema">
+<step number="8" name="create_database_schema">
 
-### Step 9: Create Database Schema (Conditional)
+### Step 8: Create Database Schema (Conditional)
 
 <step_metadata>
   <creates>
-    - file: sub-specs/database-schema.md
+    - file: .agent-os/specs/sub-specs/database-schema.md (if not exists)
   </creates>
+  <updates>
+    - file: .agent-os/specs/sub-specs/database-schema.md (if exists, append new feature section)
+  </updates>
   <condition>only if database changes needed</condition>
 </step_metadata>
 
 <decision_tree>
   IF spec_requires_database_changes:
-    CREATE sub-specs/database-schema.md
+    CREATE or UPDATE .agent-os/specs/sub-specs/database-schema.md
   ELSE:
     SKIP this_step
 </decision_tree>
 
 <file_template>
-  <header>
+  <header_new_file>
     # Database Schema
 
-    This is the database schema implementation for the spec detailed in @.agent-os/specs/YYYY-MM-DD-spec-name/spec.md
+    This is the database schema implementation for the features detailed in @.agent-os/specs/spec.md
 
-    > Created: [CURRENT_DATE]
+    > Last Updated: [CURRENT_DATE]
     > Version: 1.0.0
-  </header>
+  </header_new_file>
+  <header_new_feature>
+    ## Feature: [SPEC_NAME] Database Changes
+    
+    > Added: [CURRENT_DATE]
+  </header_new_feature>
 </file_template>
 
 <schema_sections>
@@ -826,33 +891,41 @@ encoding: UTF-8
 
 </step>
 
-<step number="10" name="create_api_spec">
+<step number="9" name="create_api_spec">
 
-### Step 10: Create API Specification (Conditional)
+### Step 9: Create API Specification (Conditional)
 
 <step_metadata>
   <creates>
-    - file: sub-specs/api-spec.md
+    - file: .agent-os/specs/sub-specs/api-spec.md (if not exists)
   </creates>
+  <updates>
+    - file: .agent-os/specs/sub-specs/api-spec.md (if exists, append new feature section)
+  </updates>
   <condition>only if API changes needed</condition>
 </step_metadata>
 
 <decision_tree>
   IF spec_requires_api_changes:
-    CREATE sub-specs/api-spec.md
+    CREATE or UPDATE .agent-os/specs/sub-specs/api-spec.md
   ELSE:
     SKIP this_step
 </decision_tree>
 
 <file_template>
-  <header>
+  <header_new_file>
     # API Specification
 
-    This is the API specification for the spec detailed in @.agent-os/specs/YYYY-MM-DD-spec-name/spec.md
+    This is the API specification for the features detailed in @.agent-os/specs/spec.md
 
-    > Created: [CURRENT_DATE]
+    > Last Updated: [CURRENT_DATE]
     > Version: 1.0.0
-  </header>
+  </header_new_file>
+  <header_new_feature>
+    ## Feature: [SPEC_NAME] API Changes
+    
+    > Added: [CURRENT_DATE]
+  </header_new_feature>
 </file_template>
 
 <api_sections>
@@ -899,25 +972,33 @@ encoding: UTF-8
 
 </step>
 
-<step number="11" name="create_tests_spec">
+<step number="10" name="create_tests_spec">
 
-### Step 11: Create Tests Specification
+### Step 10: Create Tests Specification
 
 <step_metadata>
   <creates>
-    - file: sub-specs/tests.md
+    - file: .agent-os/specs/sub-specs/tests.md (if not exists)
   </creates>
+  <updates>
+    - file: .agent-os/specs/sub-specs/tests.md (if exists, append new feature section)
+  </updates>
 </step_metadata>
 
 <file_template>
-  <header>
+  <header_new_file>
     # Tests Specification
 
-    This is the tests coverage details for the spec detailed in @.agent-os/specs/YYYY-MM-DD-spec-name/spec.md
+    This is the tests coverage details for the features detailed in @.agent-os/specs/spec.md
 
-    > Created: [CURRENT_DATE]
+    > Last Updated: [CURRENT_DATE]
     > Version: 1.0.0
-  </header>
+  </header_new_file>
+  <header_new_feature>
+    ## Feature: [SPEC_NAME] Test Coverage
+    
+    > Added: [CURRENT_DATE]
+  </header_new_feature>
 </file_template>
 
 <test_categories>
@@ -976,9 +1057,9 @@ encoding: UTF-8
 
 </step>
 
-<step number="12" name="user_review">
+<step number="11" name="user_review">
 
-### Step 12: User Review
+### Step 11: User Review
 
 <step_metadata>
   <action>request user review</action>
@@ -989,10 +1070,10 @@ encoding: UTF-8
 </step_metadata>
 
 <review_request>
-  I've created the spec documentation:
+  I've created/updated the spec documentation:
 
-  - Spec Requirements: @.agent-os/specs/YYYY-MM-DD-spec-name/spec.md
-  - Technical Spec: @.agent-os/specs/YYYY-MM-DD-spec-name/sub-specs/technical-spec.md
+  - Spec Requirements: @.agent-os/specs/spec.md
+  - Technical Spec: @.agent-os/specs/sub-specs/technical-spec.md
   [LIST_OTHER_CREATED_SPECS]
 
   Please review and let me know if any changes are needed before I create the task breakdown.
@@ -1006,25 +1087,59 @@ encoding: UTF-8
 
 </step>
 
-<step number="13" name="create_tasks">
+<step number="12" name="create_tasks">
 
-### Step 13: Create tasks.md
+### Step 12: Create or Update tasks.md
 
 <step_metadata>
   <creates>
-    - file: tasks.md
+    - file: .agent-os/specs/tasks.md (if not exists)
   </creates>
-  <depends_on>user approval from step 12</depends_on>
+  <updates>
+    - file: .agent-os/specs/tasks.md (if exists, append new feature tasks)
+  </updates>
+  <depends_on>user approval from step 11 (standard mode only)</depends_on>
   <enhances>with KB implementation patterns if available</enhances>
+  <consolidation_mode>processes provided tasks data for consistent formatting</consolidation_mode>
 </step_metadata>
 
+<consolidation_mode_tasks_handling>
+  IF CONSOLIDATION_MODE:
+    # Use provided tasks data instead of generating new tasks
+    feature_tasks_section = create_consolidation_tasks_section(SOURCE_DATA)
+    
+    # Enhanced tasks section with consolidation metadata
+    enhanced_tasks_section = add_consolidation_tasks_metadata(
+      feature_tasks_section,
+      original_folder = SOURCE_DATA.original_folder,
+      original_date = SOURCE_DATA.original_date,
+      consolidation_date = SOURCE_DATA.consolidation_date
+    )
+    
+    # Handle append vs create based on APPEND_MODE
+    IF APPEND_MODE AND file_exists(".agent-os/specs/tasks.md"):
+      append_tasks_section_to_file(enhanced_tasks_section)
+      LOG: "📋 Appended {SOURCE_DATA.feature_name} tasks to existing tasks.md"
+    ELSE:
+      create_tasks_file_with_consolidation_header(enhanced_tasks_section)
+      LOG: "🆕 Created tasks.md with consolidated feature {SOURCE_DATA.feature_name} tasks"
+    
+    # Store consolidation progress in memory
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "consolidated-tasks-{SOURCE_DATA.original_folder}"
+      - value: "Feature tasks migrated via create-spec consolidation mode"
+      - category: "progress"
+      - priority: "normal"
+</consolidation_mode_tasks_handling>
+
 <file_template>
-  <header>
-    # Spec Tasks
+  <header_new_file>
+    # Project Tasks
 
-    These are the tasks to be completed for the spec detailed in @.agent-os/specs/YYYY-MM-DD-spec-name/spec.md
+    These are the tasks to be completed for all features detailed in @.agent-os/specs/spec.md
 
-    > Created: [CURRENT_DATE]
+    > Last Updated: [CURRENT_DATE]
     > Status: Ready for Implementation
 
     ## Effort Scale
@@ -1038,7 +1153,12 @@ encoding: UTF-8
     | M     | 4 hours          |
     | L     | 8 hours          |
     | XL    | 12+ hours        |
-  </header>
+  </header_new_file>
+  <header_new_feature>
+    ## Feature: [SPEC_NAME] Tasks
+    
+    > Added: [CURRENT_DATE]
+  </header_new_feature>
 </file_template>
 
 <task_structure>
@@ -1055,9 +1175,23 @@ encoding: UTF-8
   </subtasks>
 </task_structure>
 
-<task_template>
-  ## Tasks
+<consolidation_tasks_template>
+  ## Feature: [FEATURE_NAME] Tasks
+  
+  > Originally: [ORIGINAL_FOLDER_NAME]
+  > Added: [ORIGINAL_DATE]
+  > Consolidated: [CONSOLIDATION_DATE]
+  
+  [SOURCE_DATA.tasks_content]
+  
+  ---
+</consolidation_tasks_template>
 
+<standard_tasks_template>
+  ## Feature: [FEATURE_NAME] Tasks
+  
+  > Added: [CURRENT_DATE]
+  
   - [ ] 1. [MAJOR_TASK_DESCRIPTION] `[EFFORT]`
     - [ ] 1.1 Write tests for [COMPONENT] `[EFFORT]`
     - [ ] 1.2 [IMPLEMENTATION_STEP] `[EFFORT]`
@@ -1067,7 +1201,9 @@ encoding: UTF-8
   - [ ] 2. [MAJOR_TASK_DESCRIPTION] `[EFFORT]`
     - [ ] 2.1 Write tests for [COMPONENT] `[EFFORT]`
     - [ ] 2.2 [IMPLEMENTATION_STEP] `[EFFORT]`
-</task_template>
+    
+  ---
+</standard_tasks_template>
 
 <ordering_principles>
   - Consider technical dependencies
@@ -1088,9 +1224,9 @@ encoding: UTF-8
 
 </step>
 
-<step number="13.5" name="kb_knowledge_persistence">
+<step number="12.5" name="kb_knowledge_persistence">
 
-### Step 13.5: Knowledge Base Persistence
+### Step 12.5: Knowledge Base Persistence
 
 <step_metadata>
   <action>capture and store session insights</action>
@@ -1185,25 +1321,25 @@ encoding: UTF-8
 
 </step>
 
-<step number="14" name="update_cross_references">
+<step number="13" name="update_cross_references">
 
-### Step 14: Documentation Cross-References
+### Step 13: Documentation Cross-References
 
 <step_metadata>
   <updates>
-    - file: spec.md
+    - file: .agent-os/specs/spec.md
   </updates>
-  <adds>references to all spec files</adds>
+  <adds>references to all spec files at end of current feature</adds>
 </step_metadata>
 
 <reference_template>
-  ## Spec Documentation
+  #### Documentation References
 
-  - Tasks: @.agent-os/specs/YYYY-MM-DD-spec-name/tasks.md
-  - Technical Specification: @.agent-os/specs/YYYY-MM-DD-spec-name/sub-specs/technical-spec.md
-  - API Specification: @.agent-os/specs/YYYY-MM-DD-spec-name/sub-specs/api-spec.md
-  - Database Schema: @.agent-os/specs/YYYY-MM-DD-spec-name/sub-specs/database-schema.md
-  - Tests Specification: @.agent-os/specs/YYYY-MM-DD-spec-name/sub-specs/tests.md
+  - Tasks: @.agent-os/specs/tasks.md
+  - Technical Specification: @.agent-os/specs/sub-specs/technical-spec.md
+  - API Specification: @.agent-os/specs/sub-specs/api-spec.md
+  - Database Schema: @.agent-os/specs/sub-specs/database-schema.md
+  - Tests Specification: @.agent-os/specs/sub-specs/tests.md
 </reference_template>
 
 <reference_format>
@@ -1220,9 +1356,9 @@ encoding: UTF-8
 
 </step>
 
-<step number="15" name="decision_documentation">
+<step number="14" name="decision_documentation">
 
-### Step 15: Decision Documentation
+### Step 14: Decision Documentation
 
 <step_metadata>
   <evaluates>strategic impact</evaluates>
@@ -1259,7 +1395,7 @@ encoding: UTF-8
   **ID:** DEC-[NEXT_NUMBER]
   **Status:** Accepted
   **Category:** [technical/product/business/process]
-  **Related Spec:** @.agent-os/specs/YYYY-MM-DD-spec-name/
+  **Related Spec:** @.agent-os/specs/spec.md
 
   ### Decision
 
@@ -1287,9 +1423,9 @@ encoding: UTF-8
 
 </step>
 
-<step number="16" name="execution_readiness">
+<step number="15" name="execution_readiness">
 
-### Step 16: Execution Readiness Check
+### Step 15: Execution Readiness Check
 
 <step_metadata>
   <evaluates>readiness to begin implementation</evaluates>
@@ -1313,7 +1449,7 @@ encoding: UTF-8
   [BRIEF_DESCRIPTION_OF_TASK_1_AND_SUBTASKS]
 
   [IF KB_AVAILABLE]:
-  **KB Context:** This specification has been stored in the project knowledge base and will be available for future sessions and related specifications.
+  **Memory System Context:** This specification has been stored in the Integrated Memory System and will be available for future sessions and related specifications.
 
   Would you like me to proceed with implementing Task 1? I will follow the execution guidelines in @~/.agent-os/instructions/execute-tasks.md and focus only on this first task and its subtasks unless you specify otherwise.
 
@@ -1330,10 +1466,10 @@ encoding: UTF-8
 </execution_flow>
 
 <instructions>
-  ACTION: Summarize first task and KB integration status
+  ACTION: Summarize first task and Integrated Memory System status
   REFERENCE: Use execute-tasks.md for implementation
   SCOPE: Limit to Task 1 only unless user specifies otherwise
-  HIGHLIGHT: KB integration benefits for future work
+  HIGHLIGHT: Integrated Memory System benefits for future work
 </instructions>
 
 </step>
@@ -1352,13 +1488,13 @@ encoding: UTF-8
     - Consistency with product mission
     - Alignment with roadmap
     - Technical coherence
-    - Cross-specification consistency (enhanced with KB)
+    - Cross-specification consistency (enhanced with Integrated Memory System)
   </maintain>
   <create>
     - Comprehensive documentation
     - Clear implementation path
     - Testable outcomes
-    - Knowledge base entries for future reference
+    - Integrated Memory System entries for future reference
   </create>
 </standards>
 
@@ -1386,26 +1522,25 @@ encoding: UTF-8
 
 <final_checklist>
   <verify>
-    - [ ] Memory-keeper KB initialization attempted (if available)
-    - [ ] Project context retrieved from KB (if available)
-    - [ ] Accurate date determined via file system
-    - [ ] Spec folder created with correct date prefix
-    - [ ] spec.md contains all required sections enhanced with KB context
+    - [ ] Memory-keeper initialization attempted (if available)
+    - [ ] Project context retrieved from Integrated Memory System (if available)
+    - [ ] Consolidated specs directory structure prepared
+    - [ ] spec.md contains all required sections enhanced with Memory System context
     - [ ] All applicable sub-specs created with architectural consistency
     - [ ] User approved documentation
-    - [ ] tasks.md created with TDD approach and KB patterns
+    - [ ] tasks.md created with TDD approach and Memory System patterns
     - [ ] Cross-references added to spec.md
     - [ ] Strategic decisions evaluated and documented
-    - [ ] Specification insights stored in KB (if available)
-    - [ ] Cross-spec relationships established in KB
+    - [ ] Specification insights stored in Integrated Memory System (if available)
+    - [ ] Cross-spec relationships established in Integrated Memory System
   </verify>
 </final_checklist>
 
-<kb_integration_benefits>
+<memory_system_integration_benefits>
   - Enhanced specification consistency across related features
   - Reduced context memory through persistent architectural knowledge
   - Cross-specification relationship tracking and management
   - Informed technical decision-making based on project history
   - Accelerated specification creation through pattern reuse
   - Improved integration planning through dependency awareness
-</kb_integration_benefits>
+</memory_system_integration_benefits>

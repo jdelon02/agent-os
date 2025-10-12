@@ -33,6 +33,7 @@
 2. Generate mission.md with historical product context refinement
 3. Build roadmap.md incorporating lessons learned from KB
 4. Document tech-stack.md with rationale from previous decisions
+5. Prepare consolidated .agent-os/specs/ structure for future feature specifications
 ```
 
 ### 4. Canonical Strategic Insight Storage
@@ -49,7 +50,8 @@
 1. Create checkpoint before major planning decisions
 2. Save progress at each documentation milestone
 3. Document what actually works vs initial planning assumptions
-4. Prepare foundation for next development phases
+4. Prepare foundation for consolidated specification workflow
+5. Set expectations for single-file feature tracking approach
 ```
 
 ## Fallback Behavior
@@ -81,7 +83,7 @@
 
 ---
 
-Plan a new product and install Agent OS in its codebase with intelligent context management.
+Plan a new product and install Agent OS in its codebase with intelligent context management and consolidated specification structure.
 
 Follow the instructions located in @/reference-docs/instructions/plan-product.md
 
