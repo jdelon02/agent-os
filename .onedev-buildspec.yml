@@ -1,0 +1,36 @@
+version: 43
+jobs:
+
+- name: Pull from Github
+  jobExecutor: ServerDocker
+  steps:
+  - type: PullRepository
+    name: Pull from remote upstream
+    remoteUrl: https://github.com/jdelon02/@project_name@
+    userName: jdelon02
+    passwordSecret: github token
+    refs: refs/heads/* refs/tags/*
+    withLfs: false
+    force: false
+    condition: SUCCESSFUL
+    optional: false
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 14400
+
+- name: Push to github
+  jobExecutor: ServerDocker
+  steps:
+  - type: PushRepository
+    name: Push to remote upstream
+    remoteUrl: https://github.com/jdelon02/@project_name@
+    userName: jdelon02
+    passwordSecret: github token
+    force: false
+    condition: SUCCESSFUL
+    optional: false
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 14400
