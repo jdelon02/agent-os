@@ -1,12 +1,31 @@
 ---
-description: Memory-Enhanced Product Analysis with Agent OS Integration
+description: Phase 2 - Research Specification (Enhanced Requirements Gathering)
 globs:
 alwaysApply: false
-version: 2.0
+version: 3.0
 encoding: UTF-8
 ---
 
-# Memory-Enhanced Product Analysis with Agent OS Integration
+# Phase 2: Research Specification (Enhanced Requirements Gathering)
+
+## ⚠️ IMMEDIATE ACTION REQUIRED ⚠️
+
+**STOP**: Before proceeding with Phase 2, you MUST activate MCP workflow systems:
+
+1. **ACTIVATE TOOLS**: `activate_context_management_tools`, `activate_memento_management_tools`, `activate_meilisearch_management_tools`
+2. **RESOLVE PROJECT IDENTITY**: Execute universal namespace consolidation (Step 0 below)
+3. **START SESSION**: Initialize Memory-Keeper session with this project directory
+4. **CHECK CACHE FIRST**: Query Meilisearch for cached documentation before Context7
+5. **CREATE ENTITIES**: Store project and technology entities in Memento knowledge graph using canonical names
+6. **VALIDATE CONFIDENCE**: Ensure trust score ≥ 8.0 before proceeding
+
+**Any Phase 2 work without completing these 6 steps is INVALID and must be restarted.**
+
+## 🔧 MANDATORY MCP WORKFLOW INITIALIZATION
+
+<include>@reference-docs/instructions/support-workflows/mandatory-mcp-initialization.md</include>
+
+**All subsequent Phase 2 operations MUST use PROJECT_ENTITY_NAME exclusively.**
 
 <ai_meta>
   <parsing_rules>
@@ -29,24 +48,24 @@ encoding: UTF-8
 ## Overview
 
 <purpose>
-  - Analyze current product state and progress
-  - Generate documentation that reflects actual implementation
-  - Preserve existing architectural decisions
-  - Integrate memory-keeper for enhanced analysis continuity and knowledge preservation
+  - Gather detailed requirements and technical constraints
+  - Conduct stakeholder interviews and analysis 
+  - Perform visual asset detection and code reusability analysis
+  - Build comprehensive understanding for specification creation
 </purpose>
 
 <context>
-  - Part of Agent OS framework
-  - Used when retrofitting Agent OS to established products
-  - Builds on plan-product.md with codebase analysis
-  - Enhanced with persistent knowledge base for informed analysis
+  - Second phase of 5-phase specification workflow
+  - Follows Phase 1 (Initialize) project foundation
+  - Enhanced with MCP intelligence for cross-project learning
+  - Prepares detailed context for Phase 3 (Write Specification)
 </context>
 
 <prerequisites>
-  - Existing product codebase
-  - Write access to project root
-  - Access to ./plan-product.md
-  - Memory-keeper MCP available (optional, graceful degradation)
+  - Completed Phase 1 (Initialize) with project foundation
+  - Write access to project directory
+  - MCP memory systems with Phase 1 context
+  - Access to stakeholders for requirements gathering
 </prerequisites>
 
 <process_flow>
@@ -55,85 +74,54 @@ encoding: UTF-8
 
 ### Step 0: Initialize Memory Systems and Resolve Precedence
 
-<precedence_resolution>
-  <!-- Include precedence rules -->
-  <include>@reference-docs/instructions/precedence-rules.md</include>
+<memory_precedence_initialization>
+  <!-- Use centralized Memory Systems and Precedence Initialization workflow -->
+  <include>@reference-docs/instructions/memory-precedence-initialization.md</include>
   
-  # Assert Agent OS command precedence
-  AGENT_OS_COMMAND = "analyze-product"
-  CURRENT_MODE = "AGENT_OS_COMMAND_ACTIVE"
-  LOG: "🔴 Agent OS analyze-product active - absolute precedence"
-</precedence_resolution>
-
-<memory_initialization>
-  <!-- Include memory integration -->
-  <include>@reference-docs/instructions/memory-integration.md</include>
+  # Execute centralized initialization with research-spec specific parameters
+  EXECUTE: memory_precedence_initialization_workflow()
+  PARAMETERS:
+    - command_name: "research-spec"
+    - memory_requirements: "REQUIRED"  # Memory critical for Phase 2 continuity
+    - override_categories: ["research_priorities", "stakeholder_lists", "requirements_templates"]
+    - session_description: "Agent OS Phase 2: Requirements Research"
+    - fallback_behavior: "ERROR_IF_UNAVAILABLE"
   
-  # Access detected context from memory integration
+  # Access standardized initialization results
   PROJECT_NAME = DETECTION_CONTEXT["project_name"]
+  PROJECT_ENTITY_NAME = DETECTION_CONTEXT["project_entity_name"]  # Canonical name
   PRIMARY_TECH = DETECTION_CONTEXT["primary_tech"]
   TECH_STACKS = DETECTION_CONTEXT["tech_stacks"]
   CONFIDENCE_LEVEL = DETECTION_CONTEXT["confidence_level"]
   AVAILABLE_ENTITIES = DETECTION_CONTEXT["entities"]
+  NAMESPACE_STATUS = DETECTION_CONTEXT["namespace_status"]
+  PROJECT_OVERRIDES = initialization_result.project_overrides
   
-  LOG: "Memory-enhanced analyze-product initialized for {PROJECT_NAME} ({PRIMARY_TECH})"
-</memory_initialization>
-
-<project_specific_overrides>
-  # Check for project-specific analyze-product overrides
-  IF file_exists(".github/instructions/main.instructions.md"):
-    project_overrides = parse_agent_os_overrides(".github/instructions/main.instructions.md")
-    
-    IF project_overrides.has_analyze_product_overrides():
-      additional_docs = project_overrides.get_additional_documentation()
-      custom_analysis = project_overrides.get_custom_analysis_areas()
-      
-      LOG: "🟠 Project overrides loaded: {len(additional_docs)} docs, {len(custom_analysis)} custom areas"
-      SCHEDULE: Apply overrides at pre-analysis and context-gathering steps
-</project_specific_overrides>
+  # Log initialization completion
+  LOG: "🔍 Phase 2 research initialization complete - loading project context"
+  LOG: "🏷️ Project: {PROJECT_NAME} → {PROJECT_ENTITY_NAME} (Status: {NAMESPACE_STATUS})"
+  
+  # Log project overrides if detected
+  IF PROJECT_OVERRIDES.additional_documentation:
+    LOG: "🟠 Additional documentation loaded: {len(PROJECT_OVERRIDES.additional_documentation)} sources"
+  IF PROJECT_OVERRIDES.custom_analysis_areas:
+    LOG: "🟠 Custom analysis areas loaded: {len(PROJECT_OVERRIDES.custom_analysis_areas)} areas"
+</memory_precedence_initialization>
 
 </step>
 
 <step number="1" name="analyze_existing_codebase_with_memory">
 
-### Step 0: Knowledge Base Initialization
+### Step 1: Analyze Existing Codebase (Memory-Enhanced)
 
 <step_metadata>
-  <action>initialize project knowledge base</action>
-  <purpose>setup memory-keeper for persistent project context</purpose>
-  <creates>project namespace in memory-keeper</creates>
+  <purpose>analyze codebase using initialization context from Step 0</purpose>
+  <uses_memory>centralized memory initialization results</uses_memory>
 </step_metadata>
 
-<kb_namespace>
-  <project_name>derived from current directory name</project_name>
-  <namespace_format>kb_{sanitized_project_name}</namespace_format>
-  <session_description>Agent OS analyze-product operation</session_description>
-</kb_namespace>
-
-<kb_initialization_process>
-  <availability_check>
-    1. CHECK if memory-keeper MCP is available
-    2. IF available: PROCEED with KB initialization
-    3. IF unavailable: LOG unavailability and SKIP to step 1
-  </availability_check>
-  <namespace_setup>
-    1. GENERATE project namespace from directory name
-    2. START new context session with project directory path
-    3. SET session description: "Agent OS analyze-product operation"
-    4. LOG successful KB initialization
-  </namespace_setup>
-  <fallback_behavior>
-    1. IF memory-keeper unavailable: USE standard file-based context loading
-    2. DOCUMENT limitation in response
-    3. CONTINUE with existing workflow patterns
-  </fallback_behavior>
-</kb_initialization_process>
-
 <instructions>
-  ACTION: Initialize memory-keeper with project-specific namespace
-  VERIFY: Memory-keeper availability before proceeding
-  FALLBACK: Gracefully degrade to file-based context if unavailable
-  LOG: Initialization status for transparency
+  ACTION: Codebase analysis logic (legacy KB initialization removed - now handled by centralized Step 0)
+  CONTINUE: With memory-enhanced codebase analysis workflow
 </instructions>
 
 </step>
@@ -248,6 +236,141 @@ encoding: UTF-8
   REDUCE: Context size by 70-90% vs traditional approach
 </instructions>
   EXAMINE: Meilisearch configuration for documentation caching
+</instructions>
+
+</step>
+
+<step number="1.4" name="analyze_existing_specifications">
+
+### Step 1.4: Analyze Existing Specifications for Research Focus
+
+<step_metadata>
+  <action>read existing spec.md to identify research gaps and focus areas</action>
+  <purpose>focus research efforts on gaps rather than duplicating existing work</purpose>
+  <memory_integration>specification analysis + research prioritization</memory_integration>
+  <condition>optional - graceful fallback if spec.md doesn't exist</condition>
+</step_metadata>
+
+<spec_guided_research>
+  # Check for existing specifications to guide research
+  IF file_exists(".agent-os/specs/spec.md"):
+    LOG: "📋 Found existing spec.md - analyzing for research gaps and focus areas"
+    
+    # Read and analyze specification content
+    spec_content = read_file(".agent-os/specs/spec.md")
+    
+    # Identify research areas with context reduction
+    research_analysis = {
+      "documented_features": extract_feature_list(spec_content, max_features=7),
+      "implementation_gaps": identify_implementation_gaps(spec_content),
+      "architecture_questions": extract_unresolved_questions(spec_content),
+      "technology_decisions": extract_pending_tech_decisions(spec_content),
+      "integration_unknowns": identify_integration_research_needs(spec_content),
+      "research_priorities": prioritize_research_areas(spec_content)
+    }
+    
+    # Store research focus in memory
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "spec-guided-research-focus"
+      - value: create_research_summary(research_analysis, max_length=500)
+      - category: "research"
+      - priority: "high"
+    
+    # Search for similar architectural patterns using Qdrant
+    IF research_analysis.architecture_questions:
+      CALL: qdrant-qdrant_retrieve
+      PARAMETERS:
+        - collectionNames: ["agent-os-global-specs", "agent-os-global-decisions"]
+        - query: research_analysis.architecture_questions
+        - topK: 5
+      
+      IF similar_architecture_found:
+        architecture_insights = analyze_similar_architectures(similar_patterns)
+        CALL: mcp-memory-keeper-context_save
+        PARAMETERS:
+          - key: "architecture-research-insights"
+          - value: architecture_insights
+          - category: "research"
+          - priority: "high"
+    
+    # Enhanced Context7 research based on spec analysis
+    IF research_analysis.technology_decisions:
+      FOR tech_question IN research_analysis.technology_decisions[:3]:  # Limit to top 3
+        CALL: context7-resolve-library-id
+        PARAMETERS:
+          - libraryName: extract_technology_name(tech_question)
+        
+        IF library_resolved:
+          CALL: context7-get-library-docs
+          PARAMETERS:
+            - context7CompatibleLibraryID: "{resolved_library_id}"
+            - topic: "{tech_question}"
+            - tokens: 2000
+          
+          # Store focused research results
+          CALL: mcp-memory-keeper-context_save
+          PARAMETERS:
+            - key: "tech-research-{tech_question_id}"
+            - value: "{documentation_insights}"
+            - category: "research"
+            - priority: "high"
+    
+    # Update project entity with research focus
+    CALL: memento-mcp-add_observations
+    PARAMETERS:
+      - observations: [{
+          "entityName": "{PROJECT_ENTITY_NAME}",
+          "contents": [
+            "Research Focus: {len(research_analysis.research_priorities)} priority areas identified",
+            "Implementation Gaps: {len(research_analysis.implementation_gaps)} areas need research",
+            "Tech Decisions: {len(research_analysis.technology_decisions)} pending decisions",
+            "Guided Research: Focused on specification gaps rather than broad exploration"
+          ]
+        }]
+    
+    LOG: "✅ Spec-guided research focus established - {len(research_analysis.research_priorities)} priority areas"
+    CONTEXT_NOTE: "Research focused on: {research_analysis.research_priorities[:3]}"
+  
+  ELSE:
+    LOG: "ℹ️ No existing spec.md - proceeding with broad project research"
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "spec-guided-research-focus"
+      - value: "No existing specifications - conducting comprehensive project research"
+      - category: "research"
+      - priority: "normal"
+</spec_guided_research>
+
+<spec_guided_benefits>
+  <targeted_research>
+    - Focus on actual gaps rather than duplicating documented areas
+    - Prioritize research based on specification maturity
+    - Identify specific technology decisions needing investigation
+    - Target integration points requiring architectural research
+  </targeted_research>
+  
+  <enhanced_mcp_usage>
+    - Context7 searches guided by specific technology questions from spec
+    - Qdrant searches target similar architectural patterns
+    - Research MCPs work on focused queries rather than broad exploration
+    - Memory systems track research progress against specification needs
+  </enhanced_mcp_usage>
+  
+  <research_efficiency>
+    - Avoid researching already-decided architectural choices
+    - Focus documentation lookup on unresolved questions
+    - Prioritize research time on highest-impact unknowns
+    - Build research directly on existing project foundation
+  </research_efficiency>
+</spec_guided_benefits>
+
+<instructions>
+  ACTION: Read existing spec.md to identify research gaps and focus areas
+  PRIORITIZE: Research efforts on actual specification gaps rather than broad exploration
+  ENHANCE: MCP research tools with specific questions from specification analysis
+  STORE: Research focus and findings in memory systems for Phase 3 continuation
+  LEVERAGE: Existing project knowledge to make research more targeted and efficient
 </instructions>
 
 </step>

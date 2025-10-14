@@ -2,7 +2,43 @@
 
 ## Overview
 
-This document provides procedures for leveraging the dual memory architecture (Memory-Keeper + Memento) to resolve development errors by searching for previous solutions and similar issues. Uses universal canonical project naming to ensure error solutions are findable across sessions and prevent knowledge fragmentation.
+This document provides procedures for leveraging the dual memory architecture (Memory-Keeper + Memento) to resolve **ALL TYPES OF ERRORS** - both development/code errors AND instruction-following failures - by searching for previous solutions and similar issues. Uses universal canonical project naming to ensure error solutions are findable across sessions and prevent knowledge fragmentation.
+
+## Error Types Covered
+
+### Development Errors (Original Scope)
+- Test failures, compilation errors, runtime issues
+- Dependency conflicts, configuration problems
+- Performance issues, deployment failures
+
+### Instruction-Following Errors (New Scope) 
+- AI agents skipping required user interaction steps
+- Missing mandatory workflow checkpoints
+- Incorrect template execution order
+- Bypassing validation requirements
+- Failing to follow phase-specific instructions
+
+## Mandatory Error Detection Points
+
+### 5-Phase Workflow Error Detection
+Each phase MUST include error detection for:
+- **Phase 1 (Initialize)**: Skipping user questions, missing idea capture
+- **Phase 2 (Research)**: Insufficient stakeholder engagement, incomplete investigation  
+- **Phase 3 (Write)**: Missing specifications, inadequate detail
+- **Phase 4 (Verify)**: Skipping validation checks, incomplete reviews
+- **Phase 5 (Tasks)**: Missing task breakdown, insufficient planning
+
+### Universal Instruction Compliance Check
+Before ANY AI agent proceeds with technical work, validate:
+```
+INSTRUCTION_COMPLIANCE_CHECK:
+✅ All required user interactions completed?
+✅ All mandatory checkpoints passed? 
+✅ All prerequisite steps verified?
+✅ All phase-specific requirements met?
+
+IF ANY ❌: TRIGGER ERROR RESOLUTION WORKFLOW
+```
 
 ## Error Resolution Workflow with Canonical Identity
 
@@ -26,6 +62,63 @@ This document provides procedures for leveraging the dual memory architecture (M
   
   LOG: "Error resolution using canonical project identity: {PROJECT_ENTITY_NAME}"
 </canonical_error_context>
+```
+
+### Step 0.5: Instruction-Following Error Detection and Immediate Halt
+
+**CRITICAL**: This step must be executed BEFORE any technical error resolution to catch instruction-following failures:
+
+```xml
+<instruction_compliance_validation>
+  # Detect if AI agent has failed to follow instructions
+  INSTRUCTION_ERRORS = []
+  
+  # Check for common instruction-following failures
+  IF current_phase == "initialize" AND user_questions_not_asked:
+    INSTRUCTION_ERRORS.append("CRITICAL: Skipped mandatory user interaction in Phase 1")
+  
+  IF workflow_checkpoints_bypassed:
+    INSTRUCTION_ERRORS.append("ERROR: Bypassed mandatory workflow checkpoints")
+  
+  IF required_validations_skipped:
+    INSTRUCTION_ERRORS.append("ERROR: Skipped required validation steps")
+    
+  IF user_confirmation_not_obtained AND user_confirmation_required:
+    INSTRUCTION_ERRORS.append("ERROR: Proceeded without required user confirmation")
+  
+  # If instruction errors detected, IMMEDIATELY halt and resolve
+  IF len(INSTRUCTION_ERRORS) > 0:
+    LOG: "🚨 INSTRUCTION-FOLLOWING ERROR DETECTED - HALTING EXECUTION"
+    
+    # Store instruction error immediately
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "instruction-error-{PROJECT_ENTITY_NAME}-{timestamp}"
+      - value: "AI AGENT ERROR: {'; '.join(INSTRUCTION_ERRORS)} | Phase: {current_phase} | Template: {current_template}"
+      - category: "error"
+      - priority: "critical"
+    
+    # Search memory for similar instruction-following failures and their resolutions
+    CALL: mcp-memory-keeper-context_search
+    PARAMETERS:
+      - query: "instruction error workflow failure {current_phase} resolution"
+      - searchIn: ["key", "value"]
+    
+    CALL: memento-mcp-semantic_search
+    PARAMETERS:
+      - query: "AI agent instruction following error {current_phase} workflow compliance"
+      - entity_types: ["workflow_error", "instruction_failure", "compliance_fix"]
+      - limit: 10
+      - min_similarity: 0.4
+    
+    # Apply instruction error resolution protocol
+    EXECUTE: instruction_error_resolution_protocol(INSTRUCTION_ERRORS)
+    
+    # DO NOT PROCEED until instruction compliance is achieved
+    HALT_EXECUTION: true
+    REQUIRE_USER_ACKNOWLEDGMENT: true
+  ENDIF
+</instruction_compliance_validation>
 ```
 
 ### Step 1: Universal Error Analysis and Memory Search
@@ -335,6 +428,177 @@ When encountering any development error (test failures, compilation errors, runt
     ENDIF
   </successful_resolution_storage>
 </post_resolution_memory_update>
+```
+
+## Instruction Error Resolution Protocol
+
+```xml
+<instruction_error_resolution_protocol>
+  <immediate_halt_and_acknowledge>
+    # When instruction-following error is detected, immediately stop and ask user
+    DISPLAY_ERROR_MESSAGE: |
+      🚨 **INSTRUCTION-FOLLOWING ERROR DETECTED**
+      
+      I detected that I failed to follow the proper workflow instructions:
+      {list_of_instruction_errors}
+      
+      This is exactly the type of error we're trying to prevent with the error resolution system.
+      
+      **What I should have done:**
+      {correct_workflow_steps}
+      
+      **What I actually did:**
+      {incorrect_actions_taken}
+      
+      **How to fix this:**
+      1. I will restart the current phase properly
+      2. I will follow ALL required steps in order
+      3. I will ask required questions BEFORE proceeding
+      4. I will store this error pattern to prevent future occurrences
+      
+      Would you like me to:
+      A) Restart the current phase correctly
+      B) Continue from where we are but fix the compliance issue
+      C) Explain why this error occurred and how we can prevent it
+    
+    WAIT_FOR_USER_RESPONSE: true
+    DO_NOT_PROCEED: until user guidance received
+  </immediate_halt_and_acknowledge>
+  
+  <apply_instruction_fix>
+    BASED_ON_USER_CHOICE:
+      
+      IF user_choice == "A" (restart):
+        # Reset current phase and restart properly
+        CALL: mcp-memory-keeper-context_save
+        PARAMETERS:
+          - key: "phase-restart-{current_phase}-{timestamp}"
+          - value: "Restarting {current_phase} due to instruction compliance failure: {instruction_errors}"
+          - category: "progress"
+          - priority: "high"
+        
+        # Clear any incorrect state
+        RESET_PHASE_STATE: {current_phase}
+        
+        # Restart phase with proper instruction adherence
+        EXECUTE: {current_phase}_template_with_compliance_checks()
+      
+      IF user_choice == "B" (continue with fix):
+        # Fix the specific compliance issue without full restart
+        FOR_EACH error IN instruction_errors:
+          APPLY_SPECIFIC_FIX(error)
+          # e.g., if "skipped user questions" -> ask questions now
+          # e.g., if "bypassed validation" -> run validation now
+        
+        # Store the fix approach
+        CALL: mcp-memory-keeper-context_save
+        PARAMETERS:
+          - key: "instruction-fix-{timestamp}"
+          - value: "Fixed instruction compliance: {fix_actions_taken}"
+          - category: "progress"
+          - priority: "high"
+      
+      IF user_choice == "C" (explain):
+        # Provide detailed explanation of the error and prevention
+        EXPLAIN_ERROR_CAUSE_AND_PREVENTION(instruction_errors)
+        # Then ask for A or B choice
+  </apply_instruction_fix>
+  
+  <store_instruction_error_learning>
+    # Store this instruction error for future prevention
+    CALL: memento-mcp-create_entities
+    PARAMETERS:
+      - entities: [{
+          "name": "{PROJECT_ENTITY_NAME}-instruction-error-{timestamp}",
+          "entityType": "instruction_failure",
+          "observations": [
+            "Phase: {current_phase}",
+            "Template: {current_template}",
+            "Error Type: {error_classification}",
+            "Specific Errors: {'; '.join(instruction_errors)}",
+            "Root Cause: {root_cause_analysis}",
+            "Correct Procedure: {what_should_have_happened}",
+            "Resolution: {how_it_was_fixed}",
+            "Prevention: {how_to_prevent_future_occurrences}",
+            "User Impact: {impact_on_user_experience}",
+            "Canonical Project: {PROJECT_ENTITY_NAME}",
+            "Date: {current_date()}"
+          ]
+        }]
+    
+    # Link to project and workflow patterns
+    CALL: memento-mcp-create_relations
+    PARAMETERS:
+      - relations: [
+          {
+            "from": "{PROJECT_ENTITY_NAME}-instruction-error-{timestamp}",
+            "to": "{PROJECT_ENTITY_NAME}",
+            "relationType": "workflow_error_in",
+            "metadata": {"canonical_project": PROJECT_ENTITY_NAME, "error_type": "instruction_compliance"}
+          },
+          {
+            "from": "{current_phase}-workflow-pattern",
+            "to": "{PROJECT_ENTITY_NAME}-instruction-error-{timestamp}",
+            "relationType": "requires_compliance_check",
+            "metadata": {"prevention_priority": "high"}
+          }
+        ]
+  </store_instruction_error_learning>
+</instruction_error_resolution_protocol>
+```
+
+## Integration Points for All 5 Phases
+
+Each phase template MUST include this error detection at the beginning:
+
+### Phase 1 (Initialize-Spec) Integration
+```xml
+# Add after MCP initialization, before Step 1
+<include>@reference-docs/instructions/support-workflows/error-resolution-via-memory.md#instruction_compliance_validation</include>
+
+# Specific Phase 1 checks:
+user_questions_not_asked = (no user interaction detected in last 5 context items)
+workflow_checkpoints_bypassed = (proceeded to technical work without idea capture)
+```
+
+### Phase 2 (Research-Spec) Integration  
+```xml
+# Add before research activities
+<include>@reference-docs/instructions/support-workflows/error-resolution-via-memory.md#instruction_compliance_validation</include>
+
+# Specific Phase 2 checks:
+stakeholder_engagement_skipped = (no stakeholder identification or interview planning)
+research_depth_insufficient = (less than minimum research requirements met)
+```
+
+### Phase 3 (Write-Spec) Integration
+```xml
+# Add before specification writing
+<include>@reference-docs/instructions/support-workflows/error-resolution-via-memory.md#instruction_compliance_validation</include>
+
+# Specific Phase 3 checks:
+specifications_missing = (key specification sections not addressed)
+detail_inadequate = (specifications lack sufficient detail for implementation)
+```
+
+### Phase 4 (Verify-Spec) Integration
+```xml
+# Add before verification activities
+<include>@reference-docs/instructions/support-workflows/error-resolution-via-memory.md#instruction_compliance_validation</include>
+
+# Specific Phase 4 checks:
+validation_checks_skipped = (required validation steps not completed)
+review_incomplete = (specifications not properly reviewed against criteria)
+```
+
+### Phase 5 (Create-Tasks) Integration
+```xml
+# Add before task creation
+<include>@reference-docs/instructions/support-workflows/error-resolution-via-memory.md#instruction_compliance_validation</include>
+
+# Specific Phase 5 checks:
+task_breakdown_missing = (specifications not properly broken into tasks)
+planning_insufficient = (task planning lacks required detail)
 ```
 
 ## Error-Specific Memory Search Patterns

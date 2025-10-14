@@ -720,6 +720,163 @@ This system provides dual memory integration (Memory-Keeper + Memento) for Agent
 </agent_os_command_integration>
 ```
 
+## Legacy KB Reference Detection and Migration
+
+### Deprecated Terminology Identification
+```xml
+<legacy_kb_detection>
+  <!-- Scan for deprecated Knowledge Base terminology -->
+  <deprecated_terms_check>
+    # Check for legacy KB references in templates and workflow
+    legacy_terms = [
+      "KB", "knowledge base", "kb_", "KB_",
+      "from KB", "KB context", "KB patterns", "KB insights",
+      "KB available", "KB_AVAILABLE", "kb_enhancement",
+      "knowledge_base", "kb_persistence", "KB architectural"
+    ]
+    
+    FOR term in legacy_terms:
+      IF term found_in workflow_or_template:
+        LOG: "🔴 DEPRECATED: Found legacy KB reference: '{term}'"
+        MIGRATION_REQUIRED: true
+        
+        # Suggest modern MCP replacement
+        modern_replacement = get_mcp_replacement(term)
+        LOG: "✅ REPLACE WITH: '{modern_replacement}'"
+        RECOMMENDATION: "Update to use MCP memory systems (Memory-Keeper + Memento)"
+  </deprecated_terms_check>
+  
+  <modern_mcp_terminology>
+    # Correct modern terminology for MCP systems
+    correct_terms = {
+      "KB context" → "Phase validation context",
+      "KB patterns" → "cross-project patterns from Memento",
+      "KB insights" → "Memory-Keeper session context",
+      "KB available" → "MCP systems available",
+      "KB_AVAILABLE" → "MCP_AVAILABLE",
+      "kb_enhancement" → "validation_enhancement",
+      "from KB" → "from Phase 4 validation / from cross-project learning",
+      "KB architectural" → "Phase 4 validated architectural",
+      "KB persistence" → "MCP knowledge persistence"
+    }
+    
+    LOG: "📋 Use these modern MCP terms instead of legacy KB references"
+  </modern_mcp_terminology>
+  
+  <phase_based_context>
+    # Ensure phase-based workflow terminology
+    phase_context_mapping = {
+      "Phase 1": "initialize-spec.md - project initialization and scope",
+      "Phase 2": "research-spec.md - requirements gathering and validation", 
+      "Phase 3": "write-spec.md - comprehensive specification writing",
+      "Phase 4": "verify-spec.md - specification validation and review",
+      "Phase 5": "create-tasks-list.md - task breakdown with TDD approach"
+    }
+    
+    # Validate context references use proper phase terminology
+    FOR phase in workflow_phases:
+      IF phase uses_legacy_kb_context:
+        LOG: "🔄 UPDATE NEEDED: Phase {phase} should reference appropriate previous phases"
+        SUGGESTION: "Use '{phase_context_mapping[phase]}' context patterns"
+  </phase_based_context>
+</legacy_kb_detection>
+```
+
+### Migration Guidelines
+```xml
+<kb_to_mcp_migration>
+  <memory_system_mapping>
+    # Map legacy KB concepts to modern MCP systems
+    
+    # OLD KB APPROACH:
+    # - Generic "knowledge base" storage
+    # - Vague "KB context" references  
+    # - No structured workflow phases
+    # - Limited cross-project learning
+    
+    # NEW MCP APPROACH:
+    modern_mcp_architecture = {
+      "Session Context": {
+        "system": "Memory-Keeper",
+        "purpose": "Workflow continuity within phases",
+        "calls": ["context_save", "context_get", "context_search"]
+      },
+      "Long-term Knowledge": {
+        "system": "Memento", 
+        "purpose": "Cross-project learning and patterns",
+        "calls": ["create_entities", "semantic_search", "add_observations"]
+      },
+      "Phase Context": {
+        "system": "5-Phase Workflow",
+        "purpose": "Structured handoffs between phases",
+        "phases": ["Initialize", "Research", "Write", "Verify", "Create Tasks"]
+      }
+    }
+    
+    LOG: "🏗️ Modern MCP architecture provides structured memory management"
+  </memory_system_mapping>
+  
+  <migration_checklist>
+    migration_steps = [
+      "✅ Replace 'KB' terminology with specific MCP system references",
+      "✅ Update context references to use phase-specific validation results", 
+      "✅ Change generic 'knowledge base' to Memory-Keeper + Memento systems",
+      "✅ Replace 'KB patterns' with 'cross-project patterns from Memento'",
+      "✅ Update 'KB context' to 'Phase X validation context'",
+      "✅ Change 'KB_AVAILABLE' conditions to 'MCP_AVAILABLE'",
+      "✅ Replace enhancement sections with validation_enhancement",
+      "✅ Update persistence workflows to use actual MCP calls"
+    ]
+    
+    FOR step in migration_steps:
+      VALIDATE: step_completion_in_current_template
+      IF not_completed:
+        LOG: "⚠️ MIGRATION INCOMPLETE: {step}"
+        ACTION_REQUIRED: "Complete this migration step"
+  </migration_checklist>
+</kb_to_mcp_migration>
+```
+
+### Template Validation
+```xml
+<template_mcp_compliance>
+  <compliance_check>
+    # Validate templates follow modern MCP patterns
+    
+    required_mcp_patterns = [
+      "memory_precedence_initialization" # Centralized memory initialization
+      "mcp-memory-keeper-context_save",  # Session context storage
+      "memento-mcp-semantic_search",     # Cross-project pattern search
+      "memento-mcp-create_entities",     # Long-term knowledge storage
+      "Phase X validation context"       # Phase-specific context references
+    ]
+    
+    FOR template in agent_os_templates:
+      FOR pattern in required_mcp_patterns:
+        IF pattern not_found_in template:
+          LOG: "⚠️ COMPLIANCE ISSUE: Template '{template}' missing '{pattern}'"
+          RECOMMENDATION: "Add modern MCP pattern to template"
+        ELSE:
+          LOG: "✅ COMPLIANT: Template '{template}' uses '{pattern}'"
+  </compliance_check>
+  
+  <quality_assurance>
+    # Final validation that no legacy KB references remain
+    
+    SCAN: all_agent_os_templates
+    SEARCH: legacy_kb_terms
+    
+    IF legacy_terms_found:
+      LOG: "🔴 QUALITY ISSUE: Legacy KB terms still present"
+      LOG: "📍 Found in: {templates_with_legacy_terms}"
+      BLOCK: "Template deployment until migration complete"
+    ELSE:
+      LOG: "✅ QUALITY PASSED: All templates use modern MCP terminology"
+      APPROVE: "Templates ready for 5-phase workflow deployment"
+  </quality_assurance>
+</template_mcp_compliance>
+```
+
 This memory integration system provides:
 
 ✅ **Automatic Tech Detection**: Scans reference-docs and configures memory patterns  
@@ -727,4 +884,6 @@ This memory integration system provides:
 ✅ **Context Reduction**: 70-90% reduction in active context size  
 ✅ **Cross-Project Learning**: Leverages patterns from similar projects  
 ✅ **Workflow Continuity**: Seamless handoff between Agent OS commands  
-✅ **Failure Resilience**: Graceful degradation if memory systems unavailable
+✅ **Failure Resilience**: Graceful degradation if memory systems unavailable  
+✅ **Legacy KB Migration**: Automatic detection and guidance for deprecated terminology  
+✅ **Template Compliance**: Quality assurance for modern MCP architecture

@@ -32,14 +32,17 @@ encoding: UTF-8
   - Migrate existing date-prefixed specification folders to consolidated structure
   - Preserve all specification content and relationships
   - Create unified spec.md, tasks.md, and sub-specs structure
-  - Integrate memory-keeper for enhanced migration tracking and pattern recognition
+  - **Extract valuable context for 5-phase workflow continuation**
+  - **Build cross-project consolidation intelligence through enhanced MCP integration**
+  - **Prepare optimized foundation for Phase 2: Research and beyond**
 </purpose>
 
 <context>
-  - Part of Agent OS framework
-  - Used to migrate legacy specification structures to new consolidated approach
-  - Builds on existing specification content without data loss
-  - Enhanced with persistent Integrated Memory System for informed migration
+  - Part of Agent OS framework - supports both standalone and 5-phase workflow integration
+  - **Phase 1 Integration**: Runs as Step 1.5 in initialize-spec workflow
+  - **Standalone Mode**: Can be executed independently for legacy migration
+  - **5-Phase Preparation**: Optimizes legacy knowledge for subsequent workflow phases
+  - Enhanced with persistent MCP systems for cross-project consolidation learning
 </context>
 
 <prerequisites>
@@ -56,7 +59,7 @@ encoding: UTF-8
 
 <precedence_resolution>
   <!-- Include precedence rules -->
-  <include>@reference-docs/instructions/precedence-rules.md</include>
+  <include>@reference-docs/instructions/support-workflows/precedence-rules.md</include>
   
   # Assert Agent OS command precedence
   AGENT_OS_COMMAND = "consolidate-specs"
@@ -66,7 +69,7 @@ encoding: UTF-8
 
 <memory_initialization>
   <!-- Include memory integration -->
-  <include>@reference-docs/instructions/memory-integration.md</include>
+  <include>@reference-docs/instructions/support-workflows/memory-integration.md</include>
   
   # Access detected context from memory integration
   PROJECT_NAME = DETECTION_CONTEXT["project_name"]
@@ -1004,6 +1007,143 @@ encoding: UTF-8
   ACTION: Validate all aspects of the consolidation
   VERIFY: No content loss and all functionality preserved
   CONFIRM: Structure ready for ongoing consolidated specification workflow
+</instructions>
+
+</step>
+
+<step number="5.5" name="extract_5_phase_workflow_context">
+
+### Step 5.5: Extract Context for 5-Phase Workflow
+
+<step_metadata>
+  <action>extract valuable legacy insights for future workflow phases</action>
+  <purpose>optimize consolidated knowledge for Phase 2-5 continuation</purpose>
+  <memory_integration>cross-phase context preparation</memory_integration>
+  <condition>enhanced context extraction for workflow intelligence</condition>
+</step_metadata>
+
+<context_extraction_for_phases>
+  <phase_2_research_context>
+    # Extract insights that will inform Phase 2: Research
+    research_insights = {
+      "feature_evolution": extract_feature_history_patterns(consolidated_specs),
+      "technical_decisions": extract_architectural_choices(legacy_folders),
+      "user_requirements": extract_requirement_evolution(specification_content),
+      "technology_progression": analyze_tech_stack_changes(dated_folders),
+      "implementation_lessons": extract_lessons_learned(task_breakdowns)
+    }
+    
+    # Store for Phase 2 Research enhancement
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "phase2-research-context"
+      - value: serialize_context(research_insights)
+      - category: "progress"
+      - priority: "high"
+    
+    # Create Memento entities for cross-project research patterns
+    CALL: memento-mcp-create_entities
+    PARAMETERS:
+      - entities: [{
+          "name": "{PROJECT_ENTITY_NAME}-legacy-research-insights",
+          "entityType": "research_foundation",
+          "observations": [
+            "Feature Evolution: {research_insights.feature_evolution[:3]}",
+            "Key Technical Decisions: {research_insights.technical_decisions[:3]}",
+            "Requirement Patterns: {research_insights.user_requirements[:3]}",
+            "Technology Progression: {research_insights.technology_progression}",
+            "Implementation Wisdom: {research_insights.implementation_lessons[:3]}"
+          ]
+        }]
+  </phase_2_research_context>
+  
+  <phase_3_write_context>
+    # Extract specification patterns that will guide Phase 3: Write
+    write_insights = {
+      "specification_patterns": analyze_spec_structures(consolidated_content),
+      "documentation_styles": extract_writing_patterns(legacy_specs),
+      "feature_organization": analyze_grouping_effectiveness(consolidated_structure),
+      "cross_reference_patterns": map_linking_strategies(updated_references),
+      "validation_criteria": extract_quality_metrics(successful_migrations)
+    }
+    
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "phase3-write-context"
+      - value: serialize_context(write_insights)
+      - category: "progress"
+      - priority: "high"
+  </phase_3_write_context>
+  
+  <phase_5_tasks_context>
+    # Extract task breakdown patterns for Phase 5: Create Tasks
+    task_insights = {
+      "task_breakdown_patterns": analyze_task_structures(consolidated_tasks),
+      "implementation_sequences": extract_execution_orders(legacy_task_flows),
+      "dependency_patterns": map_task_dependencies(cross_feature_links),
+      "estimation_accuracy": analyze_task_completion_data(historical_tasks),
+      "proven_approaches": identify_successful_implementations(completed_features)
+    }
+    
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "phase5-tasks-context"
+      - value: serialize_context(task_insights)
+      - category: "progress"
+      - priority: "high"
+  </phase_5_tasks_context>
+  
+  <cross_phase_intelligence>
+    # Create overarching project intelligence for all phases
+    project_intelligence = {
+      "consolidation_summary": create_executive_summary(consolidation_results),
+      "feature_portfolio": catalog_all_features(consolidated_specs),
+      "technical_architecture": synthesize_architecture_decisions(legacy_insights),
+      "development_patterns": identify_team_workflows(historical_approaches),
+      "quality_benchmarks": establish_success_metrics(consolidation_outcomes)
+    }
+    
+    # Store comprehensive project context
+    CALL: memento-mcp-add_observations
+    PARAMETERS:
+      - observations: [{
+          "entityName": "{PROJECT_ENTITY_NAME}",
+          "contents": [
+            "Legacy Consolidation: {consolidation_summary.feature_count} features consolidated",
+            "Technical Foundation: {project_intelligence.technical_architecture.summary}",
+            "Development Approach: {project_intelligence.development_patterns.summary}",
+            "Quality Baseline: {project_intelligence.quality_benchmarks.summary}",
+            "5-Phase Ready: Context prepared for Phases 2-5"
+          ]
+        }]
+  </cross_phase_intelligence>
+</context_extraction_for_phases>
+
+<workflow_preparation_benefits>
+  <phase_2_enhancement>
+    - Research informed by actual feature evolution history
+    - Technical decisions based on proven architectural patterns
+    - Requirement gathering guided by user need progression
+  </phase_2_enhancement>
+  
+  <phase_3_enhancement>
+    - Specification writing leverages successful documentation patterns
+    - Feature organization follows proven structural approaches
+    - Quality standards based on consolidation validation criteria
+  </phase_3_enhancement>
+  
+  <phase_5_enhancement>
+    - Task breakdowns informed by historical implementation success
+    - Dependency mapping based on actual cross-feature relationships
+    - Estimation accuracy improved through legacy completion data
+  </phase_5_enhancement>
+</workflow_preparation_benefits>
+
+<instructions>
+  ACTION: Extract valuable legacy insights optimized for each workflow phase
+  STORE: Phase-specific context in memory systems for intelligent continuation
+  PREPARE: Enhanced foundation for superior Phase 2-5 execution
+  LEVERAGE: Historical project wisdom to guide future development decisions
 </instructions>
 
 </step>

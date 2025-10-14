@@ -32,14 +32,17 @@ encoding: UTF-8
   - Analyze specification collections for feature overlap and duplication
   - Intelligently merge related specifications to prevent redundancy
   - Maintain semantic coherence while consolidating similar content
-  - Integrate memory-keeper for enhanced pattern recognition and decision tracking
+  - **Extract deduplication insights for 5-phase workflow enhancement**
+  - **Build cross-project feature merging intelligence through enhanced MCP integration**
+  - **Optimize merged specifications for Phase 2-5 workflow continuation**
 </purpose>
 
 <context>
-  - Part of Agent OS framework
-  - Used before consolidation or as standalone deduplication tool
-  - Prevents duplicate features, conflicting specs, and redundant tasks
-  - Enhanced with persistent Integrated Memory System for informed merging decisions
+  - Part of Agent OS framework - supports both standalone and 5-phase workflow integration
+  - **Phase 1 Integration**: Runs as part of Step 1.5 in initialize-spec workflow (after consolidate-specs)
+  - **Standalone Mode**: Can be executed independently for feature deduplication
+  - **5-Phase Preparation**: Creates clean, non-redundant foundation for subsequent workflow phases
+  - Enhanced with persistent MCP systems for cross-project deduplication learning
 </context>
 
 <prerequisites>
@@ -57,7 +60,7 @@ encoding: UTF-8
 
 <precedence_resolution>
   <!-- Include precedence rules -->
-  <include>@reference-docs/instructions/precedence-rules.md</include>
+  <include>@reference-docs/instructions/support-workflows/precedence-rules.md</include>
   
   # Assert Agent OS command precedence
   AGENT_OS_COMMAND = "dedupe-specs"
@@ -67,7 +70,7 @@ encoding: UTF-8
 
 <memory_initialization>
   <!-- Include memory integration -->
-  <include>@reference-docs/instructions/memory-integration.md</include>
+  <include>@reference-docs/instructions/support-workflows/memory-integration.md</include>
   
   # Access detected context from memory integration
   PROJECT_NAME = DETECTION_CONTEXT["project_name"]
@@ -596,6 +599,167 @@ encoding: UTF-8
   VALIDATE: Content preservation and merge quality
   PROVIDE: Clean, merged specifications ready for further processing
   STORE: Complete validation and audit information in Integrated Memory System
+</instructions>
+
+</step>
+
+<step number="5.5" name="extract_5_phase_workflow_context">
+
+### Step 5.5: Extract Context for 5-Phase Workflow
+
+<step_metadata>
+  <action>extract valuable deduplication insights for future workflow phases</action>
+  <purpose>optimize merged specifications for Phase 2-5 continuation</purpose>
+  <memory_integration>cross-phase context preparation from deduplication results</memory_integration>
+  <condition>enhanced context extraction for workflow intelligence</condition>
+</step_metadata>
+
+<context_extraction_for_phases>
+  <phase_2_research_context>
+    # Extract insights that will inform Phase 2: Research
+    research_insights = {
+      "feature_relationships": analyze_merged_feature_patterns(merged_features),
+      "similarity_patterns": extract_successful_similarity_indicators(feature_groups),
+      "component_dependencies": map_component_relationships(merge_results),
+      "technology_integration": analyze_tech_stack_patterns(merged_specifications),
+      "user_story_patterns": extract_consolidated_user_needs(merged_content)
+    }
+    
+    # Store for Phase 2 Research enhancement
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "phase2-research-dedup-context"
+      - value: serialize_context(research_insights)
+      - category: "progress"
+      - priority: "high"
+    
+    # Create Memento entities for cross-project research patterns
+    CALL: memento-mcp-create_entities
+    PARAMETERS:
+      - entities: [{
+          "name": "{PROJECT_ENTITY_NAME}-dedup-research-insights",
+          "entityType": "research_foundation",
+          "observations": [
+            "Feature Relationships: {research_insights.feature_relationships[:3]}",
+            "Similarity Patterns: {research_insights.similarity_patterns[:3]}",
+            "Component Dependencies: {research_insights.component_dependencies[:3]}",
+            "Tech Integration: {research_insights.technology_integration}",
+            "User Story Patterns: {research_insights.user_story_patterns[:3]}"
+          ]
+        }]
+  </phase_2_research_context>
+  
+  <phase_3_write_context>
+    # Extract specification writing patterns from successful merges
+    write_insights = {
+      "merge_documentation_patterns": analyze_successful_merge_structures(merged_features),
+      "feature_organization_success": extract_effective_grouping_strategies(feature_groups),
+      "content_integration_methods": analyze_content_merge_techniques(merge_results),
+      "semantic_coherence_patterns": extract_coherence_maintenance_strategies(validation_results),
+      "specification_quality_metrics": define_quality_standards(successful_merges)
+    }
+    
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "phase3-write-dedup-context"
+      - value: serialize_context(write_insights)
+      - category: "progress"
+      - priority: "high"
+  </phase_3_write_context>
+  
+  <phase_4_verify_context>
+    # Extract verification patterns from deduplication validation
+    verify_insights = {
+      "content_preservation_validation": extract_validation_techniques(validation_results),
+      "merge_quality_assessment": analyze_quality_validation_patterns(merge_audit_trail),
+      "semantic_coherence_checks": extract_coherence_validation_methods(merged_features),
+      "integration_readiness_criteria": define_integration_validation_standards(output_validation),
+      "quality_assurance_patterns": document_qa_approaches(successful_validations)
+    }
+    
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "phase4-verify-dedup-context"
+      - value: serialize_context(verify_insights)
+      - category: "progress"
+      - priority: "high"
+  </phase_4_verify_context>
+  
+  <phase_5_tasks_context>
+    # Extract task breakdown patterns from merged specifications
+    task_insights = {
+      "merged_task_patterns": analyze_consolidated_task_structures(merged_features),
+      "dependency_relationships": map_task_dependencies_from_merges(component_dependencies),
+      "implementation_sequences": extract_execution_patterns(merged_deliverables),
+      "complexity_assessments": analyze_merged_complexity_patterns(feature_analyses),
+      "integration_task_patterns": identify_cross_feature_integration_tasks(merge_results)
+    }
+    
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "phase5-tasks-dedup-context"
+      - value: serialize_context(task_insights)
+      - category: "progress"
+      - priority: "high"
+  </phase_5_tasks_context>
+  
+  <cross_phase_deduplication_intelligence>
+    # Create comprehensive deduplication intelligence for all phases
+    dedup_intelligence = {
+      "merge_effectiveness_summary": create_merge_summary(deduplication_results),
+      "feature_consolidation_map": map_original_to_merged_features(merge_audit_trail),
+      "similarity_detection_insights": synthesize_similarity_patterns(feature_groups),
+      "content_preservation_standards": establish_preservation_benchmarks(validation_results),
+      "workflow_optimization_recommendations": generate_workflow_recommendations(dedup_session)
+    }
+    
+    # Store comprehensive deduplication context
+    CALL: memento-mcp-add_observations
+    PARAMETERS:
+      - observations: [{
+          "entityName": "{PROJECT_ENTITY_NAME}",
+          "contents": [
+            "Feature Deduplication: {dedup_intelligence.merge_effectiveness_summary}",
+            "Similarity Intelligence: {dedup_intelligence.similarity_detection_insights}",
+            "Content Standards: {dedup_intelligence.content_preservation_standards}",
+            "Optimization Insights: {dedup_intelligence.workflow_optimization_recommendations}",
+            "5-Phase Enhanced: Deduplication context prepared for all phases"
+          ]
+        }]
+  </cross_phase_deduplication_intelligence>
+</context_extraction_for_phases>
+
+<workflow_preparation_benefits>
+  <phase_2_enhancement>
+    - Research guided by actual feature relationship patterns from successful merges
+    - Component analysis informed by validated dependency mappings
+    - Technology research focused on proven integration patterns
+  </phase_2_enhancement>
+  
+  <phase_3_enhancement>
+    - Specification writing leverages successful merge documentation patterns
+    - Feature organization follows proven consolidation strategies
+    - Content integration uses validated merge techniques
+  </phase_3_enhancement>
+  
+  <phase_4_enhancement>
+    - Verification processes use proven content preservation validation methods
+    - Quality standards based on successful merge validation criteria
+    - Semantic coherence checks informed by deduplication validation patterns
+  </phase_4_enhancement>
+  
+  <phase_5_enhancement>
+    - Task breakdowns informed by consolidated task patterns from merged specifications
+    - Dependency mapping based on validated component relationships
+    - Implementation sequences guided by successful merge execution patterns
+  </phase_5_enhancement>
+</workflow_preparation_benefits>
+
+<instructions>
+  ACTION: Extract valuable deduplication insights optimized for each workflow phase
+  STORE: Phase-specific context from merge results in memory systems for intelligent continuation
+  PREPARE: Enhanced foundation for superior Phase 2-5 execution with deduplication intelligence
+  LEVERAGE: Successful merge patterns and validation techniques to guide future development decisions
 </instructions>
 
 </step>

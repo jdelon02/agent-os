@@ -64,85 +64,55 @@ encoding: UTF-8
 
 ### Step 0: Initialize Memory Systems and Resolve Precedence
 
-<precedence_resolution>
-  <!-- Include precedence rules -->
-  <include>@reference-docs/instructions/precedence-rules.md</include>
+<memory_precedence_initialization>
+  <!-- Use centralized Memory Systems and Precedence Initialization workflow -->
+  <include>@reference-docs/instructions/memory-precedence-initialization.md</include>
   
-  # Assert Agent OS command precedence
-  AGENT_OS_COMMAND = "execute-tasks"
-  CURRENT_MODE = "AGENT_OS_COMMAND_ACTIVE"
-  LOG: "🔴 Agent OS execute-tasks active - absolute precedence"
-</precedence_resolution>
-
-<memory_initialization>
-  <!-- Include memory integration -->
-  <include>@reference-docs/instructions/memory-integration.md</include>
+  # Execute centralized initialization with execute-tasks specific parameters
+  EXECUTE: memory_precedence_initialization_workflow()
+  PARAMETERS:
+    - command_name: "execute-tasks"
+    - memory_requirements: "RECOMMENDED"  # Graceful degradation if unavailable
+    - override_categories: ["testing_requirements", "implementation_standards", "deployment_requirements"]
+    - session_description: "Agent OS execute-tasks operation"
+    - fallback_behavior: "GRACEFUL_DEGRADATION"
   
-  # Access detected context from memory integration
+  # Access standardized initialization results
   PROJECT_NAME = DETECTION_CONTEXT["project_name"]
+  PROJECT_ENTITY_NAME = DETECTION_CONTEXT["project_entity_name"]  # Canonical name
   PRIMARY_TECH = DETECTION_CONTEXT["primary_tech"]
   TECH_STACKS = DETECTION_CONTEXT["tech_stacks"]
   CONFIDENCE_LEVEL = DETECTION_CONTEXT["confidence_level"]
   AVAILABLE_ENTITIES = DETECTION_CONTEXT["entities"]
+  NAMESPACE_STATUS = DETECTION_CONTEXT["namespace_status"]
+  PROJECT_OVERRIDES = initialization_result.project_overrides
   
-  LOG: "Memory-enhanced execute-tasks initialized for {PROJECT_NAME} ({PRIMARY_TECH})"
-</memory_initialization>
-
-<project_specific_overrides>
-  # Check for project-specific execute-tasks overrides
-  IF file_exists(".github/instructions/main.instructions.md"):
-    project_overrides = parse_agent_os_overrides(".github/instructions/main.instructions.md")
-    
-    IF project_overrides.has_execute_tasks_overrides():
-      testing_requirements = project_overrides.get_testing_requirements()
-      implementation_standards = project_overrides.get_implementation_standards()
-      
-      LOG: "🟠 Project overrides loaded: {len(testing_requirements)} test requirements, {len(implementation_standards)} standards"
-      SCHEDULE: Apply overrides at testing-requirements and implementation-standards steps
-</project_specific_overrides>
+  # Log initialization completion
+  LOG: "📋 Execute-tasks initialization complete - using centralized workflow"
+  LOG: "🏷️ Project: {PROJECT_NAME} → {PROJECT_ENTITY_NAME} (Status: {NAMESPACE_STATUS})"
+  
+  # Log project overrides if detected
+  IF PROJECT_OVERRIDES.testing_requirements:
+    LOG: "🟠 Testing requirements loaded: {len(PROJECT_OVERRIDES.testing_requirements)} requirements"
+  IF PROJECT_OVERRIDES.implementation_standards:
+    LOG: "🟠 Implementation standards loaded: {len(PROJECT_OVERRIDES.implementation_standards)} standards"
+</memory_precedence_initialization>
 
 </step>
 
 <step number="1" name="task_assignment">
 
-### Step 0: Knowledge Base Initialization
+### Step 1: Task Assignment
 
 <step_metadata>
-  <action>initialize project knowledge base</action>
-  <purpose>setup memory-keeper for persistent implementation context</purpose>
-  <creates>project namespace in memory-keeper</creates>
+  <purpose>identify and assign specific task for execution</purpose>
+  <requires>user input or spec reference</requires>
+  <uses_memory>previous initialization context</uses_memory>
 </step_metadata>
 
-<kb_namespace>
-  <project_name>derived from current directory name</project_name>
-  <namespace_format>kb_{sanitized_project_name}</namespace_format>
-  <session_description>Agent OS execute-tasks operation</session_description>
-</kb_namespace>
-
-<kb_initialization_process>
-  <availability_check>
-    1. CHECK if memory-keeper MCP is available
-    2. IF available: PROCEED with KB initialization
-    3. IF unavailable: LOG unavailability and SKIP to step 1
-  </availability_check>
-  <namespace_setup>
-    1. GENERATE project namespace from directory name
-    2. START new context session with project directory path
-    3. SET session description: "Agent OS execute-tasks operation"
-    4. LOG successful KB initialization
-  </namespace_setup>
-  <fallback_behavior>
-    1. IF memory-keeper unavailable: USE standard task execution workflow
-    2. DOCUMENT limitation in response
-    3. CONTINUE with existing workflow patterns
-  </fallback_behavior>
-</kb_initialization_process>
-
 <instructions>
-  ACTION: Initialize memory-keeper with project-specific namespace
-  VERIFY: Memory-keeper availability before proceeding
-  FALLBACK: Gracefully degrade to standard workflow if unavailable
-  LOG: Initialization status for transparency
+  ACTION: Task assignment logic (legacy KB initialization removed - now handled by centralized Step 0)
+  CONTINUE: With standard task assignment workflow
 </instructions>
 
 </step>
@@ -424,77 +394,84 @@ encoding: UTF-8
 ### Step 4: Documentation Research with Context7
 
 <step_metadata>
-  <purpose>gather authoritative implementation guidance</purpose>
+  <purpose>gather authoritative implementation guidance using centralized workflow</purpose>
   <required>true</required>
+  <uses>centralized Context7 + Meilisearch documentation workflow</uses>
 </step_metadata>
 
-<context7_documentation>
-  <process>
-    1. IDENTIFY technologies involved in current task
-    2. FOR EACH technology:
-       a. EXTRACT Meilisearch key from mapping in tech-stack.md
-       b. SEARCH Meilisearch cache using the extracted key
-       c. IF cached documentation exists AND is not stale (< 30 days old):
-          i. RETRIEVE documentation from Meilisearch
-          ii. LOG cache hit for performance metrics
-       d. IF NO cached documentation OR cache is stale:
-          i. RESOLVE library ID using mcp__proxmoxmcp__context7-resolve-library-id
-          ii. FETCH documentation using mcp__proxmoxmcp__context7-get-library-docs with focus on current task
-          iii. STORE documentation in Meilisearch with the following schema:
-               - id: "[language]_[library_name]" (e.g., "laravel_framework")
-               - library_id: Context7 library ID (e.g., "/laravel/laravel")
-               - title: "Documentation for [library_name]"
-               - content: Full documentation content
-               - fetch_date: Current date (YYYY-MM-DD format)
-               - tokens: Number of tokens retrieved
-               - topic: Topic used for focused documentation (if any)
-               - version: Library version information (if available)
-          iv. LOG cache miss and update for metrics
-       e. EXTRACT specific implementation patterns, best practices, and examples
-       f. DOCUMENT sources and key insights
-       g. RECORD documentation source (cache or API) for transparency
-    3. COMPILE findings into implementation guidance
-  </process>
-</context7_documentation>
-
-<documentation_template>
-  ## Documentation Research
-
-  I've researched the latest documentation for implementing this task:
-
-  - **[TECH_NAME]**: `[CONTEXT7_LIBRARY_ID]`
-    - [SPECIFIC_IMPLEMENTATION_PATTERN_FOR_TASK]
-    - [CODE_EXAMPLE_OR_BEST_PRACTICE]
-    - Source: [CACHE_HIT ? "Meilisearch cache" : "Context7 API"]
-    - Cache Status: [CACHE_STATUS]
-    - Last Updated: [FETCH_DATE]
+<context7_meilisearch_workflow>
+  <!-- Use centralized Context7 + Meilisearch documentation workflow -->
+  <include>@reference-docs/instructions/support-workflows/context7-meilisearch-workflow.md</include>
   
-  - **[TECH_NAME]**: `[CONTEXT7_LIBRARY_ID]`
-    - [SPECIFIC_IMPLEMENTATION_PATTERN_FOR_TASK]
-    - [CODE_EXAMPLE_OR_BEST_PRACTICE]
-    - Source: [CACHE_HIT ? "Meilisearch cache" : "Context7 API"]
-    - Cache Status: [CACHE_STATUS]
-    - Last Updated: [FETCH_DATE]
+  # Execute the centralized documentation workflow for task-specific research
+  EXECUTE: context7_documentation_workflow()
+  PARAMETERS:
+    - workflow_type: "implementation"
+    - focus_areas: ["implementation_specific"]
+    - trust_threshold: 9.0  # High threshold for task execution accuracy
+    - technologies: TASK_RELEVANT_TECH  # Technologies specific to current task
+    - documentation_depth: "code_examples_and_apis"
+    - topic: "{TASK_TYPE}"  # Focus on specific task type
+  
+  # Store workflow results for implementation planning
+  DOCUMENTATION_RESULTS = workflow_output.documentation_summary
+  TRUST_ASSESSMENT = workflow_output.confidence_level
+  IMPLEMENTATION_GUIDANCE = workflow_output.key_architectural_insights
+  CACHE_PERFORMANCE = workflow_output.performance_metrics
+  
+  # Log research results
+  LOG: "📚 Task research completed with {TRUST_ASSESSMENT} confidence"
+  LOG: "📊 Documentation sources: {CACHE_PERFORMANCE.cache_hits} cached, {CACHE_PERFORMANCE.api_calls} fresh"
+</context7_meilisearch_workflow>
 
-  [IF KB_AVAILABLE]:
-  ### Integration with Established Patterns
-  - **Project Pattern Consistency**: [KB_PATTERN_ALIGNMENT]
-  - **Recommended Approach**: [KB_RECOMMENDED_IMPLEMENTATION]
-
-  This research will inform our implementation approach.
-</documentation_template>
+<task_integration>
+  # Integration results for task implementation planning
+  # The centralized workflow provides:
+  # - implementation_guidance: Task-specific code examples and patterns
+  # - confidence_level: HIGH/MEDIUM/LOW based on documentation trust scores
+  # - best_practices: Latest best practices for task implementation
+  # - performance_metrics: Documentation freshness and optimization data
+  
+  # Store research context for implementation planning
+  CALL: mcp-memory-keeper-context_save
+  PARAMETERS:
+    - key: "task-research-results-{TASK_NAME}"
+    - value: "{IMPLEMENTATION_GUIDANCE}"
+    - category: "analysis"
+    - priority: "high"
+  
+  # Create Memento entities for cross-project task learning
+  CALL: memento-mcp-create_entities
+  PARAMETERS:
+    - entities: [{
+        "name": "{PROJECT_NAME}-task-{TASK_NAME}-research",
+        "entityType": "task_research",
+        "observations": [
+          "Research for: {TASK_TYPE}",
+          "Implementation patterns: {IMPLEMENTATION_GUIDANCE[:3]}",
+          "Documentation sources: {DOCUMENTATION_SOURCES}",
+          "Trust level: {TRUST_ASSESSMENT}",
+          "Date: {current_date()}"
+        ]
+      }]
+  
+  # Link to project and task context
+  CALL: memento-mcp-create_relations
+  PARAMETERS:
+    - relations: [{
+        "from": "{PROJECT_NAME}",
+        "to": "{PROJECT_NAME}-task-{TASK_NAME}-research",
+        "relationType": "informed_by"
+      }]
+</task_integration>
 
 <instructions>
-  ACTION: Check Meilisearch cache first, then use Context7 MCP tools if needed
-  FOCUS: Implementation patterns specific to current task
-  DOCUMENT: Code examples, best practices, and architectural patterns
-  APPLY: Findings to implementation planning
-  CACHE: Store Context7 documentation in Meilisearch for future use
-  RECORD: Document source (cache or API) and cache status for each technology
-  REFRESH: Update stale cache entries (older than 30 days)
-  STRUCTURE: Follow the Meilisearch schema for consistent caching
-  INTEGRATE: With KB patterns for consistency
-  REQUIRED: Must be completed before proceeding to implementation planning
+  ACTION: Execute centralized Context7 + Meilisearch documentation workflow
+  CONFIGURE: Use implementation-specific parameters with high trust thresholds
+  LEVERAGE: Existing tech-stack.md mappings via centralized workflow
+  FOCUS: Implementation patterns and code examples specific to current task
+  APPLY: Research findings to implementation planning phase
+  STORE: Research results in memory systems for cross-project task learning
 </instructions>
 
 </step>

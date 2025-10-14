@@ -1,8 +1,13 @@
-# Analyze Product
+# Research Spec (Phase 2)
+
+## 5-Phase Workflow Integration
+
+This is **Phase 2: Research** of the Agent OS 5-phase specification workflow:
+**Initialize** → **Research** → **Write** → **Verify** → **Create Tasks**
 
 ## Dual Memory Integration
 
-- **Memory-Keeper**: Session context, analysis cache, evolutionary tracking
+- **Memory-Keeper**: Session context, research cache, evolutionary tracking
 - **Memento**: Knowledge graph, cross-project patterns, architectural insights
 - **Tech Detection**: Dynamic tech stack discovery via @reference-docs symlinks
 - **Context Management**: Smart compression and project-relative references
@@ -27,30 +32,31 @@
 5. Apply cross-project architectural insights with canonical attribution
 ```
 
-### 3. Enhanced Codebase Analysis
+### 3. Enhanced Codebase Research
 ```
-1. Analyze current codebase with historical context awareness
-2. Compare current state with previous analysis findings
+1. Research current codebase with historical context awareness
+2. Compare current state with previous research findings
 3. Identify architectural evolution and technology progression
-4. Document changes in patterns, conventions, and technical approaches
-5. Prepare consolidated specification directory structure for future feature work
+4. Document patterns, conventions, and technical approaches for specification
+5. Prepare research findings for Phase 3: Write specification
 ```
 
-### 4. Evolutionary Assessment
+### 4. Research Assessment
 ```
 1. Track architectural maturity progression over time
 2. Monitor technical debt accumulation or reduction
 3. Assess alignment with historical strategic decisions
 4. Identify patterns in development workflow and team practices
+5. Prepare research insights for specification writing
 ```
 
-### 5. Canonical Insight Storage & Learning
+### 5. Research Storage & Learning
 ```
-1. Store analysis outcomes in Memory-Keeper with canonical project references
+1. Store research outcomes in Memory-Keeper with canonical project references
 2. Extract architectural patterns and store in Memento using PROJECT_ENTITY_NAME
 3. Create cross-project relationships with canonical entity linking
 4. Update existing entities instead of creating duplicates
-5. Compress old context while preserving key insights with canonical consolidation
+5. Compress old context while preserving key research insights with canonical consolidation
 ```
 
 ### 6. Checkpoint Management
@@ -64,38 +70,38 @@
 ## Fallback Behavior
 
 **If memory systems unavailable:**
-- Continue with standard product analysis workflow
+- Continue with standard product research workflow
 - Log memory system status for transparency
-- Document key analysis insights in session summary
+- Document key research insights in session summary
 - Maintain basic tech detection via reference-docs
 
 ## Memory Storage Categories with Canonical Identity
 
-- **Memory-Keeper**: Session context with canonical project references, progress tracking, analysis cache
+- **Memory-Keeper**: Session context with canonical project references, progress tracking, research cache
 - **Memento Entities**: Product insights using PROJECT_ENTITY_NAME, architectural patterns with canonical attribution
 - **Cross-Project Patterns**: Similar product structures linked via canonical relationships, proven solutions
-- **Context Compression**: Smart cleanup preserving key decisions with namespace consolidation
+- **Context Compression**: Smart cleanup preserving key research findings with namespace consolidation
 - **Identity Consolidation**: Automatic merging of fragmented project knowledge across name variations
 
 ## Enhanced Memory Benefits with Universal Identity
 
-- **Cross-Project Learning**: Analysis patterns shared across all projects with canonical attribution
+- **Cross-Project Learning**: Research patterns shared across all projects with canonical attribution
 - **Namespace Consolidation**: Automatic merging of fragmented project knowledge from name variations
 - **Smart Context Management**: Efficient compression with canonical identity preservation
 - **Dynamic Tech Detection**: Automatic tech stack discovery with canonical project references
-- **Session Continuity**: Resume analysis sessions across all project name variations
+- **Session Continuity**: Resume research sessions across all project name variations
 - **Pattern Recognition**: Architectural insights accumulated with consistent canonical linking
 - **Memory-Guided Error Resolution**: Solution search across consolidated project history
-- **Knowledge Continuity**: Analysis insights persist regardless of project naming changes
+- **Knowledge Continuity**: Research insights persist regardless of project naming changes
 
-## Analysis Enhancement Features
+## Research Enhancement Features
 
-- **Baseline Comparison**: Compare current state with previous analysis baselines
+- **Baseline Comparison**: Compare current state with previous research baselines
 - **Maturity Assessment**: Track architectural and process maturity progression
 - **Migration Tracking**: Monitor technology upgrades and architectural transitions
-- **Team Workflow Analysis**: Understand development practices and their evolution
+- **Team Workflow Research**: Understand development practices and their evolution
 - **Strategic Alignment**: Assess consistency with historical strategic decisions
-- **Spec Structure Preparation**: Set up consolidated specification workflow for future features
+- **Spec Structure Preparation**: Prepare research findings for Phase 3: Write specification
 
 ## Historical Insights Integration
 
@@ -106,10 +112,12 @@
 
 ---
 
-Analyze your product's codebase and install Agent OS with intelligent evolutionary tracking, context awareness, and consolidated specification structure.
+Research your product's codebase and gather insights for specification writing with intelligent evolutionary tracking, context awareness, and consolidated specification structure.
 
-Follow the instructions located in @/reference-docs/instructions/analyze-product.md
+This is **Phase 2** of the 5-phase workflow. Follow the instructions located in @/reference-docs/instructions/research-spec.md
 
-**Canonical Identity**: Universal namespace consolidation is automatically executed as Step 0 of the analysis workflow to ensure consistent project identity and prevent knowledge fragmentation.
+**Phase Flow**: After research completion, proceed to **Phase 3: Write** using the write-spec command.
 
-**Error Resolution**: If any errors occur during analysis, immediately reference @/reference-docs/instructions/error-resolution-via-memory.md for memory-guided troubleshooting procedures with canonical project identity.
+**Canonical Identity**: Universal namespace consolidation is automatically executed as Step 0 of the research workflow to ensure consistent project identity and prevent knowledge fragmentation.
+
+**Error Resolution**: If any errors occur during research, immediately reference @/reference-docs/instructions/error-resolution-via-memory.md for memory-guided troubleshooting procedures with canonical project identity.

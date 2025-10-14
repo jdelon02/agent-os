@@ -1,12 +1,33 @@
 ---
-description: Product Planning Rules for Agent OS with Memory-Keeper Integration
+description: Phase 3 - Write Specification (Comprehensive Project Documentation)
 globs:
 alwaysApply: false
-version: 5.0
+version: 7.0
 encoding: UTF-8
 ---
 
-# Product Planning Rules
+# Phase 3: Write Specification (Comprehensive Project Documentation)
+
+## ⚠️ IMMEDIATE ACTION REQUIRED ⚠️
+
+**STOP**: Before proceeding with Phase 3, you MUST activate MCP workflow systems:
+
+1. **ACTIVATE TOOLS**: `activate_context_management_tools`, `activate_memento_management_tools`, `activate_meilisearch_management_tools`
+2. **RESOLVE PROJECT IDENTITY**: Execute universal namespace consolidation (Step 0 below)
+3. **START SESSION**: Initialize Memory-Keeper session with this project directory
+4. **CHECK CACHE FIRST**: Query Meilisearch for cached documentation before Context7
+5. **CREATE ENTITIES**: Store project and technology entities in Memento knowledge graph using canonical names
+6. **VALIDATE CONFIDENCE**: Ensure trust score ≥ 8.0 before proceeding
+
+**Any Phase 3 work without completing these 6 steps is INVALID and must be restarted.**
+
+## 🔧 MANDATORY MCP WORKFLOW INITIALIZATION
+
+<include>@reference-docs/instructions/support-workflows/mandatory-mcp-initialization.md</include>
+
+**All subsequent Phase 3 operations MUST use PROJECT_ENTITY_NAME exclusively.**
+
+> **Enhanced V2.0 workflow** with visual asset processing, MCP intelligence, and systematic validation
 
 <ai_meta>
   <parsing_rules>
@@ -46,8 +67,8 @@ encoding: UTF-8
   - Write access to project root
   - Git initialized (recommended)
   - User has product requirements
-  - Access to @~/.claude/CLAUDE.md and Cursor rules
-  - Memory-keeper MCP available (optional, graceful degradation)
+  - Access to project-specific instructions (CLAUDE.md symlinked to .github/instructions/main.instructions.md)
+  - MCP systems available (Memory-Keeper, Memento, Meilisearch) - STOP and ASK if unavailable
 </prerequisites>
 
 <process_flow>
@@ -56,68 +77,306 @@ encoding: UTF-8
 
 ### Step 0: Initialize Memory Systems and Resolve Precedence
 
-<precedence_resolution>
-  <!-- Include precedence rules -->
-  <include>@reference-docs/instructions/precedence-rules.md</include>
+<memory_precedence_initialization>
+  <!-- Use centralized Memory Systems and Precedence Initialization workflow -->
+  <include>@reference-docs/instructions/memory-precedence-initialization.md</include>
   
-  # Assert Agent OS command precedence
-  AGENT_OS_COMMAND = "plan-product"
-  CURRENT_MODE = "AGENT_OS_COMMAND_ACTIVE"
-  LOG: "🔴 Agent OS plan-product active - absolute precedence"
-</precedence_resolution>
-
-<memory_initialization>
-  <!-- Include memory integration -->
-  <include>@reference-docs/instructions/memory-integration.md</include>
+  # Execute centralized initialization with plan-product specific parameters
+  EXECUTE: memory_precedence_initialization_workflow()
+  PARAMETERS:
+    - command_name: "write-spec"
+    - memory_requirements: "CRITICAL"  # STOP and ASK if unavailable
+    - override_categories: ["planning_requirements", "documentation_standards", "tech_stack_preferences"]
+    - session_description: "Agent OS Phase 3: Write Specification"
+    - fallback_behavior: "STOP_AND_ASK"
   
-  # Access detected context from memory integration
+  # Access standardized initialization results
   PROJECT_NAME = DETECTION_CONTEXT["project_name"]
+  PROJECT_ENTITY_NAME = DETECTION_CONTEXT["project_entity_name"]  # Canonical name
   PRIMARY_TECH = DETECTION_CONTEXT["primary_tech"]
   TECH_STACKS = DETECTION_CONTEXT["tech_stacks"]
   CONFIDENCE_LEVEL = DETECTION_CONTEXT["confidence_level"]
   AVAILABLE_ENTITIES = DETECTION_CONTEXT["entities"]
+  NAMESPACE_STATUS = DETECTION_CONTEXT["namespace_status"]
+  PROJECT_OVERRIDES = initialization_result.project_overrides
   
-  LOG: "Memory-enhanced plan-product initialized for {PROJECT_NAME} ({PRIMARY_TECH})"
-</memory_initialization>
+  # Log initialization completion
+  LOG: "📝 Phase 3 specification writing initialization complete - loading research context"
+  LOG: "🏷️ Project: {PROJECT_NAME} → {PROJECT_ENTITY_NAME} (Status: {NAMESPACE_STATUS})"
+</memory_precedence_initialization>
 
-### Legacy Knowledge Base Initialization (Deprecated)
+</step>
+
+<step number="0.5" name="analyze_existing_specifications">
+
+### Step 0.5: Analyze Existing Specifications for Consistency
 
 <step_metadata>
-  <action>initialize project knowledge base</action>
-  <purpose>setup memory-keeper for persistent project context</purpose>
-  <creates>project namespace in memory-keeper</creates>
+  <action>read existing spec.md to understand current specifications and maintain consistency</action>
+  <purpose>build on existing specifications rather than creating conflicting documentation</purpose>
+  <memory_integration>specification analysis + consistency planning</memory_integration>
+  <condition>optional - graceful fallback if spec.md doesn't exist</condition>
 </step_metadata>
 
-<kb_namespace>
-  <project_name>derived from current directory name</project_name>
-  <namespace_format>kb_{sanitized_project_name}</namespace_format>
-  <session_description>Agent OS plan-product operation</session_description>
-</kb_namespace>
+<existing_spec_consistency>
+  # Check for existing specifications to maintain consistency
+  IF file_exists(".agent-os/specs/spec.md"):
+    LOG: "📋 Found existing spec.md - analyzing for consistency and integration points"
+    
+    # Read and analyze current specifications
+    spec_content = read_file(".agent-os/specs/spec.md")
+    
+    # Extract consistency information with context reduction
+    consistency_analysis = {
+      "existing_features": extract_feature_list(spec_content, max_features=10),
+      "project_architecture": extract_architecture_decisions(spec_content, max_length=400),
+      "established_patterns": extract_design_patterns(spec_content),
+      "naming_conventions": extract_naming_patterns(spec_content),
+      "integration_approaches": extract_integration_patterns(spec_content),
+      "technology_constraints": extract_tech_constraints(spec_content),
+      "quality_standards": extract_quality_requirements(spec_content)
+    }
+    
+    # Store consistency context in memory
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "spec-consistency-context"
+      - value: create_consistency_summary(consistency_analysis, max_length=600)
+      - category: "planning"
+      - priority: "high"
+    
+    # Use sequential-thinking to analyze specification structure
+    SESSION_ID = `${PROJECT_NAME}_spec_analysis_${timestamp}`
+    CALL: sequential-thinking-sequentialthinking
+    PARAMETERS:
+      - sessionId: SESSION_ID
+      - thought: "Analyzing existing spec.md structure to maintain consistency: {len(consistency_analysis.existing_features)} features documented, architecture follows {consistency_analysis.project_architecture[:100]}... Need to ensure new specifications align with established patterns."
+      - thoughtNumber: 1
+      - totalThoughts: 3
+    
+    # Find similar specification approaches using Qdrant
+    CALL: qdrant-qdrant_retrieve
+    PARAMETERS:
+      - collectionNames: ["agent-os-global-specs"]
+      - query: [consistency_analysis.project_architecture, consistency_analysis.established_patterns]
+      - topK: 3
+    
+    IF similar_specs_found:
+      spec_insights = analyze_similar_specifications(similar_specs)
+      CALL: mcp-memory-keeper-context_save
+      PARAMETERS:
+        - key: "similar-spec-patterns"
+        - value: spec_insights
+        - category: "planning"
+        - priority: "normal"
+    
+    # Update project entity with specification context
+    CALL: memento-mcp-add_observations
+    PARAMETERS:
+      - observations: [{
+          "entityName": "{PROJECT_ENTITY_NAME}",
+          "contents": [
+            "Existing Features: {len(consistency_analysis.existing_features)} documented",
+            "Architecture Pattern: {consistency_analysis.project_architecture[:100]}...",
+            "Quality Standards: {consistency_analysis.quality_standards}",
+            "Consistency Analysis: Ready for consistent specification addition"
+          ]
+        }]
+    
+    LOG: "✅ Specification consistency analysis complete - {len(consistency_analysis.existing_features)} existing features identified"
+    CONTEXT_NOTE: "Writing will maintain consistency with: {consistency_analysis.established_patterns[:2]}"
+  
+  ELSE:
+    LOG: "ℹ️ No existing spec.md - proceeding with fresh specification creation"
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "spec-consistency-context"
+      - value: "No existing specifications - creating foundational project specification"
+      - category: "planning"
+      - priority: "normal"
+</existing_spec_consistency>
 
-<kb_initialization_process>
-  <availability_check>
-    1. CHECK if memory-keeper MCP is available
-    2. IF available: PROCEED with KB initialization
-    3. IF unavailable: LOG unavailability and SKIP to step 1
-  </availability_check>
-  <namespace_setup>
-    1. GENERATE project namespace from directory name
-    2. START new context session with project directory path
-    3. SET session description: "Agent OS plan-product operation"
-    4. LOG successful KB initialization
-  </namespace_setup>
-  <fallback_behavior>
-    1. IF memory-keeper unavailable: USE standard file-based context loading
-    2. DOCUMENT limitation in response
-    3. CONTINUE with existing workflow patterns
-  </fallback_behavior>
-</kb_initialization_process>
+<consistency_benefits>
+  <specification_continuity>
+    - Maintain consistent naming conventions across features
+    - Follow established architectural patterns
+    - Align with existing quality standards and requirements
+    - Integrate smoothly with documented project structure
+  </specification_continuity>
+  
+  <intelligent_planning>
+    - Sequential-thinking analyzes specification patterns for consistency
+    - Vibe-check can validate against established project standards
+    - Context7 research builds on documented technology decisions
+    - Memory systems provide rich context for specification writing
+  </intelligent_planning>
+  
+  <pattern_leverage>
+    - Qdrant finds similar specification approaches across projects
+    - Learn from successful specification patterns
+    - Avoid inconsistencies that created problems in other projects
+    - Build on proven documentation approaches
+  </pattern_leverage>
+</consistency_benefits>
 
 <instructions>
-  ACTION: Initialize memory-keeper with project-specific namespace
-  VERIFY: Memory-keeper availability before proceeding
-  FALLBACK: Gracefully degrade to file-based context if unavailable
-  LOG: Initialization status for transparency
+  ACTION: Read existing spec.md to understand current project specifications
+  ANALYZE: Consistency requirements using sequential-thinking for structured analysis
+  SEARCH: Similar specification patterns via Qdrant for proven approaches
+  STORE: Consistency context in memory systems for intelligent specification writing
+  MAINTAIN: Alignment with established patterns, naming, and architectural decisions
+</instructions>
+
+</step>
+
+<step number="0.6" name="enforce_idempotent_design">
+
+### Step 0.6: Enforce Idempotent Specification Design
+
+<step_metadata>
+  <action>prevent violations of idempotent spec.md architecture</action>
+  <purpose>ensure all specifications follow single-source-of-truth design</purpose>
+  <enforcement>block creation of competing specification files</enforcement>
+  <critical>maintains Agent OS specification integrity</critical>
+</step_metadata>
+
+<idempotent_design_enforcement>
+  # Enforce Agent OS idempotent specification architecture
+  LOG: "🛡️ Enforcing idempotent specification design - preventing documentation fragmentation"
+  
+  <architecture_validation>
+    # Verify proper Agent OS specification structure
+    expected_structure = {
+      "master_spec": ".agent-os/specs/spec.md",
+      "consolidated_tasks": ".agent-os/specs/tasks.md", 
+      "supplementary_details": ".agent-os/specs/sub-specs/"
+    }
+    
+    # Check for specification violations
+    violation_patterns = [
+      "*.spec.md",
+      "*-specification.md", 
+      "*-spec.md",
+      "specification-*.md",
+      "spec-*.md"
+    ]
+    
+    # Scan specs directory for competing files
+    competing_specs = find_files(".agent-os/specs/", patterns=violation_patterns, exclude=["spec.md"])
+    
+    IF competing_specs.found:
+      LOG: "⚠️ DESIGN VIOLATION: Found {len(competing_specs)} competing specification files"
+      FOR competing_file IN competing_specs:
+        LOG: "  ❌ Competing: {competing_file.path}"
+      
+      ERROR: "IDEMPOTENT DESIGN VIOLATION DETECTED"
+      MESSAGE: """
+      Agent OS uses idempotent specification architecture:
+      
+      ✅ CORRECT: All features go in master .agent-os/specs/spec.md
+      ✅ CORRECT: Supplementary details in .agent-os/specs/sub-specs/
+      ❌ INVALID: Separate specification files (creates competing documentation)
+      
+      Found competing specifications that violate this design:
+      {list_competing_files(competing_specs)}
+      
+      REQUIRED ACTION:
+      1. Run consolidate-specs.md to merge competing files into spec.md
+      2. Use write-spec.md template to add features to master spec.md
+      3. Never create standalone specification files outside this workflow
+      
+      PREVENTION: Always use the 5-phase workflow templates, never bypass with direct file creation.
+      """
+      HALT: "Must resolve specification violations before continuing"
+  </architecture_validation>
+  
+  <workflow_validation>
+    # Ensure proper Phase 3 workflow usage
+    current_workflow_step = "write-spec.md Phase 3"
+    
+    # Block attempts to create competing specifications
+    prohibited_actions = [
+      "Creating new .md files in specs/ root",
+      "Bypassing spec.md for feature documentation", 
+      "Creating project-wide specifications outside spec.md",
+      "Using create_file() for specification content"
+    ]
+    
+    # Validate this is proper feature addition workflow
+    IF not file_exists(".agent-os/specs/spec.md"):
+      LOG: "📋 No master spec.md found - will create idempotent specification structure"
+      specification_mode = "CREATE_MASTER"
+    ELSE:
+      LOG: "📋 Master spec.md exists - will add feature using idempotent approach"
+      specification_mode = "ADD_FEATURE"
+    
+    # Store enforcement context
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "idempotent-design-enforcement"
+      - value: "Specification design validated - proceeding with {specification_mode} mode"
+      - category: "enforcement"
+      - priority: "high"
+  </workflow_validation>
+  
+  <design_education>
+    # Document proper specification patterns
+    proper_workflow = """
+    AGENT OS SPECIFICATION ARCHITECTURE (IDEMPOTENT DESIGN):
+    
+    📋 MASTER SPECIFICATION:
+       .agent-os/specs/spec.md - Single source of truth for all features
+       
+    📋 CONSOLIDATED TASKS:
+       .agent-os/specs/tasks.md - Single task file with feature sections
+       
+    📋 SUPPLEMENTARY DETAILS:
+       .agent-os/specs/sub-specs/[feature]/ - Technical implementation details only
+       
+    ✅ CORRECT WORKFLOW:
+       Phase 1: Initialize → Phase 2: Research → Phase 3: Add to spec.md → Phase 4: Verify → Phase 5: Tasks
+       
+    ❌ VIOLATIONS TO PREVENT:
+       - Creating separate specification .md files
+       - Bypassing spec.md for feature documentation
+       - Using create_file() for specifications outside templates
+       - Multiple competing documentation sources
+    """
+    
+    LOG: "📖 Idempotent design principles enforced"
+    CONTEXT_NOTE: "Following Agent OS single-source-of-truth specification architecture"
+  </design_education>
+</idempotent_design_enforcement>
+
+<enforcement_benefits>
+  <prevents_fragmentation>
+    - Blocks creation of competing specification files
+    - Ensures single source of truth (spec.md) is maintained
+    - Prevents documentation conflicts and confusion
+    - Enforces Agent OS architectural principles
+  </prevents_fragmentation>
+  
+  <maintains_workflow_integrity>
+    - Validates proper 5-phase workflow usage
+    - Prevents shortcuts that bypass idempotent design
+    - Ensures specifications follow established patterns
+    - Blocks direct file creation outside template system
+  </maintains_workflow_integrity>
+  
+  <educational_enforcement>
+    - Documents proper specification architecture
+    - Explains why idempotent design matters
+    - Provides clear guidance on correct workflow
+    - Prevents future design violations through education
+  </educational_enforcement>
+</enforcement_benefits>
+
+<instructions>
+  CRITICAL: Enforce Agent OS idempotent specification architecture without exception
+  VALIDATE: Check for competing specification files and block workflow if found
+  EDUCATE: Document proper workflow patterns to prevent future violations
+  MAINTAIN: Single source of truth (spec.md) for all project specifications
+  PREVENT: Specification fragmentation through design enforcement
 </instructions>
 
 </step>
@@ -140,8 +399,8 @@ encoding: UTF-8
   <primary>user_direct_input</primary>
   <fallback_sequence>
     1. @~/.agent-os/standards/tech-stack.md
-    2. @~/.claude/CLAUDE.md
-    3. Cursor User Rules
+    2. @./CLAUDE.md (symlinked to .github/instructions/main.instructions.md)
+    3. @.github/instructions/main.instructions.md
   </fallback_sequence>
 </data_sources>
 
@@ -152,6 +411,7 @@ encoding: UTF-8
   3. Target users and use cases (minimum 1)
   4. Tech stack preferences
   5. Has the new application been initialized yet and we're inside the project folder? (yes/no)
+  6. Do you have any mockups, wireframes, or design assets for this product? (Note: We'll scan for assets automatically regardless of your response)
 </error_template>
 
 <memory_enhanced_input_gathering>
@@ -207,18 +467,33 @@ encoding: UTF-8
     response_summary = create_summary(user_response, max_length=100)
     CONTEXT_SUMMARY += "💬 {input_type}: {response_summary} (full response in memory)\n"
   
-  # Create checkpoint after input gathering
+  # Execute visual asset processing (V2.0 enhancement)
+  # This processes visual assets regardless of user input
+  <include>@reference-docs/instructions/support-workflows/visual-asset-processing.md</include>
+  EXECUTE: systematic_visual_asset_discovery_and_analysis()
+  
+  # Store visual processing results
+  CALL: mcp-memory-keeper-context_save
+  PARAMETERS:
+    - key: "visual-asset-processing-{PROJECT_NAME}"
+    - value: "{VISUAL_PROCESSING_RESULTS}"
+    - category: "analysis"
+    - priority: "high"
+  
+  # Create checkpoint after input gathering and visual processing
   CALL: mcp-memory-keeper-context_checkpoint
   PARAMETERS:
-    - name: "user-inputs-complete-{PROJECT_NAME}"
-    - description: "All planning inputs gathered for {PROJECT_NAME}"
+    - name: "user-inputs-and-visuals-complete-{PROJECT_NAME}"
+    - description: "All planning inputs and visual asset processing completed for {PROJECT_NAME}"
 </memory_enhanced_input_gathering>
 
 <instructions>
   ACTION: Collect inputs with memory integration and context reduction
   STORE: Full responses in memory, summaries in context
   LEVERAGE: Previous analyze-product results if available
+  PROCESS: Visual assets systematically (V2.0 enhancement)
   VALIDATE: All inputs provided before proceeding
+  CHECKPOINT: Create planning checkpoint for progress tracking
 </instructions>
 
 </step>
@@ -303,12 +578,13 @@ encoding: UTF-8
 
 <step number="2" name="create_documentation_structure">
 
-### Step 2: Create Documentation Structure
+### Step 2: Create Documentation Structure with Visual Asset Support
 
 <step_metadata>
   <creates>
     - directory: .agent-os/product/
-    - files: 4
+    - directory: .agent-os/product/planning/visuals/ (with full structure)
+    - files: 4 + visual asset structure
   </creates>
 </step_metadata>
 
@@ -318,8 +594,22 @@ encoding: UTF-8
       ├── mission.md          # Product vision and purpose
       ├── tech-stack.md       # Technical architecture
       ├── roadmap.md          # Development phases
-      └── decisions.md        # Decision log
+      ├── decisions.md        # Decision log
+      └── planning/
+          └── visuals/        # Visual asset directory structure (V2.0 enhancement)
+              ├── original/   # Original assets (mockups, wireframes, flows, etc.)
+              ├── analysis/   # Agent OS generated analysis
+              └── processed/  # Organized assets for development
 </file_structure>
+
+<visual_asset_integration>
+  <!-- Create visual asset directory structure -->
+  <include>@reference-docs/scripts/create-visual-directories.sh</include>
+  EXECUTE: bash reference-docs/scripts/create-visual-directories.sh
+  
+  <!-- This creates the standardized visual asset directory structure -->
+  <!-- compatible with symlink architecture and MCP integration -->
+</visual_asset_integration>
 
 <git_config>
   <commit_message>Initialize Agent OS product documentation</commit_message>
@@ -475,76 +765,57 @@ encoding: UTF-8
 ### Step 4: Gather Technology Documentation
 
 <step_metadata>
-  <action>verify and research technology choices</action>
-  <purpose>ensure up-to-date documentation reference</purpose>
+  <action>verify and research technology choices using centralized workflow</action>
+  <purpose>ensure up-to-date documentation reference with cache optimization</purpose>
+  <uses>centralized Context7 + Meilisearch documentation workflow</uses>
 </step_metadata>
 
-<context7_documentation>
-  <required>true</required>
-  <process>
-    1. FOR EACH technology in tech_stack:
-      a. GENERATE a Meilisearch-compatible key from the technology name
-         (e.g., "laravel_framework" for Laravel framework)
-      b. CHECK if documentation exists in Meilisearch cache using the key
-      c. IF cached documentation exists AND is not stale (< 30 days old):
-         i. RETRIEVE documentation from Meilisearch
-         ii. LOG cache hit for performance metrics
-      d. IF NO cached documentation OR cache is stale:
-         i. RESOLVE library ID using mcp__proxmoxmcp__context7-resolve-library-id
-         ii. FETCH documentation using mcp__proxmoxmcp__context7-get-library-docs
-         iii. STORE documentation in Meilisearch with the following schema:
-              - id: "[language]_[library_name]" (e.g., "laravel_framework")
-              - library_id: Context7 library ID (e.g., "/laravel/laravel")
-              - title: "Documentation for [library_name]"
-              - content: Full documentation content
-              - fetch_date: Current date (YYYY-MM-DD format)
-              - tokens: Number of tokens retrieved
-              - topic: Topic used for focused documentation (if any)
-              - version: Library version information (if available)
-         iv. LOG cache miss and update for metrics
-      e. EXTRACT key architectural patterns and best practices
-      f. VERIFY version compatibility with other components
-      g. RECORD documentation source (cache or API) for transparency
-    2. DOCUMENT sources and mappings used in tech-stack.md
-  </process>
-</context7_documentation>
-
-<documentation_template>
-  ## Documentation Sources
-
-  The following Context7 library references were used to verify technology choices:
+<context7_meilisearch_workflow>
+  <!-- Use centralized Context7 + Meilisearch documentation workflow -->
+  <include>@reference-docs/instructions/support-workflows/context7-meilisearch-workflow.md</include>
   
-  - **[TECH_NAME]**: `[CONTEXT7_LIBRARY_ID]`
-    - Key Insights: [KEY_INSIGHTS]
-    - Source: [CACHE_HIT ? "Meilisearch cache" : "Context7 API"]
-    - Cache Status: [CACHE_STATUS]
-    - Last Updated: [FETCH_DATE]
-    - Meilisearch Key: [MEILISEARCH_KEY]
+  # Execute the centralized documentation workflow
+  EXECUTE: context7_documentation_workflow()
+  PARAMETERS:
+    - workflow_type: "planning"
+    - focus_areas: ["core_framework", "database", "frontend"]
+    - trust_threshold: 8.0
+    - technologies: TECH_STACKS  # From memory initialization
   
-  - **[TECH_NAME]**: `[CONTEXT7_LIBRARY_ID]`
-    - Key Insights: [KEY_INSIGHTS]
-    - Source: [CACHE_HIT ? "Meilisearch cache" : "Context7 API"]
-    - Cache Status: [CACHE_STATUS]
-    - Last Updated: [FETCH_DATE]
-    - Meilisearch Key: [MEILISEARCH_KEY]
+  # Store workflow results for tech-stack.md documentation
+  DOCUMENTATION_RESULTS = workflow_output.documentation_summary
+  TRUST_ASSESSMENT = workflow_output.confidence_level
+  CACHE_PERFORMANCE = workflow_output.performance_metrics
+  
+  # Log documentation gathering results
+  LOG: "📚 Documentation workflow completed with {TRUST_ASSESSMENT} confidence"
+  LOG: "📊 Cache performance: {CACHE_PERFORMANCE.cache_hit_rate}% hit rate"
+</context7_meilisearch_workflow>
 
-  ## Context7 Documentation Mappings
-
-  | Meilisearch Key | Context7 Library ID | Description | Version |
-  |-----------------|---------------------|-------------|--------|
-  | [MEILISEARCH_KEY_1] | [CONTEXT7_LIBRARY_ID_1] | [DESCRIPTION_1] | [VERSION_1] |
-  | [MEILISEARCH_KEY_2] | [CONTEXT7_LIBRARY_ID_2] | [DESCRIPTION_2] | [VERSION_2] |
-</documentation_template>
+<tech_stack_integration>
+  # Integration results will be used in Step 5 to create tech-stack.md
+  # The centralized workflow provides:
+  # - documentation_summary: Structured tech documentation with sources
+  # - confidence_level: HIGH/MEDIUM/LOW based on trust scores
+  # - performance_metrics: Cache hits, API calls, retrieval times
+  # - mappings_table: Context7 library IDs and Meilisearch keys
+  
+  # Store documentation context for tech-stack.md creation
+  CALL: mcp-memory-keeper-context_save
+  PARAMETERS:
+    - key: "tech-documentation-results-{PROJECT_NAME}"
+    - value: "{DOCUMENTATION_RESULTS}"
+    - category: "analysis"
+    - priority: "high"
+</tech_stack_integration>
 
 <instructions>
-  ACTION: Check Meilisearch cache first, then use Context7 MCP tools if needed
-  VERIFY: Technology choices against latest documentation
-  DOCUMENT: Library IDs and key architectural patterns found
-  PRIORITIZE: Main application framework and database documentation
-  ESTABLISH: Create mapping between Meilisearch keys and Context7 library IDs
-  CACHE: Store documentation in Meilisearch for future use
-  REFRESH: Update stale cache entries (older than 30 days)
-  STRUCTURE: Follow the Meilisearch schema for consistent caching
+  ACTION: Execute centralized Context7 + Meilisearch documentation workflow
+  CONFIGURE: Use planning-specific parameters and trust thresholds
+  LEVERAGE: Existing tech-stack.md mappings via centralized workflow
+  OPTIMIZE: Cache-first approach implemented by centralized workflow
+  STORE: Documentation results in Memory-Keeper for tech-stack.md generation
+  VALIDATE: Technology choices against up-to-date documentation via workflow
 </instructions>
 
 </step>
@@ -589,8 +860,8 @@ encoding: UTF-8
     <if_not_in>user_input</if_not_in>
     <then_check>
       1. @~/.agent-os/standards/tech-stack.md
-      2. @~/.claude/CLAUDE.md
-      3. Cursor User Rules
+      2. @./CLAUDE.md (via symlink to .github/instructions/main.instructions.md)
+      3. @.github/instructions/main.instructions.md
     </then_check>
     <else>add_to_missing_list</else>
   </for_each>
@@ -954,6 +1225,26 @@ When asked to work on this codebase:
 
 </step>
 
+## Enhanced Workflow Integration
+
+<validation_integration>
+  <!-- Execute validation after documentation creation -->
+  <include>@reference-docs/instructions/support-workflows/validation-framework.md</include>
+  
+  # Apply systematic validation to created documentation
+  EXECUTE: systematic_validation_framework()
+  GENERATE: validation_report_with_recommendations()
+  STORE: validation_results_in_mcp_systems()
+</validation_integration>
+
+<error_recovery>
+  <!-- Enhanced error recovery with memory guidance -->
+  IF error_occurs_during_planning:
+    <include>@reference-docs/instructions/support-workflows/error-resolution-via-memory.md</include>
+    EXECUTE: memory_guided_error_resolution()
+    APPLY: Cross-project error resolution patterns
+</error_recovery>
+
 </process_flow>
 
 ## Execution Summary
@@ -995,7 +1286,7 @@ When asked to work on this codebase:
       2. SEARCH: Query Memory-Keeper and Memento for similar planning errors
       3. APPLY: Try memory-guided solutions in confidence order
       4. DOCUMENT: Store successful resolution for future reference
-      5. REFERENCE: Follow detailed procedures in @error-resolution-via-memory.md
+      5. REFERENCE: Follow detailed procedures in @support-workflows/error-resolution-via-memory.md
     </procedure>
     <enhancement>Build cross-project planning error solution database</enhancement>
   </scenario>
@@ -1012,4 +1303,11 @@ When asked to work on this codebase:
   - Intelligent context loading based on project history
   - Consistent decision tracking and architectural evolution
   - Enhanced planning through historical insights and lessons learned
+  - **V2.0 Enhancements:**
+    - Visual asset processing and pattern recognition across projects
+    - Memory-guided checkpoint system for progress tracking
+    - Systematic validation with cross-project pattern matching
+    - Enhanced error recovery with memory-guided troubleshooting
+    - Structured data integration between workflow components
+    - Design-driven development with visual requirements integration
 </memory_system_integration_benefits>

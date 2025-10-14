@@ -1,12 +1,31 @@
 ---
-description: Spec Creation Rules for Agent OS with Memory-Keeper Integration
+description: Phase 5 - Create Tasks List (Test-Driven Development Planning)
 globs:
 alwaysApply: false
-version: 2.0
+version: 3.0
 encoding: UTF-8
 ---
 
-# Spec Creation Rules
+# Phase 5: Create Tasks List (Test-Driven Development Planning)
+
+## ⚠️ IMMEDIATE ACTION REQUIRED ⚠️
+
+**STOP**: Before proceeding with Phase 5, you MUST activate MCP workflow systems:
+
+1. **ACTIVATE TOOLS**: `activate_context_management_tools`, `activate_memento_management_tools`, `activate_meilisearch_management_tools`
+2. **RESOLVE PROJECT IDENTITY**: Execute universal namespace consolidation (Step 0 below)
+3. **START SESSION**: Initialize Memory-Keeper session with this project directory
+4. **CHECK CACHE FIRST**: Query Meilisearch for cached documentation before Context7
+5. **CREATE ENTITIES**: Store project and technology entities in Memento knowledge graph using canonical names
+6. **VALIDATE CONFIDENCE**: Ensure trust score ≥ 8.0 before proceeding
+
+**Any Phase 5 work without completing these 6 steps is INVALID and must be restarted.**
+
+## 🔧 MANDATORY MCP WORKFLOW INITIALIZATION
+
+<include>@reference-docs/instructions/support-workflows/mandatory-mcp-initialization.md</include>
+
+**All subsequent Phase 5 operations MUST use PROJECT_ENTITY_NAME exclusively.**
 
 <ai_meta>
   <parsing_rules>
@@ -29,17 +48,17 @@ encoding: UTF-8
 ## Overview
 
 <purpose>
-  - Create detailed spec plans for specific features
-  - Generate structured documentation for implementation
-  - Ensure alignment with product roadmap and mission
-  - Integrate memory-keeper for enhanced context and cross-spec continuity
+  - Break down validated specification into actionable tasks
+  - Apply test-driven development approach to task structure
+  - Create implementation roadmap with clear priorities
+  - Generate task groups organized by role and complexity
 </purpose>
 
 <context>
-  - Part of Agent OS framework
-  - Executed when implementing roadmap items
-  - Creates spec-specific documentation
-  - Enhanced with persistent knowledge base for informed specification
+  - Fifth phase of 5-phase specification workflow
+  - Follows Phase 4 (Verify) with validated specification
+  - Enhanced with MCP intelligence for cross-project task patterns
+  - Prepares structured tasks for implementation with execute-tasks.md
 </context>
 
 <prerequisites>
@@ -49,7 +68,8 @@ encoding: UTF-8
     - @.agent-os/product/roadmap.md,
     - @.agent-os/product/tech-stack.md
   - User has spec idea or roadmap reference
-  - Memory-keeper MCP available (optional, graceful degradation)
+  - MCP memory systems available (Memory-Keeper, Memento)
+  - Completed Phase 4 (Verify) with validated specification
 </prerequisites>
 
 <process_flow>
@@ -58,90 +78,174 @@ encoding: UTF-8
 
 ### Step 0: Initialize Memory Systems and Resolve Precedence
 
-<consolidation_mode_detection>
-  # Check if running in consolidation mode (called by consolidate-specs)
-  IF parameters.mode == "consolidation":
-    CONSOLIDATION_MODE = true
-    SKIP_INTERACTIVE = parameters.skip_interactive || true
-    SOURCE_DATA = parameters.source_data
-    APPEND_MODE = parameters.append_to_existing || true
-    MEMORY_CONTEXT = parameters.memory_context || "consolidation"
-    PRESERVE_METADATA = parameters.preserve_original_metadata || true
-    
-    LOG: "🔄 Create-spec running in consolidation mode for {SOURCE_DATA.feature_name}"
-    LOG: "📁 Source: {SOURCE_DATA.original_folder} → Consolidated structure"
-  ELSE:
-    CONSOLIDATION_MODE = false
-    LOG: "🆕 Create-spec running in standard interactive mode"
-</consolidation_mode_detection>
-
-<precedence_resolution>
-  <!-- Include precedence rules -->
-  <include>@reference-docs/instructions/precedence-rules.md</include>
+<memory_precedence_initialization>
+  <!-- Use centralized Memory Systems and Precedence Initialization workflow -->
+  <include>@reference-docs/instructions/memory-precedence-initialization.md</include>
   
-  # Assert Agent OS command precedence
-  AGENT_OS_COMMAND = "create-spec"
-  CURRENT_MODE = "AGENT_OS_COMMAND_ACTIVE"
-  LOG: "🔴 Agent OS create-spec active - absolute precedence"
-</precedence_resolution>
-
-<memory_initialization>
-  <!-- Include memory integration -->
-  <include>@reference-docs/instructions/memory-integration.md</include>
+  # Execute centralized initialization with create-spec specific parameters
+  EXECUTE: memory_precedence_initialization_workflow()
+  PARAMETERS:
+    - command_name: "create-tasks-list"
+    - memory_requirements: "REQUIRED"  # Memory critical for Phase 5 continuity
+    - override_categories: ["specification_standards", "testing_requirements", "implementation_patterns"]
+    - session_description: "Agent OS Phase 5: Task Creation and Planning"
+    - consolidation_support: true
+    - fallback_behavior: "ERROR_IF_UNAVAILABLE"
   
-  # Access detected context from memory integration
+  # Access standardized initialization results
   PROJECT_NAME = DETECTION_CONTEXT["project_name"]
+  PROJECT_ENTITY_NAME = DETECTION_CONTEXT["project_entity_name"]  # Canonical name
   PRIMARY_TECH = DETECTION_CONTEXT["primary_tech"]
   TECH_STACKS = DETECTION_CONTEXT["tech_stacks"]
   CONFIDENCE_LEVEL = DETECTION_CONTEXT["confidence_level"]
   AVAILABLE_ENTITIES = DETECTION_CONTEXT["entities"]
+  NAMESPACE_STATUS = DETECTION_CONTEXT["namespace_status"]
+  PROJECT_OVERRIDES = initialization_result.project_overrides
+  CONSOLIDATION_MODE = initialization_result.consolidation_mode  # Detected by centralized workflow
+  CONSOLIDATION_CONFIG = initialization_result.consolidation_config
   
-  LOG: "Memory-enhanced create-spec initialized for {PROJECT_NAME} ({PRIMARY_TECH})"
-</memory_initialization>
+  # Log initialization completion
+  LOG: "📋 Phase 5 task creation initialization complete - loading specification context"
+  LOG: "🏷️ Project: {PROJECT_NAME} → {PROJECT_ENTITY_NAME} (Status: {NAMESPACE_STATUS})"
+  IF CONSOLIDATION_MODE:
+    LOG: "🔄 Consolidation mode active for {CONSOLIDATION_CONFIG.source_data.feature_name}"
+</memory_precedence_initialization>
 
-### Legacy Knowledge Base Initialization (Deprecated)
+</step>
+
+<step number="0.5" name="enforce_idempotent_task_design">
+
+### Step 0.5: Enforce Idempotent Task Design
 
 <step_metadata>
-  <action>initialize project knowledge base</action>
-  <purpose>setup memory-keeper for persistent project context</purpose>
-  <creates>project namespace in memory-keeper</creates>
+  <action>prevent task fragmentation and enforce consolidated tasks.md architecture</action>
+  <purpose>ensure all tasks follow single-source-of-truth design</purpose>
+  <enforcement>block creation of competing task files</enforcement>
+  <critical>maintains Agent OS task management integrity</critical>
 </step_metadata>
 
-<kb_namespace>
-  <project_name>derived from current directory name</project_name>
-  <namespace_format>kb_{sanitized_project_name}</namespace_format>
-  <session_description>Agent OS create-spec operation</session_description>
-</kb_namespace>
+<idempotent_task_enforcement>
+  # Enforce Agent OS idempotent task architecture
+  LOG: "🛡️ Enforcing idempotent task design - preventing task fragmentation"
+  
+  <task_architecture_validation>
+    # Verify proper Agent OS task structure
+    expected_task_structure = {
+      "master_tasks": ".agent-os/specs/tasks.md",
+      "master_spec": ".agent-os/specs/spec.md",
+      "supplementary_details": ".agent-os/specs/sub-specs/"
+    }
+    
+    # Check for task fragmentation violations
+    task_violation_patterns = [
+      "*-tasks.md",
+      "task-*.md",
+      "*-task-list.md",
+      "implementation-*.md",
+      "*-implementation.md"
+    ]
+    
+    # Scan for competing task files
+    competing_tasks = find_files(".agent-os/specs/", patterns=task_violation_patterns, exclude=["tasks.md"])
+    
+    IF competing_tasks.found:
+      LOG: "⚠️ TASK DESIGN VIOLATION: Found {len(competing_tasks)} competing task files"
+      FOR competing_file IN competing_tasks:
+        LOG: "  ❌ Competing: {competing_file.path}"
+      
+      ERROR: "IDEMPOTENT TASK DESIGN VIOLATION DETECTED"
+      MESSAGE: """
+      Agent OS uses idempotent task architecture:
+      
+      ✅ CORRECT: All tasks go in master .agent-os/specs/tasks.md
+      ✅ CORRECT: Tasks organized by feature sections within tasks.md
+      ❌ INVALID: Separate task files (creates competing task sources)
+      
+      Found competing task files that violate this design:
+      {list_competing_files(competing_tasks)}
+      
+      REQUIRED ACTION:
+      1. Consolidate competing task files into master tasks.md
+      2. Use create-tasks-list.md template to add tasks to master tasks.md
+      3. Never create standalone task files outside this workflow
+      
+      PREVENTION: Always use Phase 5 (Tasks) workflow, never bypass with direct file creation.
+      """
+      HALT: "Must resolve task violations before continuing"
+  </task_architecture_validation>
+  
+  <spec_dependency_validation>
+    # Ensure tasks are based on proper specification
+    IF not file_exists(".agent-os/specs/spec.md"):
+      ERROR: "MISSING SPECIFICATION DEPENDENCY"
+      MESSAGE: """
+      Phase 5 (Tasks) requires existing specification:
+      
+      ❌ Missing: .agent-os/specs/spec.md
+      
+      REQUIRED ACTION:
+      1. Run Phase 1: initialize-spec.md
+      2. Run Phase 2: research-spec.md
+      3. Run Phase 3: write-spec.md (creates/updates spec.md)
+      4. Run Phase 4: verify-spec.md
+      5. Then run Phase 5: create-tasks-list.md
+      
+      PREVENTION: Never run create-tasks-list.md without existing specifications.
+      """
+      HALT: "Must have spec.md before creating tasks"
+    
+    # Validate specification content exists
+    spec_content = read_file(".agent-os/specs/spec.md")
+    IF spec_content.length < 100:
+      WARNING: "Specification appears minimal - ensure proper Phase 1-4 completion before task creation"
+  </spec_dependency_validation>
+  
+  <task_mode_determination>
+    # Determine proper task creation mode
+    IF not file_exists(".agent-os/specs/tasks.md"):
+      LOG: "📋 No master tasks.md found - will create consolidated task structure"
+      task_mode = "CREATE_MASTER_TASKS"
+    ELSE:
+      LOG: "📋 Master tasks.md exists - will add feature tasks using idempotent approach"
+      task_mode = "ADD_FEATURE_TASKS"
+    
+    # Store enforcement context
+    CALL: mcp-memory-keeper-context_save
+    PARAMETERS:
+      - key: "idempotent-task-enforcement"
+      - value: "Task design validated - proceeding with {task_mode} mode"
+      - category: "enforcement"
+      - priority: "high"
+  </task_mode_determination>
+</idempotent_task_enforcement>
 
-<kb_initialization_process>
-  <availability_check>
-    1. CHECK if memory-keeper MCP is available
-    2. IF available: PROCEED with KB initialization
-    3. IF unavailable: LOG unavailability and SKIP to step 1
-  </availability_check>
-  <namespace_setup>
-    1. GENERATE project namespace from directory name
-    2. START new context session with project directory path
-    3. SET session description: "Agent OS create-spec operation"
-    4. LOG successful KB initialization
-  </namespace_setup>
-  <fallback_behavior>
-    1. IF memory-keeper unavailable: USE standard file-based context loading
-    2. DOCUMENT limitation in response
-    3. CONTINUE with existing workflow patterns
-  </fallback_behavior>
-</kb_initialization_process>
+<task_enforcement_benefits>
+  <prevents_task_fragmentation>
+    - Blocks creation of competing task files
+    - Ensures single source of truth (tasks.md) is maintained
+    - Prevents task conflicts and confusion
+    - Enforces Agent OS task management principles
+  </prevents_task_fragmentation>
+  
+  <validates_workflow_sequence>
+    - Ensures Phase 5 follows proper Phase 1-4 sequence
+    - Validates specification dependency before task creation
+    - Prevents orphaned tasks without corresponding specifications
+    - Maintains proper 5-phase workflow integrity
+  </validates_workflow_sequence>
+</task_enforcement_benefits>
 
 <instructions>
-  ACTION: Initialize memory-keeper with project-specific namespace
-  VERIFY: Memory-keeper availability before proceeding
-  FALLBACK: Gracefully degrade to file-based context if unavailable
-  LOG: Initialization status for transparency
+  CRITICAL: Enforce Agent OS idempotent task architecture without exception
+  VALIDATE: Check for competing task files and missing spec dependencies
+  ENSURE: Proper 5-phase workflow sequence before task creation
+  MAINTAIN: Single source of truth (tasks.md) for all project tasks
+  PREVENT: Task fragmentation through design enforcement
 </instructions>
 
 </step>
 
-<step number="1" name="spec_initiation">
+<step number="1" name="memory_and_precedence_initialization">
 
 ### Step 1: Spec Initiation
 
@@ -202,89 +306,105 @@ encoding: UTF-8
 
 </step>
 
-<step number="1.5" name="kb_context_retrieval">
+<step number="1.5" name="phase_context_loading">
 
-### Step 1.5: Knowledge Base Context Retrieval
+### Step 1.5: Load Previous Phase Context
 
 <step_metadata>
-  <action>load relevant project context from KB</action>
-  <purpose>reduce context memory by leveraging persistent knowledge</purpose>
-  <queries>specifications, decisions, architectural patterns</queries>
-  <condition>only if memory-keeper available</condition>
+  <action>load specification context from Phase 4 validation</action>
+  <purpose>retrieve validated specification and task creation context</purpose>
+  <queries>validated specification, implementation priorities, risk areas</queries>
+  <condition>requires previous phase completion</condition>
 </step_metadata>
 
-<kb_query_categories>
-  <feature_specifications>
-    - Previously defined user stories and requirements
-    - Accepted requirements and scope decisions
-    - Integration points and dependencies from other specs
-  </feature_specifications>
-  <technical_architecture>
-    - Technology stack decisions and rationale
-    - Architectural patterns and constraints
+<phase_context_categories>
+  <validated_specification>
+    - Completed and validated project specification
+    - Verified technical feasibility and constraints
+    - Approved scope boundaries and requirements
+    - Quality validation results and recommendations
+  </validated_specification>
+  <implementation_priorities>
+    - High-priority features requiring immediate attention
+    - Risk areas identified during validation
+    - Dependencies and blockers for task sequencing
     - Performance and scalability considerations
-  </technical_architecture>
-  <implementation_decisions>
-    - Code patterns and style preferences established
-    - Library choices and justifications
-    - Testing strategies and coverage requirements
-  </implementation_decisions>
-  <project_context>
-    - Product mission and user goals
-    - Current development phase and priorities
-    - Recent specification work and outcomes
-  </project_context>
-</kb_query_categories>
+  </implementation_priorities>
+  <task_creation_guidance>
+    - Test-driven development requirements
+    - Acceptance criteria definitions
+    - Role-based task assignment preferences
+    - Implementation complexity assessments
+  </task_creation_guidance>
+  <cross_project_patterns>
+    - Similar project task breakdown patterns
+    - Successful implementation approaches
+    - Common pitfalls and mitigation strategies
+    - Best practices for task organization
+  </cross_project_patterns>
+</phase_context_categories>
 
-<kb_retrieval_process>
-  <semantic_search>
-    1. QUERY memory-keeper for specification and architecture context
-    2. SEARCH for related specifications and implementation patterns
-    3. RETRIEVE relevant entries from each category
-    4. SYNTHESIZE unified context summary for informed specification
-  </semantic_search>
-  <context_filtering>
-    1. FILTER retrieved context by current spec relevance
-    2. PRIORITIZE recent specifications and architectural decisions
-    3. EXCLUDE outdated or superseded information
-    4. LIMIT total context to manageable size (2000 tokens max)
-  </context_filtering>
-  <fallback_behavior>
-    1. IF memory-keeper unavailable: SKIP this step
-    2. CONTINUE with standard file-based workflow
-    3. DOCUMENT KB unavailability in session notes
-  </fallback_behavior>
-</kb_retrieval_process>
+<context_loading_process>
+  # Load Phase 4 validation results
+  CALL: mcp-memory-keeper-context_get
+  PARAMETERS:
+    - key: "phase5-task-creation-context"
+  
+  # Load validated specification context
+  CALL: mcp-memory-keeper-context_get
+  PARAMETERS:
+    - key: "phase4-complete"
+  
+  # Load validation results and priorities
+  CALL: mcp-memory-keeper-context_get
+  PARAMETERS:
+    - key: "feasibility-validation"
+  
+  # Search for similar project task patterns
+  CALL: memento-mcp-semantic_search
+  PARAMETERS:
+    - query: "{PRIMARY_TECH} task breakdown implementation patterns"
+    - entity_types: ["task_pattern", "implementation_approach", "best_practice"]
+    - limit: 5
+  
+  # Load project-specific patterns if available
+  CALL: memento-mcp-semantic_search
+  PARAMETERS:
+    - query: "{PROJECT_ENTITY_NAME} task organization development workflow"
+    - entity_types: ["project", "workflow", "task_group"]
+    - limit: 3
+</context_loading_process>
 
-<context_synthesis_template>
-  ## Retrieved Project Context
+<phase5_context_template>
+  ## Phase 5: Task Creation Context
   
-  Based on project history and previous decisions:
+  Based on validated specification and previous phases:
   
-  ### Related Specifications
-  - **[SPEC_NAME_1]**: [SPEC_SUMMARY_FROM_KB]
-  - **[SPEC_NAME_2]**: [SPEC_SUMMARY_FROM_KB]
+  ### Validated Specification Summary
+  - **Scope**: [VALIDATED_SCOPE_FROM_PHASE4]
+  - **Technical Approach**: [APPROVED_ARCHITECTURE_FROM_PHASE4]
+  - **Quality Score**: [VALIDATION_SCORE_FROM_PHASE4]
   
-  ### Technical Context
-  - **Architecture**: [CURRENT_ARCHITECTURE_FROM_KB]
-  - **Patterns**: [ESTABLISHED_PATTERNS_FROM_KB]
-  - **Constraints**: [TECHNICAL_CONSTRAINTS_FROM_KB]
+  ### Implementation Priorities
+  - **High Priority**: [CRITICAL_FEATURES_FROM_VALIDATION]
+  - **Dependencies**: [IDENTIFIED_BLOCKERS_FROM_VALIDATION]
+  - **Risk Areas**: [VALIDATION_CONCERNS_FROM_PHASE4]
   
-  ### Implementation Context
-  - **Code Style**: [CODE_PREFERENCES_FROM_KB]
-  - **Testing Strategy**: [TESTING_APPROACH_FROM_KB]
-  - **Integration Points**: [KNOWN_INTEGRATIONS_FROM_KB]
+  ### Task Creation Guidance
+  - **TDD Requirements**: [TEST_FIRST_REQUIREMENTS]
+  - **Acceptance Criteria**: [VALIDATION_BASED_CRITERIA]
+  - **Complexity Assessment**: [TECHNICAL_COMPLEXITY_FROM_PHASE4]
   
-  ### Project Priorities
-  - [PRIORITY_INSIGHT_1_FROM_KB]
-  - [PRIORITY_INSIGHT_2_FROM_KB]
-</context_synthesis_template>
+  ### Cross-Project Insights
+  - [SIMILAR_PROJECT_PATTERN_1]
+  - [SUCCESSFUL_APPROACH_PATTERN_2]
+</phase5_context_template>
 
 <instructions>
-  ACTION: Query memory-keeper for specification context (if available)
-  SYNTHESIZE: Combine KB results with current spec requirements
-  FILTER: Limit context to current specification relevance
-  FALLBACK: Skip if memory-keeper unavailable
+  ACTION: Load Phase 4 validation context and cross-project patterns
+  SYNTHESIZE: Combine validation results with task creation requirements
+  ENHANCE: Apply similar project patterns and best practices
+  VALIDATE: Ensure Phase 4 completion before proceeding
 </instructions>
 
 </step>
@@ -300,14 +420,14 @@ encoding: UTF-8
     - @.agent-os/product/tech-stack.md
   </reads>
   <purpose>understand spec alignment</purpose>
-  <enhances>with KB context if available</enhances>
+  <enhances>with Phase 4 validation context</enhances>
 </step_metadata>
 
 <context_analysis>
   <mission>overall product vision</mission>
   <roadmap>current progress and plans</roadmap>
   <tech_stack>technical requirements</tech_stack>
-  <kb_context>related specifications and patterns if available</kb_context>
+  <validation_context>Phase 4 results and implementation guidance</validation_context>
 </context_analysis>
 
 <memory_enhanced_context_gathering>
@@ -383,7 +503,6 @@ encoding: UTF-8
   LEVERAGE: Previous planning sessions and similar spec patterns
   REDUCE: Context size by storing details in memory systems
 </instructions>
-</instructions>
 
 </step>
 
@@ -392,65 +511,72 @@ encoding: UTF-8
 ### Step 3: Documentation Verification with Context7
 
 <step_metadata>
-  <purpose>ensure latest documentation for implementation</purpose>
+  <purpose>ensure latest documentation for implementation using centralized workflow</purpose>
   <required>true</required>
+  <uses>centralized Context7 + Meilisearch documentation workflow</uses>
 </step_metadata>
 
-<context7_verification>
-  <process>
-    1. IDENTIFY primary technologies for this spec from tech-stack.md
-    2. FOR EACH technology identified:
-       a. EXTRACT Meilisearch key from mapping in tech-stack.md
-       b. SEARCH Meilisearch cache using the extracted key
-       c. IF cached documentation exists AND is not stale (< 30 days old):
-          i. RETRIEVE documentation from Meilisearch
-          ii. LOG cache hit for metrics
-       d. IF NO cached documentation OR cache is stale:
-          i. RESOLVE library ID using mcp__proxmoxmcp__context7-resolve-library-id
-          ii. FETCH documentation using mcp__proxmoxmcp__context7-get-library-docs
-          iii. STORE documentation in Meilisearch with the following schema:
-               - id: "[language]_[library_name]" (e.g., "laravel_framework")
-               - library_id: Context7 library ID (e.g., "/laravel/laravel")
-               - title: "Documentation for [library_name]"
-               - content: Full documentation content
-               - fetch_date: Current date (YYYY-MM-DD format)
-               - tokens: Number of tokens retrieved
-               - topic: Topic used for focused documentation (if any)
-               - version: Library version information (if available)
-          iv. LOG cache miss and update for metrics
-       e. SEARCH for specific implementation patterns related to spec
-       f. DOCUMENT relevant findings
-    3. VERIFY design patterns against latest best practices
-  </process>
-</context7_verification>
-
-<verification_template>
-  ## Documentation Verification
-
-  I've verified the spec requirements against the latest documentation:
-
-  - **[TECH_NAME]**: `[CONTEXT7_LIBRARY_ID]`
-    - [KEY_IMPLEMENTATION_PATTERN_1]
-    - [KEY_IMPLEMENTATION_PATTERN_2]
-    - Source: [CACHE_HIT ? "Meilisearch cache" : "Context7 API"]
-    - Cache Status: [CACHE_STATUS]
+<context7_meilisearch_workflow>
+  <!-- Use centralized Context7 + Meilisearch documentation workflow -->
+  <include>@reference-docs/instructions/support-workflows/context7-meilisearch-workflow.md</include>
   
-  - **[TECH_NAME]**: `[CONTEXT7_LIBRARY_ID]`
-    - [KEY_IMPLEMENTATION_PATTERN_1]
-    - [KEY_IMPLEMENTATION_PATTERN_2]
-    - Source: [CACHE_HIT ? "Meilisearch cache" : "Context7 API"]
-    - Cache Status: [CACHE_STATUS]
-</verification_template>
+  # Execute the centralized documentation workflow for implementation-focused analysis
+  EXECUTE: context7_documentation_workflow()
+  PARAMETERS:
+    - workflow_type: "implementation"
+    - focus_areas: ["implementation_specific"]
+    - trust_threshold: 9.0  # Higher threshold for implementation accuracy
+    - technologies: SPEC_RELEVANT_TECH  # Technologies specific to this spec
+    - documentation_depth: "code_examples_and_apis"
+  
+  # Store workflow results for spec validation
+  DOCUMENTATION_RESULTS = workflow_output.documentation_summary
+  TRUST_ASSESSMENT = workflow_output.confidence_level
+  IMPLEMENTATION_PATTERNS = workflow_output.key_architectural_insights
+  
+  # Log verification results
+  LOG: "🔍 Implementation verification completed with {TRUST_ASSESSMENT} confidence"
+  LOG: "🏗️ Found {len(IMPLEMENTATION_PATTERNS)} relevant implementation patterns"
+</context7_meilisearch_workflow>
+
+<spec_integration>
+  # Integration results for spec validation and requirements verification
+  # The centralized workflow provides:
+  # - implementation_patterns: Code examples and API patterns
+  # - confidence_level: HIGH/MEDIUM/LOW based on implementation trust scores
+  # - version_compatibility: Cross-technology version analysis
+  # - performance_metrics: Documentation freshness and cache optimization
+  
+  # Store verification context for spec creation
+  CALL: mcp-memory-keeper-context_save
+  PARAMETERS:
+    - key: "spec-verification-results-{SPEC_NAME}"
+    - value: "{IMPLEMENTATION_PATTERNS}"
+    - category: "analysis"
+    - priority: "high"
+  
+  # Create Memento entities for cross-project spec learning
+  CALL: memento-mcp-create_entities
+  PARAMETERS:
+    - entities: [{
+        "name": "{PROJECT_NAME}-spec-{SPEC_NAME}-verification",
+        "entityType": "implementation_verification",
+        "observations": [
+          "Verified against: {DOCUMENTATION_SOURCES}",
+          "Implementation patterns: {IMPLEMENTATION_PATTERNS[:3]}",
+          "Trust level: {TRUST_ASSESSMENT}",
+          "Date: {current_date()}"
+        ]
+      }]
+</spec_integration>
 
 <instructions>
-  ACTION: Check Meilisearch cache first, then use Context7 MCP tools if needed
-  FOCUS: Technologies directly relevant to this spec
-  DOCUMENT: Specific implementation patterns and best practices
-  VALIDATE: Spec design against current documentation
-  CACHE: Store Context7 documentation in Meilisearch for future use
-  RECORD: Document source (cache or API) and cache status for each technology
-  UPDATE: Refresh stale cache entries (older than 30 days)
-  STRUCTURE: Follow the Meilisearch schema for consistent caching
+  ACTION: Execute centralized Context7 + Meilisearch documentation workflow
+  CONFIGURE: Use implementation-specific parameters and higher trust thresholds
+  LEVERAGE: Existing tech-stack.md mappings via centralized workflow
+  FOCUS: Technologies and patterns directly relevant to this specification
+  VALIDATE: Spec design against latest implementation best practices via workflow
+  STORE: Verification results in memory systems for cross-project learning
 </instructions>
 
 </step>
@@ -464,7 +590,7 @@ encoding: UTF-8
     - scope_boundaries: string
     - technical_considerations: array[string]
   </required_clarifications>
-  <enhances>with KB insights if available</enhances>
+  <enhances>with Phase 4 validation context and cross-project patterns</enhances>
 </step_metadata>
 
 <clarification_areas>
@@ -478,15 +604,15 @@ encoding: UTF-8
     - integration points
   </technical>
   <consistency>
-    - alignment with previous specifications from KB
-    - consistency with established patterns
+    - alignment with validated specification from Phase 4
+    - consistency with established patterns from cross-project learning
     - integration with existing features
   </consistency>
 </clarification_areas>
 
 <decision_tree>
   IF clarification_needed:
-    ASK numbered_questions (enhanced with KB context)
+    ASK numbered_questions (enhanced with validation context)
     WAIT for_user_response
   ELSE:
     PROCEED to_date_determination
@@ -498,15 +624,15 @@ encoding: UTF-8
   1. [SPECIFIC_QUESTION_ABOUT_SCOPE]
   2. [SPECIFIC_QUESTION_ABOUT_TECHNICAL_APPROACH]
   3. [SPECIFIC_QUESTION_ABOUT_USER_EXPERIENCE]
-  [IF KB_AVAILABLE]:
-  4. [CONSISTENCY_QUESTION_BASED_ON_KB_CONTEXT]
+  [IF VALIDATION_CONTEXT_AVAILABLE]:
+  4. [CONSISTENCY_QUESTION_BASED_ON_PHASE4_VALIDATION]
 </question_template>
 
 <instructions>
   ACTION: Evaluate need for clarification
-  ASK: Numbered questions if needed (enhanced with KB insights)
+  ASK: Numbered questions if needed (enhanced with Phase 4 validation insights)
   PROCEED: Only with clear requirements
-  ENHANCE: Use KB context to identify potential consistency issues
+  ENHANCE: Use validation context to identify potential consistency issues
 </instructions>
 
 </step>
@@ -551,9 +677,9 @@ encoding: UTF-8
     - file: .agent-os/specs/spec.md (if not exists)
   </creates>
   <updates>
-    - file: .agent-os/specs/spec.md (if exists, append new feature)
+    - file: .agent-os/specs/spec.md (if exists, find and update matching feature or append if new)
   </updates>
-  <enhances>with KB context if available</enhances>
+  <enhances>with Phase 4 validation context and task patterns</enhances>
   <consolidation_mode>processes provided feature data for consistent formatting</consolidation_mode>
 </step_metadata>
 
@@ -571,13 +697,34 @@ encoding: UTF-8
       preserve_metadata = PRESERVE_METADATA
     )
     
-    # Handle append vs create based on APPEND_MODE
-    IF APPEND_MODE AND file_exists(".agent-os/specs/spec.md"):
-      append_feature_section_to_spec(enhanced_section)
-      LOG: "📝 Appended {SOURCE_DATA.feature_name} to existing spec.md"
+    # Handle update vs append vs create with intelligent spec matching
+    IF file_exists(".agent-os/specs/spec.md"):
+      existing_spec_content = read_file(".agent-os/specs/spec.md")
+      
+      # Look for existing feature specification by name/ID
+      feature_match = find_existing_feature_spec(
+        existing_spec_content,
+        SOURCE_DATA.feature_name,
+        [SOURCE_DATA.feature_id, SOURCE_DATA.original_folder]
+      )
+      
+      IF feature_match.found:
+        # Update existing feature specification in place
+        updated_content = replace_feature_section(
+          existing_spec_content,
+          feature_match.section_range,
+          enhanced_section
+        )
+        write_file(".agent-os/specs/spec.md", updated_content)
+        LOG: "🔄 Updated existing feature '{SOURCE_DATA.feature_name}' in spec.md"
+        LOG: "📍 Replaced section at lines {feature_match.section_range.start}-{feature_match.section_range.end}"
+      ELSE:
+        # No existing match found - append new feature
+        append_feature_section_to_spec(enhanced_section)
+        LOG: "📝 Appended new feature '{SOURCE_DATA.feature_name}' to existing spec.md"
     ELSE:
       create_spec_file_with_consolidation_header(enhanced_section)
-      LOG: "🆕 Created spec.md with consolidated feature {SOURCE_DATA.feature_name}"
+      LOG: "🆕 Created spec.md with feature '{SOURCE_DATA.feature_name}'"
     
     # Store consolidation progress in memory
     CALL: mcp-memory-keeper-context_save
@@ -624,10 +771,10 @@ encoding: UTF-8
   <example>
     Implement a secure password reset functionality that allows users to regain account access through email verification. This feature will reduce support ticket volume and improve user experience by providing self-service account recovery.
   </example>
-  <kb_enhancement>
-    - Reference related specifications from KB if available
-    - Ensure alignment with established product goals
-  </kb_enhancement>
+  <validation_enhancement>
+    - Reference validated specification context from Phase 4
+    - Ensure alignment with established product goals and scope boundaries
+  </validation_enhancement>
 </section>
 
 <section name="user_stories">
@@ -645,10 +792,10 @@ encoding: UTF-8
     - include: workflow and problem solved
     - format: title + story + details
   </constraints>
-  <kb_enhancement>
-    - Build on user personas from KB if available
-    - Ensure consistency with previous user stories
-  </kb_enhancement>
+  <validation_enhancement>
+    - Build on user personas from validated specification context
+    - Ensure consistency with Phase 4 validated requirements
+  </validation_enhancement>
 </section>
 
 <section name="spec_scope">
@@ -690,9 +837,9 @@ encoding: UTF-8
 
 <instructions>
   ACTION: Create spec.md with all sections
-  FILL: Use spec details from steps 1-4 and KB context if available
+  FILL: Use spec details from steps 1-4 and Phase 4 validation context
   MAINTAIN: Clear, concise descriptions
-  ENHANCE: Leverage KB context for consistency and alignment
+  ENHANCE: Leverage validation context for consistency and alignment
 </instructions>
 
 </step>
@@ -706,9 +853,9 @@ encoding: UTF-8
     - file: .agent-os/specs/sub-specs/[FEATURE_FOLDER]/technical-spec.md (if not exists)
   </creates>
   <updates>
-    - file: .agent-os/specs/sub-specs/[FEATURE_FOLDER]/technical-spec.md (if exists, append new feature section)
+    - file: .agent-os/specs/sub-specs/[FEATURE_FOLDER]/technical-spec.md (if exists, find and update matching feature or append if new)
   </updates>
-  <enhances>with KB architectural patterns if available</enhances>
+  <enhances>with Phase 4 validated architectural patterns and technical feasibility</enhances>
   <consolidation_mode>creates feature-specific folder structure for organized sub-specs</consolidation_mode>
 </step_metadata>
 
@@ -779,11 +926,11 @@ encoding: UTF-8
     - justification for each
     - version requirements
   </external_dependencies>
-  <kb_enhancements>
-    - architectural patterns from KB
-    - integration points with existing features
-    - consistency with established technical decisions
-  </kb_enhancements>
+  <validation_enhancements>
+    - architectural patterns from Phase 4 validation
+    - integration points with existing features from feasibility assessment
+    - consistency with validated technical decisions
+  </validation_enhancements>
 </spec_sections>
 
 <example_template>
@@ -804,8 +951,8 @@ encoding: UTF-8
 
   **Rationale:** [EXPLANATION]
 
-  [IF KB_AVAILABLE]:
-  **Consistency with Existing Architecture:** [KB_ARCHITECTURAL_ALIGNMENT]
+  [IF VALIDATION_CONTEXT_AVAILABLE]:
+  **Consistency with Existing Architecture:** [PHASE4_ARCHITECTURAL_ALIGNMENT]
 
   ## External Dependencies
 
@@ -817,7 +964,7 @@ encoding: UTF-8
   ACTION: Create sub-specs folder and technical-spec.md
   DOCUMENT: All technical decisions and requirements
   JUSTIFY: Any new dependencies
-  ENHANCE: Leverage KB context for architectural consistency
+  ENHANCE: Leverage Phase 4 validation context for architectural consistency
 </instructions>
 
 </step>
@@ -831,7 +978,7 @@ encoding: UTF-8
     - file: .agent-os/specs/sub-specs/database-schema.md (if not exists)
   </creates>
   <updates>
-    - file: .agent-os/specs/sub-specs/database-schema.md (if exists, append new feature section)
+    - file: .agent-os/specs/sub-specs/database-schema.md (if exists, find and update matching feature or append if new)
   </updates>
   <condition>only if database changes needed</condition>
 </step_metadata>
@@ -876,17 +1023,17 @@ encoding: UTF-8
     - performance considerations
     - data integrity rules
   </rationale>
-  <kb_enhancements>
-    - consistency with existing schema patterns from KB
-    - integration with established data models
-  </kb_enhancements>
+  <validation_enhancements>
+    - consistency with existing schema patterns from Phase 4 validation
+    - integration with established data models from feasibility assessment
+  </validation_enhancements>
 </schema_sections>
 
 <instructions>
   ACTION: Check if database changes needed
   CREATE: database-schema.md only if required
   INCLUDE: Complete SQL/migration specifications
-  ENHANCE: Ensure consistency with existing data architecture from KB
+  ENHANCE: Ensure consistency with existing data architecture from Phase 4 validation
 </instructions>
 
 </step>
@@ -900,7 +1047,7 @@ encoding: UTF-8
     - file: .agent-os/specs/sub-specs/api-spec.md (if not exists)
   </creates>
   <updates>
-    - file: .agent-os/specs/sub-specs/api-spec.md (if exists, append new feature section)
+    - file: .agent-os/specs/sub-specs/api-spec.md (if exists, find and update matching feature or append if new)
   </updates>
   <condition>only if API changes needed</condition>
 </step_metadata>
@@ -944,10 +1091,10 @@ encoding: UTF-8
     - endpoint rationale
     - integration with features
   </purpose>
-  <kb_enhancements>
-    - consistency with existing API patterns from KB
-    - integration with established authentication/authorization
-  </kb_enhancements>
+  <validation_enhancements>
+    - consistency with existing API patterns from Phase 4 validation
+    - integration with established authentication/authorization from feasibility assessment
+  </validation_enhancements>
 </api_sections>
 
 <endpoint_template>
@@ -959,15 +1106,15 @@ encoding: UTF-8
   **Parameters:** [LIST]
   **Response:** [FORMAT]
   **Errors:** [POSSIBLE_ERRORS]
-  [IF KB_AVAILABLE]:
-  **Integration:** [KB_API_PATTERN_CONSISTENCY]
+  [IF VALIDATION_CONTEXT_AVAILABLE]:
+  **Integration:** [PHASE4_API_PATTERN_CONSISTENCY]
 </endpoint_template>
 
 <instructions>
   ACTION: Check if API changes needed
   CREATE: api-spec.md only if required
   DOCUMENT: All endpoints and controllers
-  ENHANCE: Ensure consistency with existing API architecture from KB
+  ENHANCE: Ensure consistency with existing API architecture from Phase 4 validation
 </instructions>
 
 </step>
@@ -981,7 +1128,7 @@ encoding: UTF-8
     - file: .agent-os/specs/sub-specs/tests.md (if not exists)
   </creates>
   <updates>
-    - file: .agent-os/specs/sub-specs/tests.md (if exists, append new feature section)
+    - file: .agent-os/specs/sub-specs/tests.md (if exists, find and update matching feature or append if new)
   </updates>
 </step_metadata>
 
@@ -1042,17 +1189,17 @@ encoding: UTF-8
 
   - **[SERVICE_NAME]:** [MOCK_STRATEGY]
   
-  [IF KB_AVAILABLE]:
+  [IF VALIDATION_CONTEXT_AVAILABLE]:
   ### Consistency with Existing Tests
-  - **Testing Patterns:** [KB_TESTING_PATTERNS]
-  - **Coverage Standards:** [KB_COVERAGE_REQUIREMENTS]
+  - **Testing Patterns:** [PHASE4_TESTING_PATTERNS]
+  - **Coverage Standards:** [PHASE4_COVERAGE_REQUIREMENTS]
 </test_template>
 
 <instructions>
   ACTION: Create comprehensive test specification
   ENSURE: All new functionality has test coverage
   SPECIFY: Mock requirements for external services
-  ENHANCE: Leverage KB context for testing consistency
+  ENHANCE: Leverage Phase 4 validation context for testing consistency
 </instructions>
 
 </step>
@@ -1096,10 +1243,10 @@ encoding: UTF-8
     - file: .agent-os/specs/tasks.md (if not exists)
   </creates>
   <updates>
-    - file: .agent-os/specs/tasks.md (if exists, append new feature tasks)
+    - file: .agent-os/specs/tasks.md (if exists, find and update matching feature tasks or append if new)
   </updates>
   <depends_on>user approval from step 11 (standard mode only)</depends_on>
-  <enhances>with KB implementation patterns if available</enhances>
+  <enhances>with Phase 4 validation patterns and cross-project implementation insights</enhances>
   <consolidation_mode>processes provided tasks data for consistent formatting</consolidation_mode>
 </step_metadata>
 
@@ -1116,13 +1263,34 @@ encoding: UTF-8
       consolidation_date = SOURCE_DATA.consolidation_date
     )
     
-    # Handle append vs create based on APPEND_MODE
-    IF APPEND_MODE AND file_exists(".agent-os/specs/tasks.md"):
-      append_tasks_section_to_file(enhanced_tasks_section)
-      LOG: "📋 Appended {SOURCE_DATA.feature_name} tasks to existing tasks.md"
+    # Handle update vs append vs create with intelligent task matching
+    IF file_exists(".agent-os/specs/tasks.md"):
+      existing_tasks_content = read_file(".agent-os/specs/tasks.md")
+      
+      # Look for existing feature task section by name/ID
+      task_match = find_existing_task_section(
+        existing_tasks_content,
+        SOURCE_DATA.feature_name,
+        [SOURCE_DATA.feature_id, SOURCE_DATA.original_folder]
+      )
+      
+      IF task_match.found:
+        # Update existing task section in place
+        updated_content = replace_task_section(
+          existing_tasks_content,
+          task_match.section_range,
+          enhanced_tasks_section
+        )
+        write_file(".agent-os/specs/tasks.md", updated_content)
+        LOG: "🔄 Updated existing tasks for '{SOURCE_DATA.feature_name}' in tasks.md"
+        LOG: "📍 Replaced task section at lines {task_match.section_range.start}-{task_match.section_range.end}"
+      ELSE:
+        # No existing task match found - append new tasks
+        append_tasks_section_to_file(enhanced_tasks_section)
+        LOG: "📋 Appended new tasks for '{SOURCE_DATA.feature_name}' to existing tasks.md"
     ELSE:
       create_tasks_file_with_consolidation_header(enhanced_tasks_section)
-      LOG: "🆕 Created tasks.md with consolidated feature {SOURCE_DATA.feature_name} tasks"
+      LOG: "🆕 Created tasks.md with tasks for '{SOURCE_DATA.feature_name}'"
     
     # Store consolidation progress in memory
     CALL: mcp-memory-keeper-context_save
@@ -1132,6 +1300,63 @@ encoding: UTF-8
       - category: "progress"
       - priority: "normal"
 </consolidation_mode_tasks_handling>
+
+<specification_matching_algorithm>
+  <!-- Intelligent spec/task section matching to prevent duplicates -->
+  <matching_strategy>
+    # Algorithm for finding existing feature sections in spec files
+    
+    FUNCTION: find_existing_feature_spec(content, feature_name, identifiers)
+      # Multi-criteria matching to find existing specs
+      matching_criteria = [
+        "## Feature: {feature_name}",           # Exact feature name match
+        "## {feature_name}",                    # Simple header match  
+        "Feature: {feature_name} ",              # Inline feature reference
+        "# {feature_name}",                     # H1 header match
+        ">{feature_id}",                        # ID-based matching
+        ">{original_folder}",                   # Folder-based matching
+      ]
+      
+      FOR criteria in matching_criteria:
+        match_position = find_in_content(content, criteria)
+        IF match_position.found:
+          section_range = extract_section_boundaries(
+            content, 
+            match_position.start,
+            next_feature_header_or_end_of_file
+          )
+          RETURN: {
+            "found": true,
+            "section_range": section_range,
+            "match_type": criteria,
+            "confidence": calculate_match_confidence(criteria, feature_name)
+          }
+      
+      RETURN: {"found": false}
+    
+    FUNCTION: replace_feature_section(content, section_range, new_section)
+      # Replace existing section content while preserving file structure
+      before_section = content[0:section_range.start]
+      after_section = content[section_range.end:end]
+      updated_content = before_section + new_section + after_section
+      RETURN: updated_content
+    
+    LOG: "🔍 Intelligent spec matching prevents duplicate feature sections"
+  </matching_strategy>
+  
+  <matching_benefits>
+    # Benefits of intelligent spec matching vs naive append
+    
+    ✅ **Prevents Duplicates**: No duplicate feature sections in spec files
+    ✅ **Maintains History**: Updates existing specs while preserving structure  
+    ✅ **Version Control Friendly**: Clean diffs show actual changes, not additions
+    ✅ **Keeps Files Organized**: Specs stay logically organized, not chronologically cluttered
+    ✅ **Supports Iteration**: Easy to refine and update specifications over time
+    ✅ **Memory Efficient**: Memory systems track updates, not redundant data
+    
+    LOG: "📋 Smart spec management improves workflow efficiency"
+  </matching_benefits>
+</specification_matching_algorithm>
 
 <file_template>
   <header_new_file>
@@ -1210,104 +1435,127 @@ encoding: UTF-8
   - Follow TDD approach
   - Group related functionality
   - Build incrementally
-  - Leverage established patterns from KB if available
+  - Leverage established patterns from Phase 4 validation and cross-project insights
 </ordering_principles>
 
 <instructions>
   ACTION: Create task breakdown following TDD
   STRUCTURE: Major tasks with subtasks
-  ORDER: Consider dependencies and KB patterns
+  ORDER: Consider dependencies and Phase 4 validation patterns
   ESTIMATE: Add effort scale (XS, S, M, L, XL) to each task and subtask
   REFER: Use the effort scale definition in the header
-  ENHANCE: Leverage KB context for implementation approach
+  ENHANCE: Leverage Phase 4 validation context for implementation approach
 </instructions>
 
 </step>
 
-<step number="12.5" name="kb_knowledge_persistence">
+<step number="12.5" name="mcp_knowledge_persistence">
 
-### Step 12.5: Knowledge Base Persistence
+### Step 12.5: MCP Knowledge Persistence
 
 <step_metadata>
-  <action>capture and store session insights</action>
-  <purpose>build persistent knowledge for future sessions</purpose>
-  <stores>specifications, technical decisions, implementation approaches</stores>
-  <condition>only if memory-keeper available</condition>
+  <action>capture and store task creation insights in MCP systems</action>
+  <purpose>build persistent knowledge for future projects and cross-project learning</purpose>
+  <stores>task patterns, implementation approaches, validation results</stores>
+  <condition>Memory-Keeper and Memento required</condition>
 </step_metadata>
 
-<kb_persistence_categories>
-  <specification_decisions>
-    - Feature requirements and scope established
-    - User stories and acceptance criteria
-    - Technical approach and architecture selected
-    - API and database design decisions
-  </specification_decisions>
-  <implementation_patterns>
-    - Code patterns and architectural choices
-    - Testing strategies and coverage requirements
-    - Integration approaches and dependencies
-    - Performance and scalability considerations
-  </implementation_patterns>
-  <cross_spec_relationships>
-    - Dependencies on other specifications
-    - Integration points with existing features
-    - Shared components and patterns
-    - Consistency requirements and constraints
-  </cross_spec_relationships>
-</kb_persistence_categories>
+<mcp_persistence_categories>
+  <task_creation_patterns>
+    - Task breakdown strategies and granularity
+    - TDD approach and test-first patterns
+    - Implementation sequencing and dependencies
+    - Effort estimation accuracy and patterns
+  </task_creation_patterns>
+  <validation_results>
+    - Phase 4 validation outcomes and lessons
+    - Technical feasibility assessments
+    - Risk mitigation strategies applied
+    - Quality standards adherence patterns
+  </validation_results>
+  <cross_project_insights>
+    - Similar project task patterns
+    - Successful implementation approaches
+    - Common pitfalls and avoidance strategies
+    - Best practices for technology stack
+  </cross_project_insights>
+</mcp_persistence_categories>
 
-<kb_persistence_process>
-  <insight_extraction>
-    1. ANALYZE session content for key specification decisions and insights
-    2. EXTRACT technical approaches, user requirements, and implementation details
-    3. CATEGORIZE findings by persistence category
-    4. PRIORITIZE information by future development relevance
-  </insight_extraction>
-  <knowledge_storage>
-    1. SAVE specification decisions and requirements to memory-keeper
-    2. STORE technical architecture and implementation approaches
-    3. TAG entries with relevant feature areas and integration points
-    4. LINK to created specification files and related documentation
-  </knowledge_storage>
-  <cross_reference_establishment>
-    1. CONNECT new specification to related existing specs
-    2. ESTABLISH integration points and dependencies
-    3. UPDATE project architecture knowledge with new patterns
-    4. MAINTAIN consistency across all project specifications
-  </cross_reference_establishment>
-  <fallback_behavior>
-    1. IF memory-keeper unavailable: SKIP KB persistence
-    2. DOCUMENT key specification insights in session summary
-    3. RECOMMEND manual knowledge capture in project documentation
-  </fallback_behavior>
-</kb_persistence_process>
+<mcp_persistence_process>
+  # Store Phase 5 completion and task patterns
+  CALL: mcp-memory-keeper-context_save
+  PARAMETERS:
+    - key: "tasks-list-complete"
+    - value: "Phase 5 completed: {tasks_created_count} tasks created for {PROJECT_NAME}"
+    - category: "progress"
+    - priority: "high"
+  
+  # Store task creation patterns in Memento for cross-project learning
+  CALL: memento-mcp-add_observations
+  PARAMETERS:
+    - observations: [{
+        "entityName": "{PROJECT_ENTITY_NAME}",
+        "contents": [
+          "Phase 5 Complete: Task breakdown created",
+          "Task Count: {total_tasks_created}",
+          "TDD Approach: {tdd_patterns_used}",
+          "Effort Estimation: {effort_distribution}",
+          "Technology: {PRIMARY_TECH}",
+          "Completion Date: {current_date()}"
+        ]
+      }]
+  
+  # Create task pattern entities for future reference
+  CALL: memento-mcp-create_entities
+  PARAMETERS:
+    - entities: [{
+        "name": "{PROJECT_ENTITY_NAME}-task-patterns",
+        "entityType": "task_creation_pattern",
+        "observations": [
+          "Breakdown Strategy: {task_breakdown_approach}",
+          "TDD Integration: {test_first_patterns}",
+          "Effort Scale Used: {effort_scale_distribution}",
+          "Dependencies: {key_dependencies_identified}"
+        ]
+      }]
+  
+  # Link to project workflow completion
+  CALL: memento-mcp-create_relations
+  PARAMETERS:
+    - relations: [{
+        "from": "{PROJECT_ENTITY_NAME}-workflow",
+        "to": "{PROJECT_ENTITY_NAME}-task-patterns",
+        "relationType": "completed_with",
+        "metadata": {"phase": "5", "completion_date": "{current_date()}"}
+      }]
+</mcp_persistence_process>
 
 <persistence_template>
-  ## Specification Knowledge Captured
+  ## Phase 5: Task Creation Complete
   
-  The following insights have been stored in the project knowledge base:
+  The following insights have been stored in MCP memory systems:
   
-  ### Specification Decisions
-  - **Feature Scope**: [CAPTURED_SCOPE_AND_REQUIREMENTS]
-  - **User Stories**: [CAPTURED_USER_REQUIREMENTS]
-  - **Technical Approach**: [CAPTURED_TECHNICAL_DECISIONS]
-  - **Integration Points**: [CAPTURED_INTEGRATION_REQUIREMENTS]
+  ### Task Creation Patterns
+  - **Breakdown Strategy**: [TASK_BREAKDOWN_APPROACH]
+  - **TDD Integration**: [TEST_FIRST_PATTERNS]
+  - **Effort Distribution**: [EFFORT_SCALE_USAGE]
+  - **Dependency Mapping**: [IDENTIFIED_DEPENDENCIES]
   
-  ### Implementation Patterns
-  - **Architecture Pattern**: [CAPTURED_ARCHITECTURAL_APPROACH]
-  - **Code Patterns**: [CAPTURED_IMPLEMENTATION_PATTERNS]
-  - **Testing Strategy**: [CAPTURED_TESTING_APPROACH]
-  - **Dependencies**: [CAPTURED_EXTERNAL_DEPENDENCIES]
+  ### Validation Integration
+  - **Phase 4 Results**: [VALIDATION_OUTCOMES_APPLIED]
+  - **Risk Mitigation**: [RISK_AREAS_ADDRESSED]
+  - **Quality Standards**: [STANDARDS_MAINTAINED]
+  - **Technical Feasibility**: [FEASIBILITY_CONSIDERATIONS]
   
-  ### Cross-Spec Relationships
-  - **Related Specifications**: [IDENTIFIED_RELATED_SPECS]
-  - **Shared Components**: [IDENTIFIED_SHARED_ELEMENTS]
-  - **Integration Requirements**: [CAPTURED_INTEGRATION_NEEDS]
-  - **Consistency Constraints**: [IDENTIFIED_CONSISTENCY_REQUIREMENTS]
+  ### Cross-Project Learning
+  - **Similar Projects**: [PATTERN_MATCHES_FOUND]
+  - **Best Practices**: [APPLIED_BEST_PRACTICES]
+  - **Lessons Learned**: [PITFALLS_AVOIDED]
+  - **Technology Patterns**: [TECH_SPECIFIC_APPROACHES]
   
-  ### Project Timeline Updated
-  - **Specification Phase**: Completed [CURRENT_DATE]
-  - **Ready for Implementation**: Task breakdown created
+  ### Workflow Completion
+  - **5-Phase Workflow**: Completed [CURRENT_DATE]
+  - **Ready for Implementation**: Task breakdown created with {TASK_COUNT} tasks
   - **Estimated Effort**: [TOTAL_EFFORT_ESTIMATE]
   - **Next Steps**: Ready for execute-tasks workflow
 </persistence_template>
@@ -1438,7 +1686,7 @@ encoding: UTF-8
     - First task summary from tasks.md
     - Estimated complexity/scope
     - Key deliverables for task 1
-    - KB context integration status
+    - MCP memory integration status
   </present_to_user>
 </readiness_summary>
 
@@ -1448,8 +1696,8 @@ encoding: UTF-8
   **Task 1:** [FIRST_TASK_TITLE]
   [BRIEF_DESCRIPTION_OF_TASK_1_AND_SUBTASKS]
 
-  [IF KB_AVAILABLE]:
-  **Memory System Context:** This specification has been stored in the Integrated Memory System and will be available for future sessions and related specifications.
+  [IF MCP_AVAILABLE]:
+  **MCP Memory Context:** This specification has been stored in Memory-Keeper and Memento systems and will be available for future sessions and cross-project learning.
 
   Would you like me to proceed with implementing Task 1? I will follow the execution guidelines in @~/.agent-os/instructions/execute-tasks.md and focus only on this first task and its subtasks unless you specify otherwise.
 
@@ -1466,10 +1714,10 @@ encoding: UTF-8
 </execution_flow>
 
 <instructions>
-  ACTION: Summarize first task and Integrated Memory System status
+  ACTION: Summarize first task and MCP memory system status
   REFERENCE: Use execute-tasks.md for implementation
   SCOPE: Limit to Task 1 only unless user specifies otherwise
-  HIGHLIGHT: Integrated Memory System benefits for future work
+  HIGHLIGHT: MCP memory system benefits for future work and cross-project learning
 </instructions>
 
 </step>

@@ -113,4 +113,4 @@ Follow the instructions located in @/reference-docs/instructions/consolidate-spe
 
 **Canonical Identity**: Universal namespace consolidation is automatically executed as Step 0 of the consolidation workflow to ensure consistent project identity and prevent knowledge fragmentation.
 
-**Error Resolution**: If any errors occur during consolidation, immediately reference @/reference-docs/instructions/error-resolution-via-memory.md for memory-guided troubleshooting procedures with canonical project identity.
+**Error Resolution**: If any errors occur during consolidation, immediately reference @/reference-docs/instructions/support-workflows/error-resolution-via-memory.md for memory-guided troubleshooting procedures with canonical project identity.
