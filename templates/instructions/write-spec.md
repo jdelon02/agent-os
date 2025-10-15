@@ -760,6 +760,69 @@ encoding: UTF-8
 
 </step>
 
+<step number="3.8" name="enhanced_mcp_learning_integration">
+
+### Step 3.8: Enhanced MCP Learning Integration
+
+<step_metadata>
+  <purpose>Apply sequential-thinking, vibe-check, vibe-distill, and vibe-learn MCP tools for intelligent mission definition analysis</purpose>
+  <enhances>mission.md creation with cross-project learning patterns</enhances>
+  <creates>
+    - learning session data in Memory-Keeper
+    - cross-project knowledge entities in Memento
+    - pattern recognition for mission specification workflows
+  </creates>
+</step_metadata>
+
+<enhanced_mcp_integration>
+  <!-- Include the reusable enhanced MCP learning integration module -->
+  <include>@templates/instructions/support-workflows/enhanced-mcp-learning-integration.md</include>
+  
+  <!-- Phase-specific parameters for write-spec mission definition -->
+  <integration_parameters>
+    <workflow_phase>write</workflow_phase>
+    <context>mission_specification_and_product_definition</context>
+    <learning_focus>[
+      "mission_clarity_patterns",
+      "user_persona_accuracy", 
+      "problem_solution_alignment",
+      "competitive_differentiation",
+      "scope_simplification",
+      "decision_quality"
+    ]</learning_focus>
+  </integration_parameters>
+  
+  <!-- Write-spec specific learning objectives -->
+  <learning_objectives>
+    - Analyze mission statement clarity and effectiveness patterns
+    - Validate user persona completeness and market alignment
+    - Test problem-solution fit assumptions and competitive positioning
+    - Identify scope creep risks in feature definitions
+    - Capture architectural decision patterns for future product specs
+    - Build cross-project knowledge for similar mission definition workflows
+  </learning_objectives>
+  
+  <!-- Integration success validation -->
+  <validation_criteria>
+    - Sequential thinking applied to complex mission definition decisions
+    - Vibe check validates mission-market fit assumptions
+    - Vibe distill simplifies overly complex product positioning
+    - Vibe learn captures mission specification patterns
+    - Cross-project entities created for knowledge transfer
+    - Learning patterns stored for future write-spec workflows
+  </validation_criteria>
+</enhanced_mcp_integration>
+
+<instructions>
+  EXECUTE: Enhanced MCP learning integration with write-spec parameters
+  CONTEXT: Mission definition and product specification analysis
+  LEARNING: Focus on mission clarity, user alignment, and scope management
+  STORAGE: Store patterns in Memory-Keeper + Memento dual architecture
+  FALLBACK: Graceful degradation if individual MCP tools unavailable
+</instructions>
+
+</step>
+
 <step number="4" name="gather_tech_documentation">
 
 ### Step 4: Gather Technology Documentation

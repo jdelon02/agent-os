@@ -11,6 +11,9 @@
 - **Standardized Workflows**: Automated directory and file creation based on project types
 - **Smart Configuration**: CLI-based setup with project-specific defaults
 - **Documentation-Driven**: Built-in standards and best practices
+- **🧠 Enhanced MCP Learning Integration**: Cross-project pattern recognition and intelligent workflow optimization
+- **⚙️ Optional Tool Flags**: Fine-grained control over MCP tool usage for performance optimization
+- **📊 Comprehensive Monitoring**: Real-time performance metrics and structured logging for all operations
 
 ## 📋 Quick Start
 
@@ -140,6 +143,47 @@ projectai drupal     # Initialize a Drupal project
 ~/.vscode/agent-os-*          # VS Code integration files
 ```
 
+## 🧠 MCP Integration Features (Planned)
+
+Agent OS will include enhanced Model Context Protocol (MCP) integration for intelligent workflow optimization:
+
+### 📊 Enhanced Learning Integration (Planned)
+- **Cross-Project Pattern Recognition**: Will learn from previous projects and apply patterns automatically
+- **Intelligent Workflow Optimization**: Will adapt workflows based on project complexity and requirements
+- **Dual Memory Architecture**: Memory-Keeper for session data + Memento for long-term knowledge graphs
+- **Graceful Degradation**: Will fallback to manual processes when MCP tools are unavailable
+
+### ⚙️ Optional Tool Flags (Planned)
+Will provide fine-grained control over MCP tool usage:
+
+```xml
+<!-- Example: Selective tool usage for performance optimization -->
+<mcp_tool_flags>
+  "sequential_thinking_enabled": false,  # Disable for simple workflows
+  "vibe_check_enabled": true,           # Keep validation active
+  "vibe_distill_enabled": true,         # Keep complexity simplification
+  "vibe_learn_enabled": true,           # Keep pattern learning
+  "detailed_logging": true              # Enable comprehensive monitoring
+</mcp_tool_flags>
+```
+
+**Available Flags:**
+- `sequential_thinking_enabled` - Complex analysis and decision support
+- `vibe_check_enabled` - Approach validation and assumption testing
+- `vibe_distill_enabled` - Complexity reduction and simplification
+- `vibe_learn_enabled` - Pattern storage and cross-project learning
+- `force_manual_fallback` - Bypass all MCP tools for emergency mode
+- `detailed_logging` - Comprehensive monitoring and performance tracking
+
+### 📊 Comprehensive Monitoring (Planned)
+Will provide real-time performance metrics and structured logging:
+
+- **Tool Performance Metrics**: Success rates, average durations, failure tracking
+- **Integration Events**: Complete audit trail of all MCP tool operations  
+- **Performance Reports**: End-of-workflow comprehensive summaries
+- **Debug Support**: Detailed logging levels for troubleshooting
+- **Memory Storage**: All metrics stored for historical analysis
+
 ## 📚 Documentation
 
 ### Core Workflows
@@ -147,6 +191,25 @@ projectai drupal     # Initialize a Drupal project
 2. **Plan Product**: Define project structure and requirements
 3. **Create Spec**: Generate detailed technical specifications
 4. **Execute Tasks**: Implement features and fixes
+
+### MCP Integration Examples
+- **[Project Showcase Examples](PROJECT-SHOWCASE-EXAMPLES.md)** - Real-world demonstrations of MCP Integration Features with measurable performance improvements across 5 different project types
+- **[Migration Guide](MIGRATION-GUIDE.md)** - Step-by-step guide for upgrading existing projects to use MCP integration
+
+### 5-Phase Specification Workflow (Base Implementation Complete, MCP Integration Planned)
+Agent OS uses a structured 5-phase workflow. MCP learning integration is planned:
+
+1. **Initialize** (`initialize-spec.md`) - Project initialization with user interaction pattern learning
+2. **Research** (`research-spec.md`) - Requirements gathering with research decomposition patterns
+3. **Write** (`write-spec.md`) - Specification creation with mission definition analysis
+4. **Verify** (`verify-spec.md`) - Validation with gap detection and assumption testing
+5. **Tasks** (`create-tasks-list.md`) - Task breakdown with dependency management patterns
+
+Each phase includes integrated MCP learning that:
+- Captures phase-specific patterns and decision-making approaches
+- Stores knowledge in dual memory architecture for cross-project reuse
+- Provides intelligent workflow optimization based on project context
+- Enables graceful degradation when MCP tools are unavailable
 
 ### Best Practices
 - Follow the standards in `~/.agent-os/templates/standards/`
@@ -188,10 +251,15 @@ curl -sSL https://raw.githubusercontent.com/jdelon02/agent-os/main/ide_specific/
 ## 🗺 Roadmap
 
 - [x] Core MVP Functionality
-- [ ] Advanced Configuration
-- [ ] Template System
-- [ ] Enterprise Features
-- [ ] Integration APIs
+- [ ] 🧠 Enhanced MCP Learning Integration (Planned)
+- [ ] ⚙️ Optional MCP Tool Flags (Planned)
+- [ ] 📊 Comprehensive Monitoring & Logging (Planned)
+- [ ] Cross-Project Pattern Recognition (Planned)
+- [ ] 5-Phase Workflow MCP Integration (Planned)
+- [~] Advanced Configuration (In Progress)
+- [~] Template System (In Progress)
+- [ ] Enterprise Features (Future)
+- [ ] Integration APIs (Future)
 
 ## 🤝 Contributing
 

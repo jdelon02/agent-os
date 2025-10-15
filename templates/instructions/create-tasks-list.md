@@ -409,6 +409,69 @@ encoding: UTF-8
 
 </step>
 
+<step number="1.8" name="enhanced_mcp_learning_integration">
+
+### Step 1.8: Enhanced MCP Learning Integration
+
+<step_metadata>
+  <purpose>Apply sequential-thinking, vibe-check, vibe-distill, and vibe-learn MCP tools for intelligent task breakdown analysis</purpose>
+  <enhances>task creation with cross-project learning patterns</enhances>
+  <creates>
+    - learning session data in Memory-Keeper
+    - cross-project knowledge entities in Memento
+    - pattern recognition for task breakdown workflows
+  </creates>
+</step_metadata>
+
+<enhanced_mcp_integration>
+  <!-- Include the reusable enhanced MCP learning integration module -->
+  <include>@templates/instructions/support-workflows/enhanced-mcp-learning-integration.md</include>
+  
+  <!-- Phase-specific parameters for create-tasks-list breakdown analysis -->
+  <integration_parameters>
+    <workflow_phase>tasks</workflow_phase>
+    <context>task_breakdown_patterns</context>
+    <learning_focus>[
+      "task_simplification",
+      "dependency_management",
+      "task_granularity_optimization",
+      "implementation_sequencing",
+      "complexity_assessment",
+      "testing_integration"
+    ]</learning_focus>
+  </integration_parameters>
+  
+  <!-- Tasks-phase specific learning objectives -->
+  <learning_objectives>
+    - Analyze task breakdown effectiveness and granularity optimization patterns
+    - Validate dependency management approaches and implementation sequencing
+    - Test assumptions in task complexity assessment and testing integration strategies
+    - Identify task organization blind spots and improvement opportunities
+    - Capture task creation decision patterns for future implementation planning
+    - Build cross-project knowledge for similar task breakdown workflows
+  </learning_objectives>
+  
+  <!-- Integration success validation -->
+  <validation_criteria>
+    - Sequential thinking applied to complex task breakdown decision processes
+    - Vibe check validates task organization assumptions and dependency mapping
+    - Vibe distill simplifies overly complex task structures
+    - Vibe learn captures task breakdown patterns and implementation insights
+    - Cross-project entities created for task breakdown knowledge transfer
+    - Learning patterns stored for future create-tasks-list workflows
+  </validation_criteria>
+</enhanced_mcp_integration>
+
+<instructions>
+  EXECUTE: Enhanced MCP learning integration with create-tasks-list parameters
+  CONTEXT: Task breakdown patterns and implementation planning analysis
+  LEARNING: Focus on task simplification, dependency management, and complexity assessment
+  STORAGE: Store patterns in Memory-Keeper + Memento dual architecture
+  FALLBACK: Graceful degradation if individual MCP tools unavailable
+</instructions>
+
+</step>
+
 <step number="2" name="context_gathering_with_memory">
 
 ### Step 2: Context Gathering (Memory-Enhanced)
@@ -1416,16 +1479,61 @@ encoding: UTF-8
   ## Feature: [FEATURE_NAME] Tasks
   
   > Added: [CURRENT_DATE]
+  > Total Tasks: [TASK_COUNT]
+  > Estimated Effort: [TOTAL_EFFORT_ESTIMATE]
   
-  - [ ] 1. [MAJOR_TASK_DESCRIPTION] `[EFFORT]`
-    - [ ] 1.1 Write tests for [COMPONENT] `[EFFORT]`
-    - [ ] 1.2 [IMPLEMENTATION_STEP] `[EFFORT]`
-    - [ ] 1.3 [IMPLEMENTATION_STEP] `[EFFORT]`
-    - [ ] 1.4 Verify all tests pass `[EFFORT]`
-
-  - [ ] 2. [MAJOR_TASK_DESCRIPTION] `[EFFORT]`
-    - [ ] 2.1 Write tests for [COMPONENT] `[EFFORT]`
-    - [ ] 2.2 [IMPLEMENTATION_STEP] `[EFFORT]`
+  ### Task Group 1: [TASK_GROUP_DESCRIPTION]
+  **Dependencies:** [DEPENDENCY_LIST]
+  
+  - [ ] 1.0 Complete [COMPONENT_NAME] implementation `[EFFORT]`
+    - [ ] 1.1 Write comprehensive tests in `[TEST_FILE_PATH]` `[EFFORT]`
+      - Test file: `[SPECIFIC_TEST_FILE]`
+      - Functions to test: `[SPECIFIC_FUNCTIONS]`
+      - Test scenarios: [SPECIFIC_TEST_CASES]
+      - Test types: [UNIT/INTEGRATION/E2E]
+    - [ ] 1.2 [SPECIFIC_IMPLEMENTATION_ACTION] in `[TARGET_FILE_PATH]` `[EFFORT]`
+      - Modify: `[SPECIFIC_FUNCTION_OR_CLASS]`
+      - Changes: [SPECIFIC_CODE_CHANGES_DESCRIPTION]
+      - Dependencies: [REQUIRED_IMPORTS_OR_MODULES]
+      - Reuse pattern from: [EXISTING_PATTERN_REFERENCE]
+    - [ ] 1.3 [ADDITIONAL_IMPLEMENTATION_STEP] in `[TARGET_FILE_PATH]` `[EFFORT]`
+      - Add/Modify: `[SPECIFIC_CODE_ELEMENTS]`
+      - Integration points: [SPECIFIC_INTEGRATION_DETAILS]
+      - Technical details: [SPECIFIC_TECHNICAL_REQUIREMENTS]
+    - [ ] 1.4 Verify all [COMPONENT_NAME] tests pass `[EFFORT]`
+      - Run: `[SPECIFIC_TEST_COMMAND]`
+      - Expected: [SPECIFIC_SUCCESS_CRITERIA]
+      - Coverage: [COVERAGE_REQUIREMENTS]
+  
+  **Acceptance Criteria:**
+  - [ ] All tests written in 1.1 pass
+  - [ ] [SPECIFIC_FUNCTIONALITY] works correctly
+  - [ ] [INTEGRATION_REQUIREMENT] functions properly
+  - [ ] [QUALITY_STANDARD] is met
+  
+  ### Task Group 2: [NEXT_TASK_GROUP_DESCRIPTION]
+  **Dependencies:** Task Group 1
+  
+  - [ ] 2.0 Complete [NEXT_COMPONENT_NAME] implementation `[EFFORT]`
+    - [ ] 2.1 Write comprehensive tests in `[TEST_FILE_PATH]` `[EFFORT]`
+      - Test file: `[SPECIFIC_TEST_FILE]`
+      - Functions to test: `[SPECIFIC_FUNCTIONS]`
+      - Test scenarios: [SPECIFIC_TEST_CASES]
+    - [ ] 2.2 [SPECIFIC_IMPLEMENTATION_ACTION] in `[TARGET_FILE_PATH]` `[EFFORT]`
+      - Modify: `[SPECIFIC_FUNCTION_OR_CLASS]`
+      - Changes: [SPECIFIC_CODE_CHANGES_DESCRIPTION]
+      - Dependencies: [REQUIRED_IMPORTS_OR_MODULES]
+  
+  **Acceptance Criteria:**
+  - [ ] All tests written in 2.1 pass
+  - [ ] [SPECIFIC_FUNCTIONALITY] works correctly
+  
+  ## Execution Order
+  
+  Recommended implementation sequence:
+  1. [TASK_GROUP_1_NAME] (Task Group 1)
+  2. [TASK_GROUP_2_NAME] (Task Group 2)
+  3. [ADDITIONAL_GROUPS_AS_NEEDED]
     
   ---
 </standard_tasks_template>
@@ -1439,12 +1547,194 @@ encoding: UTF-8
 </ordering_principles>
 
 <instructions>
-  ACTION: Create task breakdown following TDD
-  STRUCTURE: Major tasks with subtasks
+  ACTION: Create task breakdown following TDD with file-specific implementation details
+  STRUCTURE: Organize tasks into logical groups with clear dependencies
   ORDER: Consider dependencies and Phase 4 validation patterns
   ESTIMATE: Add effort scale (XS, S, M, L, XL) to each task and subtask
   REFER: Use the effort scale definition in the header
   ENHANCE: Leverage Phase 4 validation context for implementation approach
+  SPECIFY: Include exact file paths, function names, and specific code changes for each task
+  DETAIL: Provide sufficient implementation specificity to prevent confusion about which files to modify
+  ORGANIZE: Use task groups with acceptance criteria and execution order
+  PATTERN: Include "Reuse pattern from" references to existing code when applicable
+  VALIDATE: Add comprehensive test types (unit/integration/e2e) as appropriate
+</instructions>
+
+</step>
+
+<step number="12.1" name="task_specificity_validation">
+
+### Step 12.1: Task Specificity Validation
+
+<step_metadata>
+  <action>ensure tasks contain sufficient implementation detail to prevent execution confusion</action>
+  <purpose>validate tasks specify exact files, functions, and code changes required</purpose>
+  <prevents>implementation confusion about which files to modify</prevents>
+  <critical>prevents the "which file should I edit?" problem during execution</critical>
+</step_metadata>
+
+<task_specificity_requirements>
+  <file_path_specificity>
+    # Every task must specify exact file paths
+    REQUIRED: Absolute or relative file paths for all code changes
+    EXAMPLES:
+      ✅ GOOD: "Modify user authentication in `src/auth/login.js`"
+      ✅ GOOD: "Add validation tests in `tests/validation.test.js`"
+      ❌ BAD: "Update authentication logic"
+      ❌ BAD: "Add tests for validation"
+    
+    FORMAT: Always use backticks around file paths for clarity
+  </file_path_specificity>
+  
+  <function_specificity>
+    # Every task must specify exact functions/classes to modify
+    REQUIRED: Specific function names, class names, or code elements
+    EXAMPLES:
+      ✅ GOOD: "Modify `authenticateUser()` function to add email validation"
+      ✅ GOOD: "Add new method `validateEmail()` to `UserValidator` class"
+      ❌ BAD: "Update user validation logic"
+      ❌ BAD: "Add email checking functionality"
+    
+    FORMAT: Use backticks around function/class names for clarity
+  </function_specificity>
+  
+  <change_description_specificity>
+    # Every task must describe the specific code changes needed
+    REQUIRED: Clear description of what code changes to make
+    EXAMPLES:
+      ✅ GOOD: "Add email regex validation before password check"
+      ✅ GOOD: "Replace hardcoded API URL with environment variable"
+      ❌ BAD: "Improve validation logic"
+      ❌ BAD: "Update configuration"
+    
+    DETAIL_LEVEL: Specific enough that implementer knows exactly what to change
+  </change_description_specificity>
+  
+  <test_specificity>
+    # Every test task must specify what to test and how
+    REQUIRED: Specific test scenarios and expected outcomes
+    EXAMPLES:
+      ✅ GOOD: "Test `validateEmail()` with valid email returns true"
+      ✅ GOOD: "Test login with invalid credentials returns 401 error"
+      ❌ BAD: "Test email validation"
+      ❌ BAD: "Test login functionality"
+    
+    TEST_COMMANDS: Include specific commands to run tests
+  </test_specificity>
+</task_specificity_requirements>
+
+<task_validation_checklist>
+  <implementation_clarity_check>
+    FOR_EACH task IN created_tasks:
+      ✓ VERIFY: Contains specific file path(s)
+      ✓ VERIFY: Identifies exact function/class to modify
+      ✓ VERIFY: Describes specific code changes needed
+      ✓ VERIFY: Includes any required imports or dependencies
+      ✓ VERIFY: Test tasks specify exact test scenarios
+      ✓ VERIFY: Verification tasks include specific success criteria
+      
+      IF any_check_fails:
+        ENHANCE_TASK_SPECIFICITY(task)
+        LOG: "Enhanced task specificity: {task.title}"
+  </implementation_clarity_check>
+  
+  <ambiguity_detection>
+    # Flag tasks that might cause implementation confusion
+    ambiguous_keywords = [
+      "update", "modify", "change", "fix", "improve", "add functionality",
+      "implement feature", "create component", "handle", "manage"
+    ]
+    
+    FOR_EACH task IN created_tasks:
+      IF task.description CONTAINS_ANY ambiguous_keywords AND NOT task.specificity_validated:
+        WARNING: "Task may be too ambiguous: {task.description}"
+        REQUIRE: Enhanced specificity before proceeding
+  </ambiguity_detection>
+</task_validation_checklist>
+
+<task_examples>
+  <good_task_example>
+    ## Example: Well-Specified Task
+    
+    > Total Tasks: 2 groups
+    > Estimated Effort: XL
+    
+    ### Task Group 1: Authentication Validation
+    **Dependencies:** None
+    
+    - [ ] 1.0 Complete email validation implementation `L`
+      - [ ] 1.1 Write comprehensive tests in `tests/auth/validation.test.js` `S`
+        - Test file: `tests/auth/validation.test.js`
+        - Functions to test: `validateEmail(email)`
+        - Test scenarios: valid email returns true, invalid email returns false, empty email returns error
+        - Test types: UNIT
+      - [ ] 1.2 Create email validation function in `src/auth/validators.js` `M`
+        - Modify: Add new `validateEmail(email)` function
+        - Changes: Implement regex-based email validation with standard RFC pattern
+        - Dependencies: No additional imports required
+        - Reuse pattern from: `src/auth/passwordValidator.js`
+      - [ ] 1.3 Integrate email validation into login flow in `src/auth/login.js` `S`
+        - Add/Modify: `authenticateUser()` function
+        - Integration points: Call `validateEmail()` before password validation
+        - Technical details: Add early return on validation failure
+      - [ ] 1.4 Verify all email validation tests pass `XS`
+        - Run: `npm test tests/auth/validation.test.js`
+        - Expected: All 3 test scenarios pass, no console errors
+        - Coverage: 100% on new validateEmail function
+    
+    **Acceptance Criteria:**
+    - [ ] All tests written in 1.1 pass
+    - [ ] Email validation works correctly for all test scenarios
+    - [ ] Login flow properly validates emails before authentication
+    - [ ] No breaking changes to existing authentication flow
+    
+    ### Task Group 2: Integration Testing
+    **Dependencies:** Task Group 1
+    
+    - [ ] 2.0 Complete end-to-end validation testing `M`
+      - [ ] 2.1 Write integration tests in `tests/integration/auth.test.js` `S`
+        - Test file: `tests/integration/auth.test.js`
+        - Functions to test: Full login flow with email validation
+        - Test scenarios: valid login, invalid email login, malformed email login
+      - [ ] 2.2 Verify all integration tests pass `XS`
+        - Run: `npm test tests/integration/auth.test.js`
+        - Expected: All login flow scenarios work correctly
+    
+    **Acceptance Criteria:**
+    - [ ] All tests written in 2.1 pass
+    - [ ] End-to-end login flow works correctly
+    
+    ## Execution Order
+    
+    Recommended implementation sequence:
+    1. Authentication Validation (Task Group 1)
+    2. Integration Testing (Task Group 2)
+  </good_task_example>
+  
+  <bad_task_example>
+    ## Example: Poorly-Specified Task (DON'T DO THIS)
+    
+    - [ ] 1. Implement user validation `L`
+      - [ ] 1.1 Write tests for validation `S`
+      - [ ] 1.2 Add validation logic `M`
+      - [ ] 1.3 Update login process `S`
+      - [ ] 1.4 Verify tests pass `XS`
+    
+    # PROBLEMS WITH ABOVE:
+    # - No file paths specified
+    # - No function names given
+    # - No specific code changes described
+    # - Test scenarios not defined
+    # - Success criteria not clear
+  </bad_task_example>
+</task_examples>
+
+<instructions>
+  ACTION: Validate every task for implementation specificity
+  REQUIRE: Exact file paths, function names, and code change descriptions
+  CHECK: Use validation checklist to ensure tasks are execution-ready
+  ENHANCE: Add specificity to any ambiguous tasks
+  PREVENT: "Which file should I edit?" confusion during execution
 </instructions>
 
 </step>

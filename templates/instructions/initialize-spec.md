@@ -109,60 +109,107 @@ encoding: UTF-8
   <memory_integration>store initial context for continuity</memory_integration>
 </step_metadata>
 
-<idea_capture>
-  <project_vision>
-    - What problem does this project solve?
-    - Who are the target users?
-    - What is the core value proposition?
-    - What inspired this project idea?
-  </project_vision>
+# CRITICAL: Ask user these specific questions and WAIT for responses
+LOG: "👋 Starting Phase 1 with user engagement - asking key project questions"
+
+<mandatory_user_questions>
+  ASK_USER_AND_WAIT_FOR_RESPONSES:
+    
+    ## Project Vision Questions  
+    1. **What problem does this project solve?** What specific pain point are you addressing?
+    
+    2. **Who are your target users?** Are you building this for yourself, your team, or a broader community?
+    
+    3. **What is the core value proposition?** What's the main benefit users will get?
+    
+    4. **What inspired this project idea?** Was there a specific experience that led to this?
+    
+    ## Scope and Boundaries Questions
+    5. **What are the primary features you want to build?** What are the "must-have" capabilities?
+    
+    6. **What are you explicitly NOT including?** What boundaries will keep this focused?
+    
+    7. **Are there existing solutions you're comparing against?** What makes your approach different?
+    
+    8. **What's your rough timeline expectation?** Are you thinking weeks, months, or longer-term?
+    
+    ## Constraints and Context Questions
+    9. **What technical constraints do you have?** Platform preferences, technology requirements?
+    
+    10. **What resource constraints should I know about?** Time, budget, team size considerations?
+    
+    11. **Any business or compliance constraints?** Licensing, distribution, policy requirements?
+    
+    12. **Integration requirements?** Does this need to work with specific existing systems?
   
-  <initial_scope>
-    - What are the primary features needed?
-    - What are the boundaries (what's NOT included)?
-    - Are there any existing solutions to compare against?
-    - What's the rough timeline expectation?
-  </initial_scope>
+  # MANDATORY: Do NOT proceed to memory storage until user provides answers
+  WAIT_FOR_USER_RESPONSES: true
+  STORE_USER_ANSWERS_AS: user_project_input
   
-  <constraints_and_context>
-    - Technical constraints (platforms, technologies)
-    - Resource constraints (time, budget, team)
-    - Business constraints (compliance, policies)
-    - Integration requirements (existing systems)
-  </constraints_and_context>
-</idea_capture>
+  # Validation checkpoint
+  IF user_project_input.responses < 8:
+    REQUEST_MORE_DETAIL: "Please provide more details to help establish the project foundation properly."
+    WAIT_UNTIL_SUFFICIENT: true
+  
+  LOG: "✅ User engagement complete - proceeding to store project context"
+</mandatory_user_questions>
 
 <memory_storage>
-  # Store initial project context
+  # Store initial project context using actual user responses
   CALL: mcp-memory-keeper-context_save
   PARAMETERS:
     - key: "project-vision"
-    - value: "{structured_vision_summary}"
+    - value: "{user_project_input.vision_responses}"
     - category: "progress"
     - priority: "high"
   
   CALL: mcp-memory-keeper-context_save
   PARAMETERS:
     - key: "initial-scope"
-    - value: "{structured_scope_summary}"
+    - value: "{user_project_input.scope_responses}"
     - category: "progress"
     - priority: "high"
   
-  # Store in long-term memory for cross-project learning
+  # Store in long-term memory for cross-project learning using user input
   CALL: memento-mcp-create_entities
   PARAMETERS:
     - entities: [{
         "name": "{PROJECT_ENTITY_NAME}",
         "entityType": "project",
         "observations": [
-          "Vision: {vision_one_liner}",
-          "Primary Tech: {PRIMARY_TECH}",
-          "Target Users: {target_users}",
-          "Core Problem: {core_problem}",
+          "Vision: {user_project_input.problem_statement}",
+          "Primary Tech: {user_project_input.technical_constraints OR PRIMARY_TECH}",
+          "Target Users: {user_project_input.target_users}",
+          "Core Problem: {user_project_input.core_value_proposition}",
           "Initialization Date: {current_date()}"
         ]
       }]
 </memory_storage>
+
+</step>
+
+<step number="1.8" name="enhanced_mcp_learning_integration">
+
+### Step 1.8: Enhanced MCP Learning Integration
+
+<step_metadata>
+  <action>apply enhanced MCP learning tools for user interaction pattern analysis</action>
+  <purpose>capture learning patterns from user engagement for cross-project intelligence</purpose>
+  <memory_integration>store interaction patterns and question effectiveness insights</memory_integration>
+</step_metadata>
+
+<enhanced_mcp_learning>
+  <!-- Apply Enhanced MCP Learning Integration Module -->
+  <include>@templates/instructions/support-workflows/enhanced-mcp-learning-integration.md</include>
+  
+  PARAMETERS:
+    - workflow_phase: "initialize"
+    - context: "user_interaction_patterns"
+    - learning_focus: ["question_effectiveness", "scope_simplification"]
+  
+  LOG: "🧠 Phase 1 Enhanced Learning: Analyzing user interaction effectiveness"
+  LOG: "📊 Focus Areas: Question effectiveness and scope simplification patterns"
+</enhanced_mcp_learning>
 
 </step>
 

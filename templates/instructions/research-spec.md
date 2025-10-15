@@ -507,6 +507,31 @@ encoding: UTF-8
 
 </step>
 
+<step number="2.8" name="enhanced_mcp_learning_integration">
+
+### Step 2.8: Enhanced MCP Learning Integration
+
+<step_metadata>
+  <action>apply enhanced MCP learning tools for research decomposition analysis</action>
+  <purpose>capture learning patterns from research processes for cross-project intelligence</purpose>
+  <memory_integration>store research patterns and thinking approaches for future research phases</memory_integration>
+</step_metadata>
+
+<enhanced_mcp_learning>
+  <!-- Apply Enhanced MCP Learning Integration Module -->
+  <include>@templates/instructions/support-workflows/enhanced-mcp-learning-integration.md</include>
+  
+  PARAMETERS:
+    - workflow_phase: "research"
+    - context: "research_decomposition"
+    - learning_focus: ["thinking_patterns", "research_simplification"]
+  
+  LOG: "🧠 Phase 2 Enhanced Learning: Analyzing research decomposition effectiveness"
+  LOG: "📊 Focus Areas: Thinking patterns and research simplification approaches"
+</enhanced_mcp_learning>
+
+</step>
+
 <step number="3" name="execute_plan_product">
 
 ### Step 3: Execute Plan-Product with Context

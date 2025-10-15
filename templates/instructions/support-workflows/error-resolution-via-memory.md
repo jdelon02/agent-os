@@ -199,6 +199,82 @@ When encountering any development error (test failures, compilation errors, runt
 </error_resolution_workflow>
 ```
 
+### Step 1.5: Sequential Thinking for Complex Error Analysis
+
+When encountering complex errors that require multi-step analysis:
+
+```xml
+<sequential_thinking_error_analysis>
+  <!-- Apply sequential thinking for complex error patterns -->
+  <complex_error_detection>
+    # Trigger conditions for sequential thinking in error analysis
+    APPLY_SEQUENTIAL_THINKING = (
+      len(error_symptoms) >= 3 OR
+      error_involves_multiple_systems OR
+      error_context_complexity == "high" OR
+      similar_errors_found == 0 OR
+      previous_solutions_failed >= 2
+    )
+    
+    IF APPLY_SEQUENTIAL_THINKING:
+      LOG: "🤔 Applying sequential-thinking for complex error analysis"
+      
+      # Sequential thinking parameters for error analysis
+      THINKING_PARAMETERS = {
+        "total_thoughts": 8 if error_context_complexity == "high" else 6,
+        "analysis_focus": "complex error analysis and systematic troubleshooting",
+        "objective": "Identify root cause and optimal solution path for {error_type}",
+        "error_context": error_context
+      }
+      
+      # Execute sequential thinking for error analysis
+      TRY:
+        CALL: sequential-thinking
+        PARAMETERS: THINKING_PARAMETERS
+        
+        # Store sequential thinking results for error analysis
+        CALL: mcp-memory-keeper-context_save
+        PARAMETERS:
+          - key: "{PROJECT_ENTITY_NAME}-error-analysis-thinking-{timestamp}"
+          - value: "Sequential thinking for error analysis: {error_type} | Results: {thinking_results}"
+          - category: "error_patterns"
+          - priority: "high"
+        
+        # Extract enhanced analysis insights
+        enhanced_error_analysis = extract_insights_from_thinking(thinking_results)
+        
+        # Update solution search strategy based on thinking results
+        IF enhanced_error_analysis.suggests_different_search_strategy:
+          # Refine search terms based on sequential thinking insights
+          refined_search_terms = enhanced_error_analysis.refined_search_terms
+          
+          # Re-search with enhanced terms
+          CALL: mcp-memory-keeper-context_search
+          PARAMETERS:
+            - query: "{PROJECT_ENTITY_NAME} {refined_search_terms} {PRIMARY_TECH}"
+            - searchIn: ["key", "value"]
+          
+          CALL: memento-mcp-semantic_search
+          PARAMETERS:
+            - query: "{refined_search_terms} {PRIMARY_TECH} solution"
+            - entity_types: ["error_resolution", "debugging_solution"]
+            - limit: 10
+            - min_similarity: 0.6
+        
+        LOG: "✅ Sequential thinking enhanced error analysis completed"
+        
+      EXCEPT sequential_thinking_error:
+        LOG: "⚠️ Sequential thinking failed: {error} - proceeding with standard analysis"
+        
+        # Fallback to structured manual analysis
+        EXECUTE: manual_structured_error_analysis(error_context, error_symptoms)
+    
+    ELSE:
+      LOG: "⏭️ Sequential thinking not needed for this error complexity - using standard analysis"
+  </complex_error_detection>
+</sequential_thinking_error_analysis>
+```
+
 ### Step 2: Apply Memory-Informed Solutions
 
 ```xml
@@ -373,6 +449,107 @@ When encountering any development error (test failures, compilation errors, runt
 </memory_guided_troubleshooting>
 ```
 
+### Step 2.5: Vibe Check for Error Solution Validation
+
+Before applying solutions, validate the approach with vibe-check for error resolution:
+
+```xml
+<vibe_check_solution_validation>
+  <!-- Apply vibe check before attempting solutions -->
+  <solution_validation>
+    # Trigger conditions for vibe check in error resolution
+    APPLY_VIBE_CHECK = (
+      len(solution_candidates) >= 2 OR
+      highest_confidence_solution < 0.8 OR
+      error_is_critical OR
+      error_affects_multiple_systems OR
+      solution_requires_significant_changes
+    )
+    
+    IF APPLY_VIBE_CHECK:
+      LOG: "🎯 Applying vibe-check for error solution validation"
+      
+      # Prepare vibe check parameters for solution validation
+      SOLUTION_PLAN = f"""
+      Error Resolution Plan:
+      - Error Type: {error_type}
+      - Error Context: {error_context}
+      - Top Solution Candidate: {highest_confidence_solution.approach}
+      - Alternative Solutions: {[s.approach for s in solution_candidates[1:3]]}
+      - Estimated Risk: {solution_risk_assessment}
+      - Implementation Approach: {solution_implementation_plan}
+      """
+      
+      USER_REQUEST = f"""
+      Resolve {error_type} error in {PRIMARY_TECH} project:
+      Error: {error_message}
+      Context: {error_context}
+      Requirement: Safe, effective resolution without introducing new issues
+      """
+      
+      VIBE_CHECK_PARAMETERS = {
+        "plan": SOLUTION_PLAN,
+        "userRequest": USER_REQUEST,
+        "confidence": current_solution_confidence,
+        "phase": "error_resolution",
+        "focusAreas": ["solution_safety", "implementation_risk", "side_effects"]
+      }
+      
+      # Execute vibe check for solution validation
+      TRY:
+        CALL: vibe-check
+        PARAMETERS: VIBE_CHECK_PARAMETERS
+        
+        # Store vibe check validation results
+        CALL: mcp-memory-keeper-context_save
+        PARAMETERS:
+          - key: "{PROJECT_ENTITY_NAME}-solution-validation-{timestamp}"
+          - value: "Vibe check solution validation for {error_type}: {validation_results}"
+          - category: "error_patterns"
+          - priority: "high"
+        
+        # Process vibe check feedback
+        validation_feedback = parse_vibe_check_results(validation_results)
+        
+        IF validation_feedback.suggests_different_approach:
+          LOG: "⚠️ Vibe check suggests reconsidering solution approach"
+          
+          # Adjust solution strategy based on vibe check insights
+          IF validation_feedback.recommends_safer_approach:
+            # Prioritize lower-risk solutions
+            solution_candidates = prioritize_safe_solutions(solution_candidates)
+            LOG: "Reordered solutions to prioritize safer approaches"
+          
+          IF validation_feedback.identifies_missing_considerations:
+            # Add additional validation steps
+            additional_checks = validation_feedback.suggested_checks
+            LOG: f"Adding validation steps: {additional_checks}"
+        
+        ELIF validation_feedback.confirms_approach:
+          LOG: "✅ Vibe check confirms solution approach is sound"
+        
+        # Store validation insights for future error resolution
+        CALL: mcp-memory-keeper-context_save
+        PARAMETERS:
+          - key: "{PROJECT_ENTITY_NAME}-solution-insights-{timestamp}"
+          - value: "Solution validation insights: {validation_feedback.key_insights}"
+          - category: "error_patterns"
+          - priority: "normal"
+        
+        LOG: "✅ Vibe check solution validation completed"
+        
+      EXCEPT vibe_check_error:
+        LOG: "⚠️ Vibe check failed: {error} - proceeding with standard solution validation"
+        
+        # Fallback to manual solution validation
+        EXECUTE: manual_solution_risk_assessment(solution_candidates, error_context)
+    
+    ELSE:
+      LOG: "⏭️ Vibe check not needed for this solution validation - proceeding with solutions"
+  </solution_validation>
+</vibe_check_solution_validation>
+```
+
 ### Step 3: Post-Resolution Memory Update
 
 ```xml
@@ -428,6 +605,404 @@ When encountering any development error (test failures, compilation errors, runt
     ENDIF
   </successful_resolution_storage>
 </post_resolution_memory_update>
+```
+
+### Step 3.5: Vibe Learn for Error Pattern Storage
+
+Capture error resolution patterns and learnings using vibe-learn:
+
+```xml
+<vibe_learn_error_patterns>
+  <!-- Apply vibe learn to capture error resolution patterns -->
+  <error_pattern_learning>
+    # Always attempt vibe learn after error resolution for pattern storage
+    IF error_resolved:
+      LOG: "🧠 Applying vibe-learn for error resolution pattern storage"
+      
+      # Identify key learning patterns from the error resolution process
+      ERROR_RESOLUTION_PATTERNS = extract_error_learning_patterns(
+        error_type, error_context, solution_applied, resolution_outcome
+      )
+      
+      # Apply vibe learn for each significant error pattern
+      FOR pattern IN ERROR_RESOLUTION_PATTERNS:
+        TRY:
+          # Determine appropriate error category for vibe learn
+          ERROR_CATEGORY = determine_error_category(pattern, error_type)
+          
+          # Prepare vibe learn parameters for error patterns
+          VIBE_LEARN_PARAMETERS = {
+            "mistake": pattern.error_or_challenge,
+            "category": ERROR_CATEGORY,
+            "solution": pattern.resolution_approach,
+            "sessionId": f"{PROJECT_ENTITY_NAME}-error-resolution-{timestamp}"
+          }
+          
+          CALL: vibe-learn
+          PARAMETERS: VIBE_LEARN_PARAMETERS
+          
+          # Store vibe learn results for error patterns
+          CALL: mcp-memory-keeper-context_save
+          PARAMETERS:
+            - key: "{PROJECT_ENTITY_NAME}-error-pattern-{pattern.id}-learned"
+            - value: "Error pattern learned: {pattern.description} | Solution: {pattern.resolution_approach}"
+            - category: "error_patterns"
+            - priority: "normal"
+          
+          LOG: f"✅ Error pattern learned: {pattern.description}"
+          
+        EXCEPT vibe_learn_error:
+          LOG: f"⚠️ Vibe learn failed for error pattern {pattern.id}: {error}"
+          
+          # Manual pattern storage fallback
+          CALL: mcp-memory-keeper-context_save
+          PARAMETERS:
+            - key: "manual-error-pattern-{pattern.id}-{timestamp}"
+            - value: "Manual error pattern storage: {pattern.description} | Context: {error_context}"
+            - category: "error_patterns"
+            - priority: "normal"
+      
+      # Store summary of error learning session
+      CALL: mcp-memory-keeper-context_save
+      PARAMETERS:
+        - key: "{PROJECT_ENTITY_NAME}-error-learning-summary-{timestamp}"
+        - value: "Error learning session: {len(ERROR_RESOLUTION_PATTERNS)} patterns captured for {error_type}"
+        - category: "error_patterns"
+        - priority: "high"
+      
+      LOG: f"✅ Vibe learn error pattern storage completed - {len(ERROR_RESOLUTION_PATTERNS)} patterns processed"
+      
+    ELSE:
+      LOG: "⚠️ Error not yet resolved - skipping vibe learn pattern storage"
+  </error_pattern_learning>
+  
+  <!-- Helper function for error category determination -->
+  <error_category_mapping>
+    FUNCTION determine_error_category(pattern, error_type):
+      """Map error patterns to appropriate vibe-learn categories"""
+      category_mapping = {
+        "over_complex_solution": "Complex Solution Bias",
+        "scope_creep_during_fix": "Feature Creep",
+        "premature_implementation": "Premature Implementation", 
+        "misaligned_solution": "Misalignment",
+        "tool_overuse": "Overtooling",
+        "insufficient_analysis": "Complex Solution Bias",
+        "rushed_resolution": "Premature Implementation"
+      }
+      
+      RETURN category_mapping.get(pattern.type, "Other")
+    
+    FUNCTION extract_error_learning_patterns(error_type, error_context, solution_applied, resolution_outcome):
+      """Extract learning patterns from error resolution process"""
+      patterns = []
+      
+      # Common error resolution patterns
+      IF resolution_outcome.required_multiple_attempts:
+        patterns.append({
+          "id": f"multi-attempt-{error_type}",
+          "type": "insufficient_analysis",
+          "description": f"Multiple attempts required for {error_type}",
+          "error_or_challenge": f"Initial analysis insufficient for {error_type}",
+          "resolution_approach": "Enhanced analysis with sequential thinking before solution attempts"
+        })
+      
+      IF resolution_outcome.solution_had_side_effects:
+        patterns.append({
+          "id": f"side-effects-{error_type}",
+          "type": "insufficient_validation", 
+          "description": f"Solution for {error_type} had unexpected side effects",
+          "error_or_challenge": f"Solution validation insufficient for {error_type}",
+          "resolution_approach": "Comprehensive solution validation with vibe-check before implementation"
+        })
+      
+      IF resolution_outcome.required_novel_approach:
+        patterns.append({
+          "id": f"novel-solution-{error_type}",
+          "type": "breakthrough_discovery",
+          "description": f"Novel solution discovered for {error_type}",
+          "error_or_challenge": f"Standard solutions ineffective for {error_type}",
+          "resolution_approach": solution_applied.approach_description
+        })
+      
+      RETURN patterns
+  </error_category_mapping>
+</vibe_learn_error_patterns>
+```
+
+### Step 4: Cross-Project Error Resolution Patterns
+
+Establish cross-project error resolution patterns and knowledge entities:
+
+```xml
+<cross_project_error_patterns>
+  <!-- Establish cross-project error resolution intelligence -->
+  <error_pattern_consolidation>
+    # After error resolution, establish cross-project learning patterns
+    IF error_resolved:
+      LOG: "🌐 Establishing cross-project error resolution patterns"
+      
+      # Identify generalizable error patterns from this resolution
+      CROSS_PROJECT_PATTERNS = {
+        "error_category": categorize_error_type(error_type, error_context),
+        "tech_stack_patterns": extract_tech_stack_patterns(PRIMARY_TECH, error_context),
+        "resolution_approach": generalize_resolution_approach(final_solution_approach),
+        "prevention_strategies": identify_prevention_strategies(error_type, solution_applied),
+        "diagnostic_indicators": extract_diagnostic_patterns(error_symptoms, error_context)
+      }
+      
+      # Create cross-project error pattern entities in Memento
+      FOR pattern_type, pattern_data IN CROSS_PROJECT_PATTERNS.items():
+        CALL: memento-mcp-create_entities
+        PARAMETERS:
+          - entities: [{
+              "name": f"{pattern_type}-pattern-{PRIMARY_TECH}-{timestamp}",
+              "entityType": "error_resolution_pattern",
+              "observations": [
+                f"Pattern Type: {pattern_type}",
+                f"Technology Stack: {PRIMARY_TECH}",
+                f"Original Error: {error_type}",
+                f"Error Context: {error_context}",
+                f"Pattern Details: {pattern_data.description}",
+                f"Applicability: {pattern_data.applicability_conditions}",
+                f"Resolution Success Rate: {pattern_data.confidence_score}",
+                f"Source Project: {PROJECT_ENTITY_NAME}",
+                f"Canonical Project ID: {CANONICAL_PROJECT_ID}",
+                f"Prevention Value: {pattern_data.prevention_potential}",
+                f"Date Discovered: {current_date()}"
+              ]
+            }]
+      
+      # Create relationships between error patterns and tech stacks
+      CALL: memento-mcp-create_relations
+      PARAMETERS:
+        - relations: [
+            {
+              "from": f"error_category-pattern-{PRIMARY_TECH}-{timestamp}",
+              "to": f"{PRIMARY_TECH}-error-patterns",
+              "relationType": "enhances_knowledge_of",
+              "metadata": {"pattern_value": "diagnostic", "canonical_project": PROJECT_ENTITY_NAME}
+            },
+            {
+              "from": f"resolution_approach-pattern-{PRIMARY_TECH}-{timestamp}",
+              "to": PROJECT_ENTITY_NAME,
+              "relationType": "discovered_by",
+              "metadata": {"discovery_context": "error_resolution", "pattern_reliability": pattern_data.confidence_score}
+            }
+          ]
+      
+      LOG: f"✅ Cross-project error patterns established for {len(CROSS_PROJECT_PATTERNS)} pattern types"
+      
+      # Store pattern establishment summary
+      CALL: mcp-memory-keeper-context_save
+      PARAMETERS:
+        - key: f"{PROJECT_ENTITY_NAME}-cross-project-patterns-{timestamp}"
+        - value: f"Established {len(CROSS_PROJECT_PATTERNS)} cross-project error patterns for {error_type} resolution"
+        - category: "error_patterns"
+        - priority: "high"
+  </error_pattern_consolidation>
+</cross_project_error_patterns>
+```
+
+### Step 4.5: Enhanced Error Resolution Patterns in Memento
+
+Create enhanced error resolution entities with advanced pattern recognition:
+
+```xml
+<enhanced_error_resolution_patterns>
+  <!-- Create enhanced error resolution patterns using Memento -->
+  <advanced_pattern_creation>
+    # Create enhanced error resolution patterns for future intelligence
+    IF error_resolved AND solution_source != "unknown":
+      LOG: "🧠 Creating enhanced error resolution patterns in Memento"
+      
+      # Generate enhanced error resolution entity
+      ENHANCED_RESOLUTION_ENTITY = {
+        "name": f"{PROJECT_ENTITY_NAME}-enhanced-error-resolution-{error_type}-{timestamp}",
+        "entityType": "enhanced_error_resolution",
+        "observations": [
+          f"Enhanced Error Resolution Pattern",
+          f"Error Classification: {error_classification}",
+          f"Error Severity: {error_severity_assessment}",
+          f"Primary Technology: {PRIMARY_TECH}",
+          f"Technology Version: {tech_version_info}",
+          f"Error Symptoms: {'; '.join(error_symptoms)}",
+          f"Root Cause Analysis: {root_cause_analysis}",
+          f"Solution Category: {solution_category}",
+          f"Resolution Steps: {detailed_resolution_steps}",
+          f"Solution Source: {solution_source}",
+          f"Investigation Duration: {total_investigation_time}",
+          f"Tools Used: {', '.join(debugging_tools_used)}",
+          f"Files Modified: {', '.join(files_modified)}",
+          f"Testing Approach: {testing_verification_method}",
+          f"Prevention Strategy: {prevention_recommendations}",
+          f"Confidence Score: {resolution_confidence_score}",
+          f"Reusability Score: {cross_project_reusability_score}",
+          f"Canonical Project: {PROJECT_ENTITY_NAME}",
+          f"Canonical ID: {CANONICAL_PROJECT_ID}",
+          f"Project Context: {project_context_summary}",
+          f"Environment Details: {environment_configuration}",
+          f"Success Metrics: {success_validation_metrics}",
+          f"Date Resolved: {current_date()}",
+          f"Resolution Quality: {solution_quality_assessment}"
+        ]
+      }
+      
+      # Create enhanced error resolution entity
+      CALL: memento-mcp-create_entities
+      PARAMETERS:
+        - entities: [ENHANCED_RESOLUTION_ENTITY]
+      
+      # Create comprehensive relationships for enhanced pattern matching
+      ENHANCED_RELATIONS = [
+        # Link to project entity
+        {
+          "from": ENHANCED_RESOLUTION_ENTITY["name"],
+          "to": PROJECT_ENTITY_NAME,
+          "relationType": "enhanced_resolution_for",
+          "metadata": {
+            "canonical_project": PROJECT_ENTITY_NAME,
+            "resolution_quality": solution_quality_assessment,
+            "reusability": cross_project_reusability_score
+          }
+        },
+        # Link to technology stack
+        {
+          "from": ENHANCED_RESOLUTION_ENTITY["name"],
+          "to": f"{PRIMARY_TECH}-advanced-patterns",
+          "relationType": "advances_knowledge_of",
+          "metadata": {
+            "pattern_type": "enhanced_error_resolution",
+            "tech_version": tech_version_info,
+            "confidence": resolution_confidence_score
+          }
+        },
+        # Link to error category patterns
+        {
+          "from": ENHANCED_RESOLUTION_ENTITY["name"],
+          "to": f"error-category-{error_classification}",
+          "relationType": "provides_solution_for",
+          "metadata": {
+            "solution_category": solution_category,
+            "effectiveness": solution_effectiveness_score
+          }
+        }
+      ]
+      
+      # Add relation to source pattern if solution came from memory
+      IF solution_source == "memory_guided" AND source_solution_entity:
+        ENHANCED_RELATIONS.append({
+          "from": ENHANCED_RESOLUTION_ENTITY["name"],
+          "to": source_solution_entity,
+          "relationType": "enhanced_adaptation_of",
+          "metadata": {
+            "adaptation_type": "context_specific_enhancement",
+            "original_confidence": source_solution_confidence,
+            "enhanced_confidence": resolution_confidence_score
+          }
+        })
+      
+      # Add relation to prevention strategies
+      IF prevention_recommendations:
+        ENHANCED_RELATIONS.append({
+          "from": ENHANCED_RESOLUTION_ENTITY["name"],
+          "to": f"{PRIMARY_TECH}-prevention-strategies",
+          "relationType": "recommends_prevention_via",
+          "metadata": {
+            "prevention_type": prevention_strategy_type,
+            "prevention_effectiveness": prevention_confidence_score
+          }
+        })
+      
+      # Create all enhanced relations
+      CALL: memento-mcp-create_relations
+      PARAMETERS:
+        - relations: ENHANCED_RELATIONS
+      
+      # Store enhanced resolution success
+      CALL: mcp-memory-keeper-context_save
+      PARAMETERS:
+        - key: f"{PROJECT_ENTITY_NAME}-enhanced-resolution-complete-{timestamp}"
+        - value: f"Enhanced error resolution pattern created with {len(ENHANCED_RELATIONS)} relationships for future intelligence"
+        - category: "error_patterns"
+        - priority: "critical"
+      
+      LOG: f"✅ Enhanced error resolution pattern created with {len(ENHANCED_RELATIONS)} relationships"
+      
+      # Create cross-project diagnostic indicators for future error prevention
+      IF diagnostic_indicators:
+        DIAGNOSTIC_ENTITY = {
+          "name": f"{error_type}-diagnostic-indicators-{PRIMARY_TECH}-{timestamp}",
+          "entityType": "error_diagnostic_pattern",
+          "observations": [
+            f"Error Type: {error_type}",
+            f"Technology: {PRIMARY_TECH}",
+            f"Early Warning Signs: {'; '.join(diagnostic_indicators.early_warnings)}",
+            f"Symptom Patterns: {'; '.join(diagnostic_indicators.symptom_patterns)}",
+            f"Context Indicators: {'; '.join(diagnostic_indicators.context_clues)}",
+            f"Prevention Triggers: {'; '.join(diagnostic_indicators.prevention_triggers)}",
+            f"Detection Methods: {'; '.join(diagnostic_indicators.detection_methods)}",
+            f"Source Project: {PROJECT_ENTITY_NAME}",
+            f"Reliability Score: {diagnostic_indicators.reliability_score}",
+            f"Date Established: {current_date()}"
+          ]
+        }
+        
+        CALL: memento-mcp-create_entities
+        PARAMETERS:
+          - entities: [DIAGNOSTIC_ENTITY]
+        
+        # Link diagnostic patterns to enhanced resolution
+        CALL: memento-mcp-create_relations
+        PARAMETERS:
+          - relations: [{
+              "from": DIAGNOSTIC_ENTITY["name"],
+              "to": ENHANCED_RESOLUTION_ENTITY["name"],
+              "relationType": "enables_early_detection_of",
+              "metadata": {
+                "diagnostic_value": "preventive",
+                "reliability": diagnostic_indicators.reliability_score
+              }
+            }]
+        
+        LOG: f"✅ Diagnostic indicators established for early detection of {error_type}"
+      
+    ELSE:
+      LOG: "⏭️ Enhanced error resolution patterns skipped - error not resolved or unknown solution source"
+  </advanced_pattern_creation>
+  
+  <!-- Helper functions for enhanced pattern creation -->
+  <pattern_enhancement_functions>
+    FUNCTION categorize_error_type(error_type, error_context):
+      """Categorize error for enhanced pattern matching"""
+      categories = {
+        "compilation": ["syntax", "import", "dependency", "build"],
+        "runtime": ["exception", "null", "undefined", "timeout"],
+        "configuration": ["config", "env", "permission", "path"],
+        "integration": ["api", "database", "service", "network"],
+        "performance": ["memory", "cpu", "slow", "timeout"],
+        "testing": ["test", "assertion", "mock", "fixture"]
+      }
+      
+      FOR category, keywords IN categories.items():
+        IF any(keyword in error_type.lower() or keyword in error_context.lower() for keyword in keywords):
+          RETURN category
+      
+      RETURN "general"
+    
+    FUNCTION extract_diagnostic_patterns(error_symptoms, error_context):
+      """Extract early warning indicators for future error prevention"""
+      diagnostic_patterns = {
+        "early_warnings": identify_early_warning_signs(error_symptoms, error_context),
+        "symptom_patterns": analyze_symptom_progression(error_symptoms),
+        "context_clues": extract_context_indicators(error_context),
+        "prevention_triggers": identify_prevention_opportunities(error_symptoms, error_context),
+        "detection_methods": recommend_detection_methods(error_symptoms),
+        "reliability_score": calculate_diagnostic_reliability(error_symptoms, error_context)
+      }
+      
+      RETURN diagnostic_patterns
+  </pattern_enhancement_functions>
+</enhanced_error_resolution_patterns>
 ```
 
 ## Instruction Error Resolution Protocol

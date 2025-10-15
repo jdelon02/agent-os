@@ -405,6 +405,69 @@ encoding: UTF-8
 
 </step>
 
+<step number="5.8" name="enhanced_mcp_learning_integration">
+
+### Step 5.8: Enhanced MCP Learning Integration
+
+<step_metadata>
+  <purpose>Apply sequential-thinking, vibe-check, vibe-distill, and vibe-learn MCP tools for intelligent validation pattern analysis</purpose>
+  <enhances>specification validation with cross-project learning patterns</enhances>
+  <creates>
+    - learning session data in Memory-Keeper
+    - cross-project knowledge entities in Memento
+    - pattern recognition for validation workflows
+  </creates>
+</step_metadata>
+
+<enhanced_mcp_integration>
+  <!-- Include the reusable enhanced MCP learning integration module -->
+  <include>@templates/instructions/support-workflows/enhanced-mcp-learning-integration.md</include>
+  
+  <!-- Phase-specific parameters for verify-spec validation -->
+  <integration_parameters>
+    <workflow_phase>verify</workflow_phase>
+    <context>validation_patterns</context>
+    <learning_focus>[
+      "gap_detection",
+      "assumption_testing",
+      "validation_thoroughness",
+      "quality_assessment_patterns",
+      "consistency_checking",
+      "feasibility_analysis"
+    ]</learning_focus>
+  </integration_parameters>
+  
+  <!-- Verify-spec specific learning objectives -->
+  <learning_objectives>
+    - Analyze gap detection effectiveness and validation completeness patterns
+    - Test assumptions in specification validation and quality assessment approaches
+    - Validate consistency checking methodologies and feasibility analysis techniques
+    - Identify validation blind spots and improvement opportunities
+    - Capture validation decision patterns for future specification reviews
+    - Build cross-project knowledge for similar validation workflows
+  </learning_objectives>
+  
+  <!-- Integration success validation -->
+  <validation_criteria>
+    - Sequential thinking applied to complex validation decision processes
+    - Vibe check validates validation methodology assumptions and approaches
+    - Vibe distill simplifies overly complex validation frameworks
+    - Vibe learn captures validation patterns and quality assessment insights
+    - Cross-project entities created for validation knowledge transfer
+    - Learning patterns stored for future verify-spec workflows
+  </validation_criteria>
+</enhanced_mcp_integration>
+
+<instructions>
+  EXECUTE: Enhanced MCP learning integration with verify-spec parameters
+  CONTEXT: Validation patterns and quality assessment analysis
+  LEARNING: Focus on gap detection, assumption testing, and validation thoroughness
+  STORAGE: Store patterns in Memory-Keeper + Memento dual architecture
+  FALLBACK: Graceful degradation if individual MCP tools unavailable
+</instructions>
+
+</step>
+
 <step number="6" name="validation_summary_and_phase5_prep">
 
 ### Step 6: Validation Summary and Phase 5 Preparation
